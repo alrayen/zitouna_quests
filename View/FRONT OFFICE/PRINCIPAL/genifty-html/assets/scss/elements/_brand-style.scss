@@ -1,0 +1,103 @@
+/*--------brand style start hear--
+------------------------------------*/
+
+.brand-style-one{
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    flex-wrap: wrap;
+    @media #{$md-layout} {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    @media #{$sm-layout} {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 10px 0;
+    }
+    .single-brand{
+        margin: 0;
+        a{
+            padding: 32px 0;
+            display: block;
+                @media #{$md-layout} {
+                    padding: 15px 20px;
+                }
+                @media #{$sm-layout} {
+                    padding: 15px 20px;
+                }
+            img{
+                max-width: 200px;
+                height: 29px;
+                transition: var(--transition);
+                @media #{$md-layout} {
+                    max-width: 150px;
+                    height: auto;
+                }
+                @media #{$sm-layout} {
+                    max-width: 120px;
+                    height: auto;
+                }
+                @media #{$large-mobile} {
+                    max-width: 120px;
+                    height: auto;
+                }
+            }
+            &:hover{
+                img{
+                    transform: scale(1.1);
+                }
+            }
+        }
+    }
+}
+
+
+
+.brand-two-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    @media #{$md-layout} {
+        justify-content: center;
+        a{
+            padding: 10px 15px;
+        }
+    }
+    @media #{$sm-layout} {
+        justify-content: center;
+        a{
+            padding: 10px 6px;
+        }
+    }
+    @media #{$small-mobile} {
+        justify-content: center;
+        a{
+            padding: 10px 3px;
+        }
+    }
+    a{
+        img{
+            opacity: .3;
+            transition: var(--transition);
+            max-width: 150px;
+            max-height: 30px;
+        }
+        &:hover{
+            img{
+                opacity: 1;
+            }
+        }
+    }
+}
+
+
+
+.rts-gradient-footerside{
+    background: #ffffff05;
+    border-bottom: 2px solid #5f00e7;
+}
+

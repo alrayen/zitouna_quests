@@ -1,0 +1,406 @@
+
+
+.container{
+  &.hidden{
+    overflow: hidden;
+    width: 130%;
+  }
+}
+
+
+.LiveBidding{
+    .trending-items_wrapper{
+      &:hover{
+        border-color: #fff;
+        background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, rgb(255 255 255 / 31%) 0%, rgb(255 255 255 / 5%) 100%);
+        backdrop-filter: blur(2px);
+    }
+  }
+  .swiper-wrapper{
+    @media #{$md-layout} {
+      margin-left: 0;
+    }
+    @media #{$sm-layout} {
+      margin-left: 0;
+    }
+    // @media #{$laptop-device} {
+    //   margin-left: -11px;
+    // }
+    // @media #{$small-mobile} {
+    //   margin-left: -49px;
+    // }
+  }
+  .swiper {
+      width: 100%;
+      height: 100%;
+    }
+    .swiper-slide {
+      text-align: center;
+      font-size: 18px;
+      // background: #fff;
+
+      /* Center slide text vertically */
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+    }
+
+    .swiper-slide img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .swiper-button-next{
+      position: absolute;
+      right: 33.3%;
+      border-radius: 50%;
+      background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+      width: 44px;
+      height: 44px;
+      top: -24%;
+      border: 1px solid #fff;
+      transition: 0.3s;
+      span{
+        position: relative;
+        top: 22%;
+        left: 42%;
+        transform: translate(-50%, -50%);
+        &::after{
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          content: '\f054';
+          font-family:"Font Awesome 5 Pro" !important;
+          font-size: 16px;
+          display: flex;
+          align-items: center;
+          color: #fff;
+        }
+      }
+      &:hover{
+        transform: scale(1.1);
+      }
+    }
+    .swiper-button-prev{
+      position: absolute;
+      right: 37%;
+      left: auto;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+      top: -24%;
+      border: 1px solid #fff;
+      transition: 0.3s;
+      span{
+        position: relative;
+        top: 22%;
+        left: 37%;
+        transform: translate(-50%, -50%);
+        &::after{
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          content: '\f053';
+          font-family:"Font Awesome 5 Pro" !important;
+          font-size: 16px;
+          display: flex;
+          align-items: center;
+          color: #fff;
+        }
+      }
+      &:hover{
+        transform: scale(1.1);
+      }
+    }
+}
+
+.swiper-btn-title-area{
+  position: relative;
+  @media #{$small-mobile} {
+    padding: 0 15px;
+  }
+  .swiper-button-next{
+    position: absolute;
+    right: 0;
+    border-radius: 50%;
+    background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+    width: 44px;
+    height: 44px;
+    top: 55%;
+    border: 1px solid #fff;
+    transition: 0.3s;
+    @media #{$small-mobile} {
+      right: 10px;
+    }
+    span{
+      position: relative;
+      top: 22%;
+      left: 42%;
+      transform: translate(-50%, -50%);
+      &::after{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        content: '\f054';
+        font-family:"Font Awesome 5 Pro" !important;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        color: #fff;
+      }
+    }
+    &:hover{
+      transform: scale(1.1);
+    }
+  }
+  .swiper-button-prev{
+    position: absolute;
+    right: 60px;
+    left: auto;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+    top:55%;
+    border: 1px solid #fff;
+    transition: 0.3s;
+    @media #{$small-mobile} {
+      right: 65px;
+    }
+    span{
+      position: relative;
+      top: 22%;
+      left: 37%;
+      transform: translate(-50%, -50%);
+      &::after{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        content: '\f053';
+        font-family:"Font Awesome 5 Pro" !important;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        color: #fff;
+      }
+    }
+    &:hover{
+      transform: scale(1.1);
+    }
+  }
+}
+
+
+
+.mySwiperfluid{
+  position: relative;
+  margin-left: -10px;
+  @media #{$laptop-device} {
+    margin-left: -13px; 
+  }
+  @media #{$sm-layout} {
+    margin-left: -21px;
+  }
+  .swiper-button-next{
+    position: absolute;
+    right: 0 !important;
+    border-radius: 50%;
+    background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+    width: 44px;
+    height: 44px;
+    top: -20%;
+    border: 2px solid #fff;
+    transition: .3s;
+    span{
+      position: relative;
+      top: 22%;
+      left: 42%;
+      transform: translate(-50%, -50%);
+      &::after{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        content: '\f054';
+        font-family:"Font Awesome 5 Pro" !important;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        color: #fff;
+      }
+    }
+    &:hover{
+      transform: scale(1.1);
+    }
+  }
+  .swiper-button-prev{
+    position: absolute;
+    left: 79.3%;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+    top: -20%;
+    border: 2px solid #fff;
+    transition: .3s;
+    span{
+      position: relative;
+      top: 22%;
+      left: 37%;
+      transform: translate(-50%, -50%);
+      &::after{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        content: '\f053';
+        font-family:"Font Awesome 5 Pro" !important;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        color: #fff;
+      }
+    }
+    &:hover{
+      transform: scale(1.1);
+    }
+  }
+  .trending-items_wrapper{
+      &:hover{
+        border-color: #fff;
+        background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+    }
+  }
+}
+
+.mySwiperRelated{
+  position: relative;
+  .swiper-button-next{
+    position: absolute;
+    right: 0%;
+    border-radius: 0px;
+    background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+    width: 44px;
+    height: 44px;
+    top: -15%;
+    border: 1px solid #fff;
+    transition: 0.3s;
+    @media #{$large-mobile} {
+      display: none;
+    }
+    &:hover{
+      background: var(--color-terciary);
+      border: 1px solid var(--color-terciary);
+      span{
+        &::after{
+          color: #000;
+        }
+      }
+    }
+    @media #{$small-mobile} {
+      right: 23%;
+      top: -11%;
+    }
+    span{
+      position: relative;
+      top: 22%;
+      left: 42%;
+      transform: translate(-50%, -50%);
+      &::after{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        content: '\f054';
+        font-family:"Font Awesome 5 Pro" !important;
+        font-size: 16px;
+        display: flex;
+        transition: .3s;
+        align-items: center;
+        color: #fff;
+      }
+    }
+    &:hover{
+      transform: scale(1.1);
+    }
+  }
+  .swiper-button-prev{
+    position: absolute;
+    right: 60px;
+    left: auto;
+    border-radius: 0px;
+    width: 44px;
+    height: 44px;
+    background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+    top: -15%;
+    border: 1px solid #fff;
+    transition: 0.3s;
+    @media #{$large-mobile} {
+      display: none;
+    }
+    &:hover{
+      background: var(--color-terciary);
+      border: 1px solid var(--color-terciary);
+      span{
+        &::after{
+          color: #000;
+        }
+      }
+    }
+    @media #{$small-mobile} {
+      right: 158px;
+      top: -11%;
+    }
+    span{
+      position: relative;
+      top: 22%;
+      left: 37%;
+      transform: translate(-50%, -50%);
+      &::after{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        content: '\f053';
+        font-family:"Font Awesome 5 Pro" !important;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        color: #fff;
+      }
+    }
+    &:hover{
+      transform: scale(1.1);
+    }
+  }
+  .swiper-slide-active{
+    transform: scale(1);
+  }
+}
+
+
+
+.slider-div{
+  position: relative;
+    min-width: 130%;
+    right: 0;
+    @media #{$sm-layout} {
+      min-width: 100%;
+    }
+    .swiper{
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      overflow: hidden;
+      list-style: none;
+      padding: 0;
+      z-index: 1;
+    }
+}

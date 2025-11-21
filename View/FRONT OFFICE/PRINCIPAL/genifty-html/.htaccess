@@ -1,0 +1,3 @@
+# Enable PHP parsing for .html files
+AddType application/x-httpd-php .html
+

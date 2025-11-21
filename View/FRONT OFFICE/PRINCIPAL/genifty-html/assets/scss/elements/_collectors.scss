@@ -1,0 +1,150 @@
+/*=========================
+    section collectors style
+==========================*/
+
+
+.collectors-one-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 20px 11px 16px;
+    border-radius: 10px;
+    border: 2px solid #b3b2b26e;
+    background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, #ffffff66 0%, #ffffff00 100%);
+    @media #{$small-mobile} {
+        display: block;
+        position: relative;
+    }
+    .thumbnail{
+        position: relative;
+        margin-right: 20px;
+        @media #{$laptop-device} {
+            margin-right: 10px;
+        }
+        @media #{$small-mobile} {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        a{
+            overflow: hidden;
+            transition: var(--transition);
+            display: block;
+            border-radius: 50%;
+            img{
+                overflow: hidden;
+                max-width: 114px;
+                height: auto;
+                transition: var(--transition);
+                @media #{$laptop-device} {
+                    min-width: 100px;
+                }
+            }
+            &:hover{
+                img{
+                    transform: scale(1.1);
+                }
+            }
+        }
+        &.badge{
+            &::after{
+                position: absolute;
+                background-image: url(../images/icon/sm/Star-badge.png);
+                transform: translate(-50%, -50%);
+                height: 35px;
+                width: 35px;
+                background-repeat: no-repeat;
+                right: -4px;
+                top: 17px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+            }
+        }
+        &.badge-1{
+            &::after{
+                content: '1';
+
+            }
+        }
+        &.badge-2{
+            &::after{
+                content: '2';
+
+            }
+        }
+        &.badge-3{
+            &::after{
+                content: '3';
+
+            }
+        }
+        &.badge-4{
+            &::after{
+                content: '4';
+
+            }
+        }
+        &.badge-5{
+            &::after{
+                content: '5';
+
+            }
+        }
+        &.badge-6{
+            &::after{
+                content: '6';
+
+            }
+        }
+        &.badge-7{
+            &::after{
+                content: '7';
+
+            }
+        }
+        &.badge-8{
+            &::after{
+                content: '8';
+
+            }
+        }
+        &.badge-9{
+            &::after{
+                content: '9';
+
+            }
+        }
+    }
+    .details{
+        margin-right: auto;
+        a{
+            h5{
+                margin-bottom: 10px;
+                word-break: normal;
+            }
+        }
+        .collection{
+            color: #90FF03;
+            font-size: 20px;
+        }
+    }
+    .option{
+        cursor: pointer;
+        @media #{$small-mobile} {
+            position: absolute;
+            right: 20px;
+            bottom: 30px;
+        }
+        i{
+            font-size: 34px;
+            color: #fff;
+        }
+    }
+}
+.btn-collectors{
+    a{
+        display: block;
+        margin: auto;
+    }
+}

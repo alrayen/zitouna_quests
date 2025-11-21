@@ -1,0 +1,48 @@
+
+// single wallet page wrapper page design
+.rts-single-wallet-wrapper{
+    padding: 35px 24px 30px 24px;
+    background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, #ffffff38 0%, #ffffff08 100%);
+    border-radius: 10px;
+    border: 2px solid var(--color-border-one);
+    height: 100%;
+    .inner{
+        .thumbnail{
+            img{
+                margin-bottom: 20px;
+                transition: .3s;
+            }
+        }
+        .title{
+            margin-bottom: 10px;
+        }
+        a{
+            .title{
+                transition: .3s;
+            }
+            &:hover{
+                .title{
+                    color: var(--color-terciary);
+                }
+            }
+        }
+        p{
+            &.disc{
+                margin-bottom: 0;
+            }
+        }
+    }
+    &:hover{
+        .inner{
+            .thumbnail{
+                img{
+                    transform: translateY(-10px) scale(1.2);
+                }
+            }
+        }
+    }
+}
+.wallet-title-area{
+    width: 70%;
+    margin: auto;
+}

@@ -1,0 +1,89 @@
+
+// colection style hear
+
+.rts-collection-main-wrapper{
+    background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, #ffffff1a 0%, #ffffff00 100%);
+    border: 2px solid #ffffff40;
+    padding: 25px;
+    border-radius: 6px;
+    .thumbnail-lg{
+        overflow: hidden;
+        display: block;
+        border-radius: 6px;
+        img{
+            width: 100%;
+            border-radius: 6px;
+            transition: .3s;
+        }
+        &:hover{
+            img{
+                transform: scale(1.15);
+            }
+        }
+    }
+    .thumbnail-sm{
+        display: block;
+        overflow: hidden;
+        border-radius: 6px;
+        img{
+            width: 100%;
+            border-radius: 6px;
+            transition: .3s;
+        }
+        &:hover{
+            img{
+                transform: scale(1.15);
+            }
+        }
+    }
+    .colection-details{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .left{
+            span{
+                color: var(--color-terciary);
+                font-size: 16px;
+            }
+            .title{
+                margin-bottom: 0;
+                margin-top: 5px;
+                transition: .3;
+                &:hover{
+                    color: var(--color-terciary);
+                }
+            }
+        }
+        .right{
+            button{
+                max-width: max-content;
+                padding: 10px 23px;
+                background: #08145C;
+                border-radius: 5px;
+                color: #fff;
+                transition: .3s;
+                position: relative;
+                overflow: hidden;
+                z-index: 1;
+                &::after{
+                    position: absolute;
+                    background: linear-gradient(96.11deg, #4200E5 1.74%, #8200E9 100%);
+                    content: '';
+                    left: 0;
+                    top: 0;
+                    border-radius: 5px;
+                    height: 100%;
+                    width: 100%;
+                    z-index: -1;
+                    transition: .3s;
+                    opacity: 0;
+                }
+                &:hover{
+                    &::after{
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+    }
+}

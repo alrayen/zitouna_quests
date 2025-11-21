@@ -1,0 +1,37 @@
+// custom swiper css
+
+
+
+.banner-five{
+    position: relative;
+    overflow: hidden;
+    display: block;
+    border-radius: 5px;
+    img{
+        width: 100%;
+        @media #{$small-mobile} {
+            height: fit-content;
+        }
+    }
+    .over-link{
+        background: linear-gradient(358deg, #4a00e6cf 22.74%, #ffffff00 100%);
+        z-index: 1;
+    }   
+    p{
+        &.disc{
+            color: #fff;
+        }
+    }
+    .banner-swiper-one-inner{
+        position: absolute;
+        left: 20px;
+        bottom: 20px;
+        z-index: 3;
+        a{
+            .title{
+                background: linear-gradient(96.11deg, #183cb3 1.74%, #ca1a3e 100%);
+                max-width: max-content;
+            }
+        }
+    }
+}

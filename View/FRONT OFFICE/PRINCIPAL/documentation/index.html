@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Genifty || NFT Market Place Template </title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<link href="assets/css/bootstrap.css" rel="stylesheet">
+	<link href="assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+	<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="assets/css/documenter_style.css" rel="stylesheet">
+	<link rel="shortcut icon" href="assets/image/fav.png" type="image/x-icon">
+	<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+	<style>
+		html,
+		body {
+			background: #111D5E;
+			color: #ffffff;
+			font-size: 16px;
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+			width: 100%;
+			height: auto;
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			color: #ffffff;
+		}
+
+		section table {
+			background-color: #FFFFFF;
+		}
+
+		pre {
+			padding: 20px 0 10px !important;
+		}
+
+		::-moz-selection {
+			background: #444444;
+			color: #DDDDDD;
+		}
+
+		::selection {
+			background: #444444;
+			color: #DDDDDD;
+		}
+
+		.hero-unit a {
+			color: #000000;
+		}
+
+		a {
+			color: #ffffff;
+		}
+
+		#thanks h2 {
+			color: #ffffff;
+		}
+
+		a:hover,
+		a:active {
+			color: #d90845;
+		}
+
+		hr {
+			border-top: 1px solid #EBEBEB;
+			border-bottom: 1px solid #FFFFFF;
+		}
+
+		div.navbar-inner,
+		.navbar .nav li ul {
+			background: #DDDDDD;
+			color: #222222;
+		}
+
+		a.btn-navbar {
+			background: #DDDDDD;
+			color: #222222;
+		}
+
+		.navbar .nav li a {
+			color: #222222;
+			text-shadow: 1px 1px 0px #EEEEEE;
+		}
+
+		.navbar .nav li a:hover,
+		.navbar .nav li.active a {
+			text-shadow: none;
+		}
+
+		div.navbar-inner ul {}
+
+		.navbar .nav>li a {
+			color: #444444;
+		}
+
+		.navbar .nav>li a:hover,
+		a.btn-navbar:hover {
+			background: #111D5E;
+			color: #DDDDDD;
+		}
+
+		.navbar .nav .active>a,
+		.navbar .nav .active>a:hover,
+		a.btn-navbar:active {
+			background-color: #111D5E;
+			color: #DDDDDD;
+		}
+
+		.navbar .nav li ul li a:hover {
+			background: #111D5E;
+			color: #d90845;
+		}
+
+		.navbar .nav li ul li a:active {
+			background: #444444;
+			color: #DDDDDD;
+		}
+
+		.btn-primary {
+			background-image: -moz-linear-gradient(top, #0088CC, #0044CC);
+			background-image: -ms-linear-gradient(top, #0088CC, #0044CC);
+			background-image: -webkit-gradient(linear, 0 0, 0 0088CC%, from(#DDDDDD), to(#0044CC));
+			background-image: -webkit-linear-gradient(top, #0088CC, #0044CC);
+			background-image: -o-linear-gradient(top, #0088CC, #0044CC);
+			background-image: linear-gradient(top, #0088CC, #0044CC);
+			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0088CC', endColorstr='#0044CC', GradientType=0);
+			border-color: #0044CC #0044CC #bfbfbf;
+			color: #FFFFFF;
+		}
+
+		.btn-primary:hover,
+		.btn-primary:active,
+		.btn-primary.active,
+		.btn-primary.disabled,
+		.btn-primary[disabled] {
+			background-color: #0044CC;
+		}
+
+		#documenter_copyright {
+			display: block !important;
+			visibility: visible !important;
+		}
+
+		#theme_options2 img {
+			border: 1px solid #eee;
+			margin: 10px 0;
+			max-width: 100%;
+			padding: 10px;
+		}
+
+		#intro .highlight {
+			color: #333333;
+		}
+
+		#images a {
+			font-size: 16px;
+			color: #333333;
+		}
+
+		#images a:hover {
+			color: #d90845;
+		}
+
+		#documenter_content {
+			padding-top: 100px;
+		}
+
+		.section {
+			margin-top: 30px !important;
+		}
+
+		..masthead h1 {
+			line-height: 24px !important;
+		}
+	</style>
+</head>
+
+<body class="documenter-project-Reale Aste-" data-spy="scroll" id="top">
+
+	<!-- Documentation Navbar -->
+
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
+				<a class="brand" href="#">Genifty || NFT Market Place Template </a>
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li><a href="#theme_installation" title="Theme Installation">Template Installation</a></li>
+						<li><a href="#reading_setting" title="Page Included in Nimis">Pages</a></li>
+						<li><a href="#fonts" title="Fonts">Font</a></li>
+						<li><a href="#theme_options" title="Source File (CSS)">Source File (CSS)</a></li>
+						<li><a href="#theme_options1" title="Source File (JS)">Source File (JS)</a></li>
+						<li><a href="#theme_options2" title="Customize">Customization</a></li>
+						<li><a href="#thanks" title="Thanks">Thanks</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End of Navbar -->
+
+	<!-- Main Container Beginning -->
+	<div class="container" id="documenter_content">
+		<div id="documenter-cover">
+			<div class="masthead">
+				<h1 style="text-align: center">Genifty || NFT Market Place Template</h1>
+				<p style="text-align: center">Created: 06/9/2022 </p>
+			</div>
+
+			<!-- masthead -->
+			<div id="intro">
+				<p class="highlight hero-unit">Thank you for purchasing our template. If you have any questions that are
+					beyond the scope of this help file, please feel free to message us</p>
+			</div>
+			<!-- intro -->
+		</div>
+	</div>
+	<section id="theme_installation" class="gradient-bg">
+		<div class="container">
+			<div class="page-header">
+				<h3>Template Installation</h3>
+				<hr class="notop">
+			</div>
+			<ol>
+				<li>
+					<h5>FTP Upload:</h5>
+					<ul>
+						<li>Open up your FTP manager and connect to your hosting</li>
+						<li>Browse to required directory (Normally public_html)</li>
+						<li>Upload the files inside <strong>Genifty</strong> folder.</li>
+					</ul>
+				</li>
+			</ol>
+		</div>
+	</section>
+
+	<section id="reading_setting"  class="gradient-bg">
+		<div class="container">
+			<div class="page-header">
+				<h3>Pages</h3>
+				<hr class="notop">
+				<ol>
+					<ul>
+						<!-- Start Home -->
+						<li>Home
+							<ul>
+								<li><a href="#">Home page - 01</a> </li>
+								<li><a href="#">Home page - 02</a> </li>
+							</ul>
+						</li>
+						<!-- End Home -->
+	
+						<!-- Pages Start -->
+						<li>Pages
+							<ul>
+								<li><a href="#">About Page</a></li>
+								<li><a href="#">Our Team</a></li>
+								<li><a href="#">Our Team Details</a></li>
+								<li><a href="#">Our Blog</a></li>
+								<li><a href="#">Error 404</a></li>
+								<li><a href="#">Contact Us</a></li>
+								<li><a href="#">Shop Pages</a></li>
+								<li><a href="#">Shop Details</a></li>
+								<li><a href="#">Cart Page</a></li>
+								<li><a href="#">Checkout</a></li>
+								<li><a href="#">Wallet</a></li>
+							</ul>
+						</li>
+						<!-- Pages End -->
+	
+						<!--  News Start -->
+						<li>Explore
+							<ul>
+								<li><a href="#">Explore One</a></li>
+								<li><a href="#">Explore Two</a></li>
+								<li><a href="#">Explore Three</a></li>
+								<li><a href="#">Explore Four</a></li>
+								<li><a href="#">Explore Single</a></li>
+							</ul>
+						</li>
+						<!-- News End -->
+	
+						<!--  News Start -->
+						<li>Blog
+							<ul>
+								<li><a href="#">Our Blog</a></li>
+								<li><a href="#">Blog Single</a></li>
+							</ul>
+						</li>
+						<!-- News End -->
+	
+						<!--Contact Start-->
+						<li><a href="#">Contact</a></li>
+						<!--Contact End-->
+					</ul>
+				</ol>
+			</div>
+		</div>
+	</section>
+	<section id="fonts" class="gradient-bg">
+		<div class="container">
+			<div class="page-header">
+				<h3>Font</h3>
+				<hr class="notop">
+			</div>
+			<pre>
+					@font-face {
+						font-family: "gorditablack";
+						src: url("../../fonts/gordita-black-webfont.woff2") format("woff2"), url("../../fonts/gordita-black-webfont.woff") format("woff");
+						font-weight: normal;
+						font-style: normal;
+					}
+					@font-face {
+						font-family: "gorditabold";
+						src: url("../../fonts/gordita-bold-webfont.woff2") format("woff2"), url("../../fonts/gordita-bold-webfont.woff") format("woff");
+						font-weight: normal;
+						font-style: normal;
+					}
+					
+					@font-face {
+						font-family: "gorditamedium";
+						src: url("../../fonts/gordita-medium-webfont.woff2") format("woff2"), url("../../fonts/gordita-medium-webfont.woff") format("woff");
+						font-weight: normal;
+						font-style: normal;
+					}
+					
+					@font-face {
+						font-family: "gorditaregular";
+						src: url("../../fonts/gordita-regular-webfont.woff2") format("woff2"), url("../../fonts/gordita-regular-webfont.woff") format("woff");
+						font-weight: normal;
+						font-style: normal;
+					}
+	
+					@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+					@import url('https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400;500;600;700;800;900&display=swap');
+			</pre>
+		</div>
+	</section>
+
+	<section id="images" class="gradient-bg">
+		<div class="container">
+			<div class="page-header">
+				<h3>Images</h3>
+				<hr class="notop">
+			</div>
+			<pre>
+				<a href="http://allfreephotos.net">1. Allfreephotos</a>
+				<a href="https://pixabay.com/">2. Pixabay</a>
+				<a href="https://www.pexels.com/">3. Pexels</a>			
+				<a href="http://unsplash.com/">4. Unsplash</a>	
+				<br>	
+				Note: All images are just used for Preview Purpose Only. They are not part of the theme and NOT included in the final purchase files.			
+			</pre>
+		</div>
+	</section>
+
+	<section id="theme_options" class="gradient-bg">
+		<div class="container">
+			<div class="page-header">
+				<h3>Source File (CSS)</h3>
+				<hr class="notop">
+			</div>
+			<pre>
+				&lt;!-- Favicon --&gt;
+				&lt;link rel="shortcut icon" type="image/x-icon" href="assets/images/fab-icon.png"&gt;
+				 &lt;link rel="stylesheet" href="assets/css/plugins/gordita.css"&gt;
+				 &lt;link rel="stylesheet" href="assets/css/plugins/fontawesome-pro-icons.css"&gt;
+				 &lt;link rel="stylesheet" href="assets/css/vendor/swiper.css"&gt;
+				 &lt;link rel="stylesheet" href="assets/css/plugins/unicons.css"&gt;
+				 &lt;link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css"&gt;
+				 &lt;!-- style css --&gt;
+				 &lt;link rel="stylesheet" href="assets/css/style.css"&gt;
+			</pre>
+		</div>
+	</section>
+
+	<section id="theme_options1" class="gradient-bg">
+		<div class="container">
+			<div class="page-header">
+				<h3>Source File (JS)</h3>
+				<hr class="notop">
+			</div>
+			<pre>
+				&lt;!-- all scripts are hear --&gt;
+				&lt;script src="assets/js/vendor/jquery.min.js"&gt;&lt;/script&gt;
+				&lt;script src="assets/js/vendor/jquery-ui.min.js"&gt;&lt;/script&gt;
+				&lt;script src="assets/js/plugins/nice-select.js"&gt;&lt;/script&gt;
+				&lt;script src="assets/js/vendor/waypoint.js"&gt;&lt;/script&gt;
+				&lt;script src="assets/js/vendor/swiper.js"&gt;&lt;/script&gt;
+				&lt;script src="assets/js/vendor/count-down.js"&gt;&lt;/script&gt;
+				&lt;script src="assets/js/vendor/isotop.min.js"&gt;&lt;/script&gt;
+				&lt;script src="assets/js/vendor/counterup.min.js"&gt;&lt;/script&gt;
+				&lt;script src="assets/js/plugins/sal.min.js"&gt;&lt;/script&gt;
+				&lt;script src="assets/js/plugins/paper-core.js"&gt;&lt;/script&gt;
+				&lt;script src="assets/js/plugins/simplex-nois.js"&gt;&lt;/script&gt;
+				&lt;script src="assets/js/plugins/cursour.js"&gt;&lt;/script&gt;
+				&lt;script src="assets/js/plugins/contact-form.js"&gt;&lt;/script&gt;
+				&lt;script src="assets/js/vendor/imageloded.js"&gt;&lt;/script&gt;
+				&lt;script src="assets/js/vendor/bootstrap.min.js"&gt;&lt;/script&gt;
+				&lt;!-- main js --&gt;
+				&lt;script src="assets/js/main.js"&gt;&lt;/script&gt;
+			</pre>
+		</div>
+	</section>
+
+	<section id="theme_options2" class="gradient-bg">
+		<div class="container">
+			<div class="page-header">
+				<h3>Customization</h3>
+				<hr class="notop">
+			</div>
+			<h4>How to Change Logo</h4>
+			<img src="assets/image/logochange.png" alt="">
+			<h4>How to Change Menu Name</h4>
+			<img src="assets/image/menuchange.png" alt="">
+			<h4>How to Change Slider Image</h4>
+			<img src="assets/image/sliderimagechange.png" alt="">
+			<h4>How to Customize Slider</h4>
+			<img src="assets/image/slidercustomize.png" alt="">
+			<h4>How Setup Contact Form </h4>
+			<p>You can go contact page. Then check below images for contact form.</p>
+			<img src="assets/image/contactformchange.png" alt="">
+			<h4>How to Change Email</h4>
+			<img src="assets/image/emailchange.png" alt="">
+		</div>
+	</section>
+	<section id="thanks" class="gradient-bg">
+		<div class="container">
+			<div class="page-header">
+				<h3>Thanks</h3>
+				<hr class="notop">
+			</div>
+			<h4 id="thanks_span_style"><span
+					style="margin: 0px; padding: 0px; border: 0px; outline: 0px; font-weight: 700; font-style: inherit; font-family: inherit; vertical-align: baseline;">Once
+					again thank you for purchasing one of our Templates</span></h4>
+			<h2
+				style="margin: 0px 0px 18px; padding: 0px; border: 0px; outline: 0px; font-weight: 100; font-size: 20px; font-family: Arial, verdana, arial, sans-serif; vertical-align: baseline; ">
+				Best Regards</h2>
+		</div>
+	</section>
+	</div>
+	<!-- /container -->
+
+	<!-- Le javascript
+    ================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script>
+		document.createElement('section');
+		var duration = '500',
+			easing = 'swing';
+	</script>
+	<script src="assets/js/jquery.js"></script>
+	<script src="assets/js/jquery.scrollTo.js"></script>
+	<script src="assets/js/jquery.easing.js"></script>
+	<script src="assets/js/scripts.js"></script>
+	<script src="assets/js/google-code-prettify/prettify.js"></script>
+	<script src="assets/js/bootstrap-min.js"></script>
+</body>
+
+</html>

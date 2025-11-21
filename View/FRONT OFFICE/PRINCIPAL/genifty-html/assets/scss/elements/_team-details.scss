@@ -1,0 +1,86 @@
+/*Team Details style Hear*/
+
+.rts-team-details-area{
+    position: relative;
+    &::after{
+        content: "";
+        position: absolute;
+        background: linear-gradient(95.66deg, #B16CEA 0%, #FF504B 51.04%, #FFA84B 100%);
+        height: 710px;
+        width: 710px;
+        left: 15%;
+        top: 20%;
+        opacity: 0.15;
+        background-repeat: no-repeat;
+        z-index: -1;
+        filter: blur(100px);
+    }
+}
+
+
+.team-details-wrapper{
+    .sub-title{
+        &.su-sub{
+            color: var(--color-terciary);
+            font-size: 17px;
+            text-transform: uppercase;
+        }
+    }
+    .title{
+        margin-bottom: 10px;
+    }
+    p{
+        &.disc{
+            margin-top: 15px;
+            margin-bottom: 30px;
+        }
+    }
+    .team-share-wrapper{
+        .social-wrapper{
+            li{
+                a{
+                    transition: .3s;
+                    &:hover{
+                        color: var(--gradient-one);
+                        transform: translateY(-5px);
+                        &::after{
+                            background: #fff !important;
+                        }
+                        i{
+                            color:Blue;
+                        }
+                    }
+                }
+            }
+        }
+    }   
+}
+
+
+
+.short-by-shop{
+    display: flex;
+    align-items: center;
+    span{
+        margin-right: 10px;
+        font-size: 17px;
+        color: #fff;
+        font-weight: 400;
+    }
+    .nice-select{
+        border: none;
+        &::after{
+            border-bottom: 2px solid #fff;
+            border-right: 2px solid #fff;
+            height: 11px;
+            width: 11px;
+            top: 45%;
+        }
+        span{
+            margin-right: 10px;      
+        }
+        &:focus{
+            border: none;
+        }
+    }
+}
