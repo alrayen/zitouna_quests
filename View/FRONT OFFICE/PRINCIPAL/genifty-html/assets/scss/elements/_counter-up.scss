@@ -1,0 +1,21 @@
+// Counter Up Css
+
+.counter-up-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .single-item{
+        margin: 20px 45px;
+        margin-top: 50px;
+        @media #{$sm-layout} {
+            margin: 7px 23px;
+            margin-top: 30px;
+        }
+        @media #{$small-mobile} {
+            margin: 7px 14px;
+        }
+        h3{
+            margin-bottom: 10px;
+        }
+    }
+}
