@@ -1,0 +1,173 @@
+/*=========================
+    Section call to action 
+==========================*/
+
+.bg-cta-image{
+    background: url(../images/cta/cta-01.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 350px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    @media #{$sm-layout} {
+        flex-direction: column;
+    }
+    @media #{$md-layout} {
+        flex-direction: column;
+    }
+    @media #{$small-mobile} {
+        height: auto;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+
+.cta-inner{
+    padding: 100px 150px;
+    position: relative;  
+    z-index: 2;  
+    @media #{$md-layout} {
+        padding: 38px 50px;
+    }
+    @media #{$sm-layout} {
+        padding: 38px 50px;
+    }
+    @media #{$large-mobile} {
+        padding: 35px 30;
+    }
+    @media #{$small-mobile} {
+        padding: 35px 30px;
+    }
+    &::after{
+        position: absolute;
+        content: "";
+        background: url(../images/icon/banner-jump/jump-5.png);
+        left: 4%;
+        top: -23%;
+        height: 150px;
+        width: 150px;
+        z-index: 1;
+        animation: jump-1 5s infinite;
+        background-repeat: no-repeat;
+        background-size: cover;
+        @media #{$large-mobile} {
+            width: 80px;
+            height: 80px;
+            top: -12%;
+        }
+    }
+    &::before{
+        position: absolute;
+        content: "";
+        background: url(../images/icon/banner-jump/jump-3.png);
+        left: 38%;
+        bottom: 0;
+        height: 100px;
+        width: 100px;
+        z-index: 1;
+        animation: jump-2 5s infinite;
+        background-repeat: no-repeat;
+        background-size: cover;
+        @media #{$large-mobile} {
+            width: 80px;
+            height: 80px;
+        }
+    }
+    .title{
+        margin-bottom: 0;
+        position: relative;
+        @media #{$small-mobile} {
+            text-align: center;
+        }
+        &::after{
+            position: absolute;
+            content: "";
+            top: -123px;
+            right: -274%;
+            height: 100px;
+            width: 100px;
+            background: url(../images/icon/banner-jump/jump-4.png);
+            animation: bounce 5s infinite;
+            background-repeat: no-repeat;
+            background-size: cover;
+            @media #{$laptop-device} {
+                right: -180%;
+            }
+            @media #{$smlg-device} {
+                right: -180%;
+            }
+            @media #{$large-mobile} {
+                width: 50px;
+                height: 50px;
+            }
+            @media #{$small-mobile} {
+                width: 50px;
+                height: 50px;
+                right: -124%;
+                top: 0;
+            }
+        }
+    }
+}
+
+
+.cta-inner{
+    @media #{$smlg-device} {
+        padding: 50px 80px;
+    }
+    @media #{$small-mobile} {
+        padding: 50px 50px;
+    }
+    .title{
+        @media #{$md-layout} {
+            text-align: center;
+        }
+        @media #{$sm-layout} {
+            text-align: center;
+        }
+    }
+    input{
+        background: #ffffff09;
+        color: #fff;
+        border: 1px solid var(--color-border-one);
+        height: 53px;
+        border-radius: 5px;
+        transition: var(--transition);
+        width: 39%;
+        margin-right: -100px;
+        @media #{$laptop-device} {
+            width: 26%;
+            margin-left: auto;
+            margin-right: 30px;
+        }
+        @media #{$smlg-device} {
+            width: 30%;
+            margin-left: auto;
+            margin-right: 30px;
+        }
+        @media #{$md-layout} {
+            width: 100%;
+            margin: 0;
+        }
+        @media #{$sm-layout} {
+            width: 100%;
+            margin: 0;
+        }
+        @media #{$small-mobile} {
+            width: 100%;
+            margin: 0;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        &:focus{
+            border: 1px solid var(--color-terciary);
+        }
+    }
+}
+
+
+
+
