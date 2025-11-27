@@ -1,0 +1,148 @@
+
+/*bread crumb style hear----*/
+
+
+.breadcrumb-image{
+    background: url(../images/banner/breadcrumb/breadcrumb-one.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.rts-brad-crumb-area{
+    position: relative;
+    z-index: 1;
+    &::after{
+        position: absolute;
+        right: 30%;
+        content: '';
+        top: 5%;
+        height: 80px;
+        width: 80px;
+        background: url(../images/icon/banner-jump/jump-5.png);
+        background-size: cover;
+        background-repeat: no-repeat;
+        animation: jump-1 5s infinite;
+        @media #{$small-mobile} {
+            height: 61px;
+            width: 61px;
+        }
+    }
+    &::before{
+        position: absolute;
+        left: 7%;
+        content: "";
+        bottom: 28%;
+        height: 90px;
+        width: 90px;
+        background: url(../images/icon/banner-jump/jump-3.png);
+        background-size: cover;
+        background-repeat: no-repeat;
+        animation: jump-1 3s infinite;
+        z-index: -1;
+        @media #{$small-mobile} {
+            height: 43px;
+            width: 44px;
+        }
+    }
+}
+
+.breadcrumb-inner{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    @media #{$large-mobile} {
+        justify-content: center;
+        flex-direction: column;
+    }
+    &::after{
+        position: absolute;
+        right: -18%;
+        content: "";
+        top: 34%;
+        height: 60px;
+        width: 60px;
+        background: url(../images/icon/banner-jump/jump-1.png);
+        background-size: cover;
+        background-repeat: no-repeat;
+        animation: jump-2 2s infinite;
+        z-index: -1;
+        @media #{$extra-device} {
+            right: -5%;
+        }
+        @media #{$laptop-device} {
+            right: 0;
+        }
+        @media #{$smlg-device} {
+            right: 0;
+        }
+        @media #{$small-mobile} {
+            height: 34px;
+            width: 33px;
+            
+        }
+    }
+    &::before{
+        position: absolute;
+        right: 36%;
+        content: '';
+        bottom: 5%;
+        height: 70px;
+        width: 70px;
+        background: url(../images/icon/banner-jump/jump-4.png);
+        background-size: cover;
+        background-repeat: no-repeat;
+        animation: bounce 2s infinite;
+        @media #{$small-mobile} {
+            height: 35px;
+            width: 35px;
+        }
+    }
+    .title{
+        margin-bottom: 0px;
+        animation: rubberBand 2s linear;
+        font-weight: 700;
+        font-size: 48px;
+        @media #{$large-mobile} {
+            margin-bottom: 20px;
+        }
+    }
+    .breadcrumb-list{
+        display: flex;
+        align-items: center;
+        padding: 15px 30px;
+        border-radius: 30px;
+        transition: .3s;
+        min-width: max-content;
+        background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, #ffffff66 0%, #ffffff14 100%);
+        a{
+            margin: 0 5px;
+            font-size: 16px;
+            color: #c6c6c6;
+            &.active{
+                color: #FFF;
+                font-weight: 500;
+            }
+            &.deactive{
+                &:hover{
+                    color: #fff;
+                }
+            }
+            &:hover{
+                color: var(--color-terciary);
+            }
+        }
+    }
+}
+
+
+.rts-btn{
+    &.team-area{
+        padding: 12px 32px;
+        font-weight: 500;
+    }
+}
+
+
+
+
