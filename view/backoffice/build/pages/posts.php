@@ -37,45 +37,267 @@ $sujets=afficherSujet();
     <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- Main Styling -->
     <link href="../assets/css/argon-dashboard-tailwind.css?v=1.0.1" rel="stylesheet" />
+    <style>
+/* Animations améliorées pour le popup */
+@keyframes modalEnter {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-open {
+  animation: modalEnter 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.modal-backdrop {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Effet de profondeur amélioré */
+.modal-container {
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 10px 30px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Animation de pulse pour l'icône d'avertissement */
+@keyframes pulseWarning {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+.fa-exclamation-triangle {
+  animation: pulseWarning 2s infinite ease-in-out;
+}
+
+/* Animation de chargement */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.fa-spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Responsive design amélioré */
+@media (max-width: 640px) {
+  .modal-container {
+    margin: 1rem;
+    width: calc(100% - 2rem);
+  }
+}
+
+/* Empêcher le défilement quand le modal est ouvert */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Transition pour les boutons */
+.btn-transition {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-transition:hover {
+  transform: translateY(-1px);
+}
+
+.btn-transition:active {
+  transform: translateY(0);
+}
+</style>
   </head>
 
   <body class="m-0 font-sans text-base antialiased font-normal dark:bg-slate-900 leading-default bg-gray-50 text-slate-500">
     <div class="absolute w-full bg-cyan-500 dark:hidden min-h-75"></div>
 
-    <!-- Popup de confirmation -->
-    <div id="confirmationModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
-      <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" aria-hidden="true"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-slate-850 sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-          <div class="px-4 pt-5 pb-4 bg-white dark:bg-slate-850 sm:p-6 sm:pb-4">
-            <div class="sm:flex sm:items-start">
-              <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto bg-red-100 rounded-full sm:mx-0 sm:h-10 sm:w-10">
-                <i class="text-red-600 fas fa-exclamation-triangle"></i>
-              </div>
-              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <h3 class="text-lg font-medium leading-6 text-slate-900 dark:text-white" id="modalTitle">
-                  Confirmer la suppression
-                </h3>
-                <div class="mt-2">
-                  <p class="text-sm text-slate-500 dark:text-slate-300">
-                    Êtes-vous sûr de vouloir supprimer ce post ? Cette action est irréversible.
-                  </p>
-                </div>
-              </div>
+<!-- Popup de confirmation AMÉLIORÉ -->
+<div id="confirmationModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-gray-900/60 backdrop-blur-sm transition-all duration-300 modal-backdrop">
+  <div class="relative w-full max-w-md mx-4">
+    <div class="bg-white dark:bg-slate-850 rounded-2xl shadow-2xl transform transition-all duration-300 scale-95 opacity-0 modal-container modal-open">
+      
+      <!-- En-tête du popup -->
+      <div class="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
+        <div class="flex items-center">
+          <div class="flex items-center justify-center w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-xl">
+            <i class="text-xl text-red-600 dark:text-red-400 fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="ml-4">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Confirmer la suppression</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Action irréversible</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-200">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Contenu du popup -->
+      <div class="p-6">
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <div class="flex items-center justify-center w-10 h-10 bg-red-50 dark:bg-red-900/20 rounded-lg">
+              <i class="text-red-500 dark:text-red-400 fas fa-trash-alt"></i>
             </div>
           </div>
-          <div class="px-4 py-3 bg-gray-50 dark:bg-slate-800 sm:px-6 sm:flex sm:flex-row-reverse">
-            <button type="button" id="confirmDelete" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-              Supprimer
-            </button>
-            <button type="button" id="cancelDelete" class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-slate-700 bg-white border border-slate-300 rounded-md shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-slate-700 dark:text-white dark:border-slate-600">
-              Annuler
-            </button>
+          <div class="ml-4">
+            <p class="text-slate-700 dark:text-slate-300 font-medium">
+              Êtes-vous sûr de vouloir supprimer ce post ?
+            </p>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">
+              Cette action ne peut pas être annulée. Toutes les données associées seront définitivement supprimées.
+            </p>
           </div>
         </div>
       </div>
+
+      <!-- Actions du popup -->
+      <div class="flex justify-end space-x-3 p-6 bg-slate-50 dark:bg-slate-800/50 rounded-b-2xl">
+        <button type="button" id="cancelDelete" class="px-6 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-all duration-200 btn-transition">
+          Annuler
+        </button>
+        <button type="button" id="confirmDelete" class="px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-red-500 to-red-600 rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 btn-transition shadow-lg shadow-red-500/25">
+          <i class="fas fa-trash-alt mr-2"></i>Supprimer
+        </button>
+      </div>
     </div>
+  </div>
+</div>
+
+<script>
+let postIdToDelete = null;
+let isDeleting = false;
+
+function confirmDelete(postId) {
+  if (isDeleting) return;
+  
+  postIdToDelete = postId;
+  const modal = document.getElementById('confirmationModal');
+  document.body.classList.add('modal-open');
+  modal.classList.remove('hidden');
+  
+  // Focus sur le bouton d'annulation pour l'accessibilité
+  setTimeout(() => {
+    document.getElementById('cancelDelete').focus();
+  }, 100);
+}
+
+function closeModal() {
+  if (isDeleting) return;
+  
+  const modal = document.getElementById('confirmationModal');
+  modal.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  postIdToDelete = null;
+  isDeleting = false;
+}
+
+function deletePost() {
+  if (isDeleting || !postIdToDelete) return;
+  
+  isDeleting = true;
+  
+  // Animation de chargement
+  const deleteBtn = document.getElementById('confirmDelete');
+  const originalContent = deleteBtn.innerHTML;
+  deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Suppression...';
+  deleteBtn.disabled = true;
+  
+  // Désactiver le bouton d'annulation pendant la suppression
+  document.getElementById('cancelDelete').disabled = true;
+  
+  // Simuler un délai pour voir l'animation (à remplacer par votre logique réelle)
+  setTimeout(() => {
+    window.location.href = `../../../../controller/supprimerSujetController.php?id=${postIdToDelete}&position=back`;
+  }, 1500);
+}
+
+// Événements pour les boutons du modal
+document.getElementById('confirmDelete').addEventListener('click', deletePost);
+document.getElementById('cancelDelete').addEventListener('click', closeModal);
+
+// Fermer le modal en cliquant en dehors
+document.getElementById('confirmationModal').addEventListener('click', function(e) {
+  if (e.target === this && !isDeleting) {
+    closeModal();
+  }
+});
+
+// Fermer le modal avec la touche Échap
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && !isDeleting) {
+    closeModal();
+  }
+});
+
+// Gestion du focus pour l'accessibilité
+document.addEventListener('keydown', function(e) {
+  const modal = document.getElementById('confirmationModal');
+  if (!modal.classList.contains('hidden')) {
+    const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+    
+    if (e.key === 'Tab') {
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus();
+          e.preventDefault();
+        }
+      }
+    }
+  }
+});
+
+// Animation d'entrée du modal
+document.addEventListener('DOMContentLoaded', function() {
+  const modal = document.getElementById('confirmationModal');
+  const modalContent = modal.querySelector('.modal-container');
+  
+  // Observer les changements de classe pour déclencher l'animation
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.attributeName === 'class') {
+        if (!modal.classList.contains('hidden')) {
+          setTimeout(() => {
+            modalContent.classList.add('modal-open');
+          }, 10);
+        } else {
+          modalContent.classList.remove('modal-open');
+        }
+      }
+    });
+  });
+  
+  observer.observe(modal, { attributes: true });
+});
+</script>
 
     <aside class="fixed inset-y-0 flex-wrap items-center justify-between block w-full p-0 my-4 overflow-y-auto antialiased transition-transform duration-200 -translate-x-full bg-white border-0 shadow-xl dark:shadow-none dark:bg-slate-850 xl:ml-6 max-w-64 ease-nav-brand z-990 rounded-2xl xl:left-0 xl:translate-x-0" aria-expanded="false">
       <div class="h-19">
@@ -192,7 +414,7 @@ $sujets=afficherSujet();
                   <i class="cursor-pointer fa fa-bell"></i>
                 </a>
 
-                <ul dropdown-menu class="text-sm transform-dropdown before:font-awesome before:leading-default dark:shadow-dark-xl before:duration-350 before:ease lg:shadow-3xl duration-250 min-w-44 before:sm:right-8 before:text-5.5 pointer-events-none absolute right-0 top-0 z-50 origin-top list-none rounded-lg border-0 border-solid border-transparent dark:bg-slate-850 bg-white bg-clip-padding px-2 py-4 text-left text-slate-500 opacity-0 transition-all before:absolute before:right-2 before:left-auto before:top-0 before:z-50 before:inline-block before:font-normal before:text-white before:antialiased before:transition-all before:content-['\f0d8'] sm:-mr-6 lg:absolute lg:right-0 lg:left-auto lg:mt-2 lg:block lg:cursor-pointer">
+                <ul dropdown-menu class="text-sm transform-dropdown before:font-awesome before:leading-default before:duration-350 before:ease lg:shadow-3xl duration-250 min-w-44 before:sm:right-8 before:text-5.5 pointer-events-none absolute right-0 top-0 z-50 origin-top list-none rounded-lg border-0 border-solid border-transparent dark:bg-slate-850 bg-white bg-clip-padding px-2 py-4 text-left text-slate-500 opacity-0 transition-all before:absolute before:right-2 before:left-auto before:top-0 before:z-50 before:inline-block before:font-normal before:text-white before:antialiased before:transition-all before:content-['\f0d8'] sm:-mr-6 lg:absolute lg:right-0 lg:left-auto lg:mt-2 lg:block lg:cursor-pointer">
                   <!-- add show class on dropdown open js -->
                   <li class="relative mb-2">
                     <a class="dark:hover:bg-slate-900 ease py-1.2 clear-both block w-full whitespace-nowrap rounded-lg bg-transparent px-4 duration-300 hover:bg-gray-200 hover:text-slate-700 lg:transition-colors" href="javascript:;">
@@ -424,45 +646,7 @@ $sujets=afficherSujet();
       </div>
     </div>
 
-    <script>
-      let postIdToDelete = null;
-
-      function confirmDelete(postId) {
-        postIdToDelete = postId;
-        const modal = document.getElementById('confirmationModal');
-        modal.classList.remove('hidden');
-      }
-
-      function closeModal() {
-        const modal = document.getElementById('confirmationModal');
-        modal.classList.add('hidden');
-        postIdToDelete = null;
-      }
-
-      function deletePost() {
-        if (postIdToDelete) {
-          window.location.href = `../../../../controller/supprimerSujetController.php?id=${postIdToDelete}&position=back`;
-        }
-      }
-
-      // Événements pour les boutons du modal
-      document.getElementById('confirmDelete').addEventListener('click', deletePost);
-      document.getElementById('cancelDelete').addEventListener('click', closeModal);
-
-      // Fermer le modal en cliquant en dehors
-      document.getElementById('confirmationModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-          closeModal();
-        }
-      });
-
-      // Fermer le modal avec la touche Échap
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          closeModal();
-        }
-      });
-    </script>
+ 
   </body>
   <!-- plugin for scrollbar  -->
   <script src="../assets/js/plugins/perfect-scrollbar.min.js" async></script>

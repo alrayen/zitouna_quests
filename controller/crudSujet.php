@@ -1,5 +1,5 @@
 <?php
-  include __DIR__ . '/../config.php';
+  include_once __DIR__ . '/../config.php';
 include_once __DIR__ . '/../model/sujets.php';
 
 
@@ -32,6 +32,17 @@ function afficherSujet()
 
     return $sujets;
 }
+function afficherSujetParId($id)
+{
+    $conn = getDatabaseConnexion();
+    $sql = "SELECT * FROM sujets WHERE id = :id";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
 
 function deletepost($id)
 {

@@ -433,9 +433,9 @@ $sujets=afficherSujet();
                                     <a  class="topic-title"><?=$sujet["nom"]?></a>
                                     <div class="topic-meta">Par <a href="#">@EcoWarrior</a> <?=$sujet["date_sujets"]?></div>
                                 </div>
-                                <div class="topic-stats">
+                                <div onclick="window.location.href='commentaires.php?id=<?=$sujet['id']?>'"; class="topic-stats">
                                     <span class="topic-count">24</span>
-                                    <span>réponses</span>
+                                    <span>Commentaires</span>
                                 </div>
                             </li>
                             <?php
