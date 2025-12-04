@@ -5,8 +5,11 @@ class Sujet
     private $id;
     private $nom;
     private $date;
+    private $titre;
+    private $image;
 
-    public function __construct($nom,$date)
+
+    public function __construct($nom,$date,$titre,$image)
     {
       
         $this->nom=$nom;
@@ -24,6 +27,14 @@ class Sujet
     {
         return $this->nom;
     }
+     public function getTitre()
+    {
+        return $this->titre;
+    }
+     public function getImage()
+    {
+        return $this->image;
+    }
     public function setId( $id)
     {
         $this->id=$id;
@@ -36,6 +47,10 @@ class Sujet
     public function setDate( $date)
     {
         $this->date=$date;
+    }
+     public function setTitre( $titre)
+    {
+        $this->titre=$titre;
     }
 }
 

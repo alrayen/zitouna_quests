@@ -653,7 +653,7 @@ $sujet = afficherSujetParId($post_id);
                             <i class="far fa-edit"></i>
                             Ajouter un commentaire
                         </h3>
-                        <form method="POST" action="../../controller/ajouterCommentaireController.php?post=<?=$post_id?>">
+                        <form method="POST" action="../../controller/ajouterCommentaireController.php?post=<?=$post_id?>&position=front">
                             <div class="form-group">
                                 <label class="form-label">Votre commentaire</label>
                                 <textarea 

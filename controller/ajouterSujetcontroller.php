@@ -6,7 +6,9 @@ $nom= $_POST["nom"];
 /*var_dump($nom);
 die;*/
 $date=date("Y-m-d");
-$sujet= new Sujet($nom,$date);
+$titre='dfghj';
+$image='ghjh';
+$sujet= new Sujet($nom,$date,$titre,$image);
 
 /*var_dump($sujet->getNom());
 die;*/

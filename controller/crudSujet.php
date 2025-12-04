@@ -11,7 +11,7 @@ include_once __DIR__ . '/../model/sujets.php';
     try
     {
              $conn=getDatabaseConnexion();
-             $sql="INSERT INTO sujets ( nom ,date_sujets) VALUES('$nom','$date')";
+             $sql="INSERT INTO sujets ( nom ,date_sujets,titre,imagee) VALUES('$nom','$date','$titre','$image')";
              
              $conn->exec($sql);
             

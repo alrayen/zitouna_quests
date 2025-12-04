@@ -62,7 +62,7 @@ function deleteCommentaires($id)
 
     } 
 }
-function modifiercommentaires($id,$contenu)
+function modifierCommentaires($id,$contenu)
 {
    try
     {

@@ -1,8 +1,17 @@
 <?php 
-include "../../controller/crudSujet.php";
+include_once "../../controller/crudSujet.php";
+include_once "../../controller/crudCommentaire.php";
 
-$sujets=afficherSujet();
+// Récupérer tous les sujets
+$sujets = afficherSujet();
 
+// Vérifier si on a cliqué sur un post pour voir ses commentaires
+$selected_post_id = isset($_GET['post_id']) ? $_GET['post_id'] : null;
+$commentaires = [];
+if ($selected_post_id) {
+    $commentaires = afficherCommentaireParPost($selected_post_id);
+    $selected_post = afficherSujetParId($selected_post_id);
+}
 ?>
 
 <!DOCTYPE html>
@@ -106,6 +115,7 @@ $sujets=afficherSujet();
             display: flex;
             align-items: center;
             transition: background 0.3s ease;
+            cursor: pointer;
         }
         
         .topic-item:hover {
@@ -136,6 +146,7 @@ $sujets=afficherSujet();
             font-weight: 600;
             margin-bottom: 5px;
             font-size: 18px;
+            color: #fff;
         }
         
         .topic-meta {
@@ -165,11 +176,13 @@ $sujets=afficherSujet();
             align-items: center;
             gap: 8px;
             transition: all 0.3s ease;
+            text-decoration: none;
         }
         
         .btn-new-topic:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 196, 159, 0.3);
+            color: white;
         }
         
         .forum-search {
@@ -211,6 +224,243 @@ $sujets=afficherSujet();
             margin-top: 15px;
         }
         
+        /* Styles pour la section des commentaires */
+        .comments-container {
+            margin-top: 50px;
+            display: <?php echo $selected_post_id ? 'block' : 'none'; ?>;
+        }
+        
+        .selected-post {
+            background: linear-gradient(135deg, rgba(0, 196, 159, 0.15), rgba(255, 187, 40, 0.15));
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .comments-section {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+        
+        .comment-item {
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .comment-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+        
+        .comment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .comment-user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            background: linear-gradient(135deg, #00C49F, #0088FE);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(0, 196, 159, 0.3);
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .username {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #fff;
+            font-size: 16px;
+        }
+        
+        .comment-date {
+            font-size: 14px;
+            color: #bbb;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .comment-content {
+            margin-left: 65px;
+            line-height: 1.7;
+            color: #e0e0e0;
+            font-size: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 3px solid #00C49F;
+        }
+        
+        .comment-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 20px;
+            margin-left: 65px;
+        }
+        
+        .comment-action {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bbb;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+        
+        .comment-action:hover {
+            color: #00C49F;
+            background: rgba(0, 196, 159, 0.1);
+            border-color: rgba(0, 196, 159, 0.3);
+        }
+        
+        .add-comment-form {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 50px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #fff;
+            font-size: 16px;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 18px;
+            color: white;
+            resize: vertical;
+            min-height: 140px;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: #00C49F;
+            box-shadow: 0 0 0 3px rgba(0, 196, 159, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #00C49F, #0088FE);
+            border: none;
+            color: white;
+            padding: 14px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 15px;
+            box-shadow: 0 4px 15px rgba(0, 196, 159, 0.3);
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 196, 159, 0.4);
+        }
+        
+        .btn-back-to-list {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-back-to-list:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        }
+        
+        .no-comments {
+            text-align: center;
+            padding: 60px 40px;
+            color: #aaa;
+        }
+        
+        .comment-count {
+            background: rgba(0, 196, 159, 0.25);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-left: 12px;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .comment-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: auto;
+        }
+        
+        .active-topic {
+            background: rgba(0, 196, 159, 0.1) !important;
+            border-left: 4px solid #00C49F;
+        }
+        
         @media (max-width: 768px) {
             .forum-categories {
                 grid-template-columns: 1fr;
@@ -224,6 +474,16 @@ $sujets=afficherSujet();
             .topic-stats {
                 margin-top: 10px;
                 text-align: left;
+            }
+            
+            .comment-content {
+                margin-left: 0;
+            }
+            
+            .comment-actions {
+                margin-left: 0;
+                justify-content: space-between;
+                flex-wrap: wrap;
             }
         }
     </style>
@@ -358,9 +618,9 @@ $sujets=afficherSujet();
                         </p>
                     </div>
                     <div class="col-lg-4 text-lg-end">
-                        <button onclick="window.location.href='post.php';" class="btn-new-topic" data-sal-delay="600" data-sal-duration="1000" data-sal="slide-up">
+                        <a href="post.php" class="btn-new-topic" data-sal-delay="600" data-sal-duration="1000" data-sal="slide-up">
                             <i class="far fa-plus"></i> Nouveau Post
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -424,25 +684,127 @@ $sujets=afficherSujet();
                             <h3 class="title">Derniers Posts Actifs</h3>
                         </div>
                         <ul class="topics-list">
-                            <?php
-                             foreach($sujets as $sujet):
-                            ?>
-                            <li class="topic-item">
+                            <?php foreach($sujets as $sujet): ?>
+                            <li class="topic-item <?php echo ($selected_post_id == $sujet['id']) ? 'active-topic' : ''; ?>" 
+                                onclick="window.location.href='?post_id=<?=$sujet['id']?>#comments-section';">
                                 <div class="topic-icon">💬</div>
-                                <div onclick="window.location.href='modifierPost.php?id=<?=$sujet['id']?>&contenu=<?=urlencode($sujet['nom'])?>';"class="topic-content">
-                                    <a  class="topic-title"><?=$sujet["nom"]?></a>
+                                <div class="topic-content">
+                                    <div class="topic-title"><?=$sujet["nom"]?></div>
                                     <div class="topic-meta">Par <a href="#">@EcoWarrior</a> <?=$sujet["date_sujets"]?></div>
                                 </div>
-                                <div onclick="window.location.href='commentaires.php?id=<?=$sujet['id']?>'"; class="topic-stats">
-                                    <span class="topic-count">24</span>
+                                <div class="topic-stats">
+                                    <span class="topic-count"><?=count(afficherCommentaireParPost($sujet['id']))?></span>
                                     <span>Commentaires</span>
                                 </div>
                             </li>
-                            <?php
-                            endforeach;
-                            ?>
+                            <?php endforeach; ?>
                         </ul>
                     </section>
+
+                    <!-- Section des commentaires (affichée seulement si un post est sélectionné) -->
+                    <div id="comments-section" class="comments-container">
+                        <?php if ($selected_post_id): ?>
+                            <button onclick="window.location.href='?';" class="btn-back-to-list">
+                                <i class="far fa-arrow-left"></i> Retour à la liste des posts
+                            </button>
+                            
+                            <div class="selected-post">
+                                <h2 class="title"><?=$selected_post['nom']?></h2>
+                                <div class="d-flex align-items-center mt-3">
+                                    <div class="comment-user-avatar">E</div>
+                                    <div>
+                                        <div class="username">EcoWarrior</div>
+                                        <div class="comment-date">
+                                            <i class="far fa-clock"></i>
+                                            Posté le <?=$selected_post['date_sujets']?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <section class="comments-section">
+                                <div class="section-header">
+                                    <h3 class="title">
+                                        <i class="far fa-comments"></i>
+                                        Commentaires 
+                                        <span class="comment-count"><?=count($commentaires)?></span>
+                                    </h3>
+                                    <div class="comment-stats">
+                                        <div class="stat-item">
+                                            <i class="far fa-users"></i>
+                                            <?=count($commentaires)?> participants
+                                        </div>
+                                        <div class="stat-item">
+                                            <i class="far fa-clock"></i>
+                                            Dernière activité: <?=date('d M Y')?>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <?php if (count($commentaires) > 0): ?>
+                                    <ul class="topics-list">
+                                        <?php foreach ($commentaires as $commentaire): ?>
+                                        <li class="comment-item">
+                                            <div class="comment-header">
+                                                <div class="comment-user-avatar">S</div>
+                                                <div class="user-info">
+                                                    <div class="username">
+                                                        naf
+                                                    </div>
+                                                    <div class="comment-date">
+                                                        <i class="far fa-clock"></i>
+                                                        <?=$commentaire['date_commentaires']?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="comment-content">
+                                                <p><?=$commentaire['contenu']?></p>
+                                            </div>
+                                            <div class="comment-actions">
+                                                <button class="comment-action">
+                                                    <i class="far fa-thumbs-up"></i> Utile
+                                                </button>
+                                                <button class="comment-action">
+                                                    <i class="far fa-reply"></i> Répondre
+                                                </button>
+                                                <button class="comment-action">
+                                                    <i class="far fa-flag"></i> Signaler
+                                                </button>
+                                            </div>
+                                        </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php else: ?>
+                                    <div class="no-comments">
+                                        <i class="far fa-comment-slash"></i>
+                                        <h4>Aucun commentaire pour le moment</h4>
+                                        <p>Soyez le premier à commenter ce post !</p>
+                                    </div>
+                                <?php endif; ?>
+                            </section>
+
+                            <div class="add-comment-form">
+                                <h3 class="title mb-4">
+                                    <i class="far fa-edit"></i>
+                                    Ajouter un commentaire
+                                </h3>
+                                <form method="POST" action="../../controller/ajouterCommentaireController.php?post=<?=$selected_post_id?>&position=front">
+                                    <div class="form-group">
+                                        <label class="form-label">Votre commentaire</label>
+                                        <textarea 
+                                            name="contenu" 
+                                            class="form-textarea" 
+                                            placeholder="Partagez vos pensées, questions ou expériences sur ce sujet..."
+                                            required
+                                        ></textarea>
+                                    </div>
+                                    <button type="submit" name="ajouter_commentaire" class="btn-submit">
+                                        <i class="far fa-paper-plane"></i> Publier le commentaire
+                                    </button>
+                                </form>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 
                 <div class="col-lg-4">
@@ -463,11 +825,11 @@ $sujets=afficherSujet();
                         <div class="mt-3">
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Sujets totaux:</span>
-                                <strong>688</strong>
+                                <strong><?=count($sujets)?></strong>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Messages totaux:</span>
-                                <strong>3,211</strong>
+                                <strong><?=count($commentaires)?></strong>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Membres:</span>
@@ -617,12 +979,21 @@ $sujets=afficherSujet();
     <script>
         // Script pour la fonctionnalité du forum
         document.addEventListener('DOMContentLoaded', function() {
+            // Si un post est sélectionné, faire défiler jusqu'aux commentaires
+            <?php if ($selected_post_id): ?>
+                setTimeout(function() {
+                    document.getElementById('comments-section').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 500);
+            <?php endif; ?>
+            
             // Animation pour le bouton nouveau sujet
             const newTopicBtn = document.querySelector('.btn-new-topic');
             if (newTopicBtn) {
                 newTopicBtn.addEventListener('click', function() {
-                    alert('Fonctionnalité de création de sujet à implémenter');
-                    // Ici vous pouvez ouvrir un modal ou rediriger vers une page de création
+                    // Redirection vers la page de création de post
                 });
             }
             
@@ -637,8 +1008,28 @@ $sujets=afficherSujet();
                     this.style.boxShadow = 'none';
                 });
             }
+            
+            // Gestion des clics sur les posts
+            const topicItems = document.querySelectorAll('.topic-item');
+            topicItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    // Ne rien faire si on clique sur un lien dans le post
+                    if (e.target.tagName === 'A') return;
+                    
+                    const postId = this.getAttribute('onclick').match(/post_id=(\d+)/)[1];
+                    window.location.href = '?post_id=' + postId + '#comments-section';
+                });
+            });
+            
+            // Auto-resize du textarea des commentaires
+            const textarea = document.querySelector('.form-textarea');
+            if (textarea) {
+                textarea.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = (this.scrollHeight) + 'px';
+                });
+            }
         });
     </script>
 </body>
-
 </html>
