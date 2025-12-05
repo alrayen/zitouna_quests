@@ -16,7 +16,7 @@
     &::after{
         content: "";
         position: absolute;
-        background: linear-gradient(96.11deg, #8200E9 1.74%, #4200E5 100%);
+        background: linear-gradient(96.11deg, #8200E9 1.74%, #4200E5 100%); /* Note: la ligne avec l'image a été supprimée de votre fichier, mais si elle existait, la correction serait ci-dessous */
         height: 310px;
         width: 310px;
         top: 7%;
@@ -40,4 +40,32 @@
     label{
         color: #fff !important;
     }
+}
+
+// Conteneur pour la capture faciale
+.face-capture-wrapper {
+    position: relative;
+    width: 320px; // Largeur fixe
+    height: 240px; // Hauteur fixe
+    margin: 0 auto; // Centrer le conteneur
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+// Style pour la superposition de la caméra
+.face-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 220px;  // Largeur de l'ovale
+    height: 280px; // Hauteur pour créer une forme de visage
+    border-radius: 50%; // Crée la forme ovale
+    // Crée une "découpe" en dessinant une ombre immense autour de l'ovale
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
+    // Ajoute une bordure blanche pour guider l'utilisateur
+    border: 3px solid rgba(255, 255, 255, 0.7);
+    display: none; // Caché par défaut
+    pointer-events: none; // Permet de cliquer "à travers" si nécessaire
 }

@@ -1,13 +1,29 @@
 <?php
 
 session_start();
-require_once "../config.php";
-require_once "../Model/user.php";
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Projet2/config.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Projet2/Model/user.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = htmlspecialchars($_POST['email']);
     $password = $_POST['password'];
     $remember = isset($_POST['remember']);
+
+    if (isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])) {
+        $secretKey = '6LezTR8sAAAAAMjKjaZndDaG39AeKjtf8BiyDoSy'; 
+        $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $secretKey . '&response=' . $_POST['g-recaptcha-response']);
+        $responseData = json_decode($verifyResponse);
+
+        if (!$responseData->success) {
+            $_SESSION['error_recaptcha'] = "La vérification reCAPTCHA a échoué. Veuillez réessayer.";
+            header("Location: ../View/FRONT%20OFFICE/PRINCIPAL/genifty-html/login.php");
+            exit;
+        }
+    } else {
+        $_SESSION['error_recaptcha'] = "Veuillez cocher la case 'Je ne suis pas un robot'.";
+        header("Location: ../View/FRONT%20OFFICE/PRINCIPAL/genifty-html/login.php");
+        exit;
+    }
 
 
     if (empty($email) || empty($password)) {
@@ -28,15 +44,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     try {
-        // Utiliser la méthode statique User::login qui contient la logique de vérification de l'état
         $loginResult = User::login($email, $password);
         
         if ($loginResult === 'banned') {
-            // L'utilisateur est banni, on utilise le même mécanisme d'erreur que pour un mot de passe incorrect
             $_SESSION['error_login'] = "Votre compte est banni. Veuillez consulter l'administrateur.";
             header("Location: ../View/FRONT%20OFFICE/PRINCIPAL/genifty-html/login.php");
             exit;
-        } elseif ($loginResult) { // Si $loginResult contient les données de l'utilisateur (connexion réussie)
+        } elseif ($loginResult) { 
             $user = $loginResult;
             $_SESSION['user_id'] = $user['id_user'];
             $_SESSION['user_email'] = $user['email'];
@@ -45,14 +59,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['user_role'] = $user['role'];
             $_SESSION['user_image'] = $user['photo'];
             
-            if ($user['role'] == 1 || $user['role'] == 'admin') {
-                header("Location: ../View/BACK%20OFFICE/VIEW/build/pages/dashboard.html");
+            $base_path = '/Projet2';
+            if ($user['role'] === 'admin') {
+                header("Location: " . $base_path . "/View/BACK%20OFFICE/VIEW/build/pages/dashboard.html");
             } else {
-                header("Location: ../View/FRONT%20OFFICE/PRINCIPAL/genifty-html/index.php");
+                header("Location: " . $base_path . "/View/FRONT%20OFFICE/PRINCIPAL/genifty-html/index.php");
             }
             exit;
         } else {
-            // Identifiants incorrects
             $_SESSION['error_login'] = "Email ou mot de passe incorrect.";
             header("Location: ../View/FRONT%20OFFICE/PRINCIPAL/genifty-html/login.php");
             exit;

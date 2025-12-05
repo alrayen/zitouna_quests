@@ -292,3 +292,54 @@ input[type="submit"] {
     }
 
 }
+
+/* ========= Social Login Buttons ========= */
+.social-login-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+    width: 100%;
+    height: 50px;
+    background-color: var(--color-white);
+    color: #333;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: var(--font-size-b2);
+    font-weight: 500;
+    text-decoration: none;
+    transition: var(--transition);
+
+    .icon {
+        margin-right: 10px;
+        width: 20px;
+        height: 20px;
+    }
+
+    &:hover {
+        background-color: var(--color-lightest);
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        transform: translateY(-3px);
+    }
+}
+
+/* You can add specific styles if needed, but the base class should handle it */
+.google-login-btn {
+    /* Inherits from .social-login-btn */
+}
+.github-login-btn {
+    background-color: #24292e; /* Couleur foncée de GitHub */
+    color: var(--color-white);
+    border-color: #24292e;
+
+    .icon {
+        filter: invert(1); /* Rend l'icône noire en blanc */
+    }
+
+    &:hover {
+        background-color: #444;
+        border-color: #555;
+        color: var(--color-white);
+    }
+}

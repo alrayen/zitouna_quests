@@ -1,19 +1,15 @@
 <?php
-// --- 1. FORCE PHP TO SHOW ERRORS ---
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// --- 2. INCLUDE FILES ---
 require_once __DIR__ . '/../../../../config.php';
 require_once __DIR__ . '/../../../../Model/quiz.php';
 require_once __DIR__ . '/../../../../Controller/quiz-controller.php';
 
-// --- 3. GET THE DATA ---
 $quizController = new QuizController();
 $allQuizzes = $quizController->listQuizzes();
 
-// --- 4. PREPARE DATA FOR FILTERS & TRANSLATION ---
 $uniqueCategories = [];
 $uniqueDifficulties = [];
 $difficultyMap = [

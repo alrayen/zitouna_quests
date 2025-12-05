@@ -3,23 +3,20 @@ include_once(__DIR__ . '/../../../../../Controller/userController.php');
 
 $userController = new UserController();
 
-// --- HANDLE BAN USER ---
 if (isset($_POST['ban_user'])) {
     $userId = $_POST['user_id'];
-    $userController->banUser($userId); // Utilise la nouvelle fonction pour bannir
+    $userController->banUser($userId); 
     header("Location: users_table.php");
     exit();
 }
 
-// --- HANDLE UNBAN USER ---
 if (isset($_POST['unban_user'])) {
     $userId = $_POST['user_id'];
-    $userController->unbanUser($userId); // Utilise la nouvelle fonction pour débannir
+    $userController->unbanUser($userId); 
     header("Location: users_table.php");
     exit();
 }
 
-// --- HANDLE DELETE USER ---
 if (isset($_POST['delete_user'])) {
     $userId = $_POST['user_id'];
     $userController->deleteUser($userId);
@@ -27,7 +24,13 @@ if (isset($_POST['delete_user'])) {
     exit();
 }
 
-// --- HANDLE UPDATE USER ---
+if (isset($_POST['reset_face_data'])) {
+    $userId = $_POST['user_id'];
+    $userController->resetFaceData($userId); 
+    header("Location: users_table.php?status=face_reset");
+    exit();
+}
+
 if (isset($_POST['update_user'])) {
     $userId = $_POST['edit_user_id'];
     $nom = $_POST['edit_nom'];
@@ -178,7 +181,6 @@ $users = $userController->getAllUsers();
                             <div>
                                 <?php 
                                     $photoPath = '../../../../../uploads/profiles/' . $user['photo'];
-                                    // Fallback if image doesn't exist
                                     $displayPhoto = (!empty($user['photo']) && file_exists($photoPath)) ? $photoPath : '../assets/img/team-2.jpg';
                                 ?>
                               <img src="<?php echo $displayPhoto; ?>" class="inline-flex items-center justify-center mr-4 text-sm text-white transition-all duration-200 ease-in-out h-10 w-10 rounded-full shadow-md object-cover" alt="user photo" />
@@ -218,7 +220,6 @@ $users = $userController->getAllUsers();
                                 </button>
 
                                 <?php if ($user['etat'] == 0): ?>
-                                    <!-- Bouton pour Bannir -->
                                     <button type="button" 
                                             onclick="openBanModal(<?php echo $user['id_user']; ?>)" 
                                             class="w-8 h-8 rounded-full bg-gray-100 hover:bg-red-500 hover:text-white flex items-center justify-center transition-all shadow-sm cursor-pointer border-none"
@@ -226,7 +227,6 @@ $users = $userController->getAllUsers();
                                         <i class="fas fa-ban text-xs"></i>
                                     </button>
                                 <?php else: ?>
-                                    <!-- Bouton pour Débannir -->
                                     <button type="button" 
                                             onclick="openUnbanModal(<?php echo $user['id_user']; ?>)" 
                                             class="w-8 h-8 rounded-full bg-gray-100 hover:bg-green-500 hover:text-white flex items-center justify-center transition-all shadow-sm cursor-pointer border-none"
@@ -241,6 +241,15 @@ $users = $userController->getAllUsers();
                                         title="Delete User">
                                     <i class="fas fa-trash text-xs"></i>
                                 </button>
+
+                                <?php if (!empty($user['face_descriptor'])): ?>
+                                    <button type="button" 
+                                            onclick="openResetFaceModal(<?php echo $user['id_user']; ?>)" 
+                                            class="w-8 h-8 rounded-full bg-gray-100 hover:bg-yellow-500 hover:text-white flex items-center justify-center transition-all shadow-sm cursor-pointer border-none"
+                                            title="Reset Facial Data">
+                                        <i class="fas fa-user-slash text-xs"></i>
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </td>
                       </tr>
@@ -288,19 +297,19 @@ $users = $userController->getAllUsers();
                     <div class="flex gap-4">
                         <div class="w-1/2">
                              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Role (0=User, 1=Admin)</label>
-                             <input type="number" id="modal_role" name="edit_role" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
+                             <input type="text" id="modal_role" name="edit_role" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
                              <p id="error_edit_role" class="error-msg"></p>
                         </div>
                         <div class="w-1/2">
                              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Niveau</label>
-                             <input type="number" id="modal_niveau" name="edit_niveau" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
+                             <input type="text" id="modal_niveau" name="edit_niveau" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
                              <p id="error_edit_niveau" class="error-msg"></p>
                         </div>
                     </div>
 
                     <div>
                          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Points</label>
-                         <input type="number" id="modal_points" name="edit_points" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
+                         <input type="text" id="modal_points" name="edit_points" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
                          <p id="error_edit_points" class="error-msg"></p>
                     </div>
                 </div>
@@ -370,11 +379,39 @@ $users = $userController->getAllUsers();
         </div>
     </div>
 
+    <!-- Reset Face Data Modal -->
+    <div id="resetFaceModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+             <div style="background-color: #fbbf24;" class="p-6 flex justify-between items-center">
+                <h6 class="text-white font-bold text-lg m-0">Reset Facial Data</h6>
+                <button type="button" onclick="closeResetFaceModal()" class="text-white hover:text-gray-200 border-none bg-transparent cursor-pointer">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 text-center">
+                <div class="mb-4">
+                    <i class="fas fa-exclamation-triangle text-5xl text-yellow-500 opacity-50"></i>
+                </div>
+                <h4 class="font-bold text-slate-700 mb-2">Are you sure?</h4>
+                <p class="text-sm text-slate-500 mb-0">Do you really want to delete this user's facial recognition data? The user will need to re-enroll their face.</p>
+            </div>
+
+            <form id="resetFaceForm" action="users_table.php" method="POST">
+                <input type="hidden" name="reset_face_data" value="1">
+                <input type="hidden" name="user_id" id="modal_reset_face_user_id">
+                <div class="px-6 pb-6 flex justify-center gap-3">
+                    <button type="button" onclick="closeResetFaceModal()" class="px-6 py-3 text-slate-600 font-bold text-sm bg-gray-100 rounded-xl cursor-pointer border-none hover:bg-gray-200 transition-colors">Cancel</button>
+                    <button type="submit" style="background-color: #fbbf24; color: white;" class="px-6 py-3 font-bold text-sm rounded-xl cursor-pointer border-none hover:shadow-lg transition-shadow">Yes, Reset Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../assets/js/plugins/perfect-scrollbar.min.js" async></script>
     <script src="../assets/js/argon-dashboard-tailwind.js?v=1.0.1" async></script>
     
     <script>
-        // --- MODAL FUNCTIONS ---
 
         function closeEditModal() {
             document.getElementById('editUserModal').style.display = 'none';
@@ -392,7 +429,6 @@ $users = $userController->getAllUsers();
                 document.getElementById('modal_email').value = user.email;
                 document.getElementById('modal_niveau').value = user.niveau;
                 document.getElementById('modal_points').value = user.points;
-                // Handle Role mapping if strictly "admin" string or 1
                 let roleVal = 0;
                 if(user.role === 'admin' || user.role == 1) roleVal = 1;
                 document.getElementById('modal_role').value = roleVal;
@@ -416,18 +452,14 @@ $users = $userController->getAllUsers();
             const form = document.getElementById('banForm');
             const submitButton = document.getElementById('banSubmitButton');
             
-            // Changer le contenu de la modale pour le débannissement
             modal.querySelector('h6').innerText = 'Unban User';
             document.getElementById('banModalText').innerText = 'Are you sure you want to unban this user?';
             
-            // Changer le formulaire pour soumettre une action de débannissement
             form.querySelector('input[name="ban_user"]').name = 'unban_user';
             
-            // Changer le bouton de confirmation
             submitButton.innerText = 'Yes, Unban User';
             submitButton.style.backgroundColor = '#2dce89'; // Vert
 
-            // Définir l'ID et afficher la modale
             document.getElementById('modal_ban_user_id').value = userId;
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
@@ -448,7 +480,17 @@ $users = $userController->getAllUsers();
             document.getElementById('deleteUserModal').style.display = 'none';
             document.body.style.overflow = '';
         }
-        // --- FORM VALIDATION ---
+
+        function openResetFaceModal(userId) {
+            document.getElementById('modal_reset_face_user_id').value = userId;
+            document.getElementById('resetFaceModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeResetFaceModal() {
+            document.getElementById('resetFaceModal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
         document.getElementById('editUserForm').onsubmit = function() {
             let valid = true;
             const nom = document.getElementById('modal_nom').value.trim();
@@ -477,15 +519,16 @@ $users = $userController->getAllUsers();
             return valid;
         };
 
-        // Close modals when clicking outside
         window.onclick = function(event) {
             const editModal = document.getElementById('editUserModal');
             const banModal = document.getElementById('banUserModal');
             const deleteModal = document.getElementById('deleteUserModal');
+            const resetFaceModal = document.getElementById('resetFaceModal');
             
             if (event.target == editModal) closeEditModal();
             if (event.target == banModal) closeBanModal();
             if (event.target == deleteModal) closeDeleteModal();
+            if (event.target == resetFaceModal) closeResetFaceModal();
         }
     </script>
 </body>

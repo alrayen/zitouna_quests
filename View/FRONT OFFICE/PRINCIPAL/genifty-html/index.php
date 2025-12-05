@@ -1515,6 +1515,7 @@
 
     <!-- main js -->
     <script src="assets/js/main.js"></script>
+    <?php include_once($_SERVER['DOCUMENT_ROOT'] . '/Projet2/View/includes/chatbot_ui.php'); ?>
 </body>
 
 </html>

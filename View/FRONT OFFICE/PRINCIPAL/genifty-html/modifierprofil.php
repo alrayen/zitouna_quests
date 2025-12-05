@@ -2,14 +2,12 @@
 session_start();
 require_once "../../../../Model/user.php";
 
-// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['error_message'] = 'Vous devez être connecté pour modifier votre profil.';
     header("Location: login.php");
     exit;
 }
 
-// Get current user data
 $user_id = $_SESSION['user_id'];
 $user = User::getUserById($user_id);
 
@@ -408,21 +406,19 @@ $photo = htmlspecialchars($user['photo'] ?? '');
         margin-top: 10px;
     }
 
-    /* ---------------------------------- */
-    /* 4. Photo Upload Section (Custom)
-    /* ---------------------------------- */
+   
     .photo-upload-wrapper {
         display: flex;
         align-items: center;
-        gap: 25px; /* Space between photo and button */
+        gap: 25px; 
     }
     
     .photo-preview-container {
         position: relative;
-        width: 120px; /* Size of the circle */
+        width: 120px;
         height: 120px;
         border-radius: 50%;
-        flex-shrink: 0; /* Prevents shrinking */
+        flex-shrink: 0; 
     }
 
     .photo-preview {
@@ -455,12 +451,10 @@ $photo = htmlspecialchars($user['photo'] ?? '');
         opacity: 1;
     }
 
-    /* This hides the default "Choose File" button */
     #photoInput {
         display: none;
     }
 
-    /* This styles our custom "Choisir une photo" button */
     .photo-upload-label {
         padding: 12px 20px;
         background: rgba(255, 255, 255, 0.15);
@@ -564,9 +558,38 @@ $photo = htmlspecialchars($user['photo'] ?? '');
                 <input type="date" id="birthdate" name="birthdate" value="<?php echo $birthdate; ?>" required>
             </div>
 
-            <div class="form-group">
-                <label for="bio">Biographie</label>
+           <div class="form-group">
+                <label for="bio">Biographie (Texte)</label>
                 <textarea id="bio" name="bio" placeholder="Parlez-nous de vous..."><?php echo $bio; ?></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Biographie Vocale (Optionnel)</label>
+                <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 10px;">Enregistrez un court message pour vous présenter.</p>
+                
+                <div class="audio-recorder-ui" style="display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    
+                    <button type="button" id="startRecord" class="rts-btn" style="background: #dc3545; color: white; border-radius: 50%; width: 40px; height: 40px; border: none; display: flex; align-items: center; justify-content: center;">
+                        <i class="fal fa-microphone"></i>
+                    </button>
+
+                    <button type="button" id="stopRecord" class="rts-btn" style="background: #6c757d; color: white; border-radius: 50%; width: 40px; height: 40px; border: none; display: none; align-items: center; justify-content: center;">
+                        <i class="fal fa-stop"></i>
+                    </button>
+
+                    <audio id="audioPlayer" controls style="display: none; height: 40px; max-width: 250px;"></audio>
+                    
+                    <span id="recordStatus" style="font-size: 14px; color: #fff;">Prêt à enregistrer</span>
+
+                    <input type="file" name="bio_audio" id="audioInput" accept="audio/*" style="display: none;">
+                </div>
+
+                <?php if (!empty($user['bio_audio'])): ?>
+                    <div style="margin-top: 10px;">
+                        <p style="font-size: 13px;">Message actuel :</p>
+                        <audio controls src="../../../../uploads/audio/<?php echo htmlspecialchars($user['bio_audio']); ?>"></audio>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div class="form-group">
@@ -770,6 +793,65 @@ $photo = htmlspecialchars($user['photo'] ?? '');
                 }
             }
         });
+        const startBtn = document.getElementById('startRecord');
+    const stopBtn = document.getElementById('stopRecord');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const audioInput = document.getElementById('audioInput');
+    const statusText = document.getElementById('recordStatus');
+
+    let mediaRecorder;
+    let audioChunks = [];
+
+    startBtn.addEventListener('click', async () => {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.start();
+                audioChunks = []; 
+
+                startBtn.style.display = 'none';
+                stopBtn.style.display = 'flex';
+                statusText.innerText = "Enregistrement en cours...";
+                statusText.style.color = "#dc3545"; 
+                audioPlayer.style.display = 'none';
+
+                mediaRecorder.ondataavailable = (e) => {
+                    audioChunks.push(e.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }); 
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    audioPlayer.src = audioUrl;
+                    audioPlayer.style.display = 'block';
+
+                    startBtn.style.display = 'flex';
+                    stopBtn.style.display = 'none';
+                    statusText.innerText = "Enregistrement terminé !";
+                    statusText.style.color = "#28a745"; 
+                    const file = new File([audioBlob], "voice_bio.webm", { type: "audio/webm" });
+                    const container = new DataTransfer();
+                    container.items.add(file);
+                    audioInput.files = container.files;
+                    
+                    console.log("Fichier audio prêt à être envoyé via PHP");
+                };
+
+            } catch (err) {
+                console.error("Erreur micro:", err);
+                alert("Impossible d'accéder au microphone.");
+            }
+        }
+    });
+
+    stopBtn.addEventListener('click', () => {
+        if (mediaRecorder) {
+            mediaRecorder.stop();
+        }
+    });
     </script>
 </body>
 

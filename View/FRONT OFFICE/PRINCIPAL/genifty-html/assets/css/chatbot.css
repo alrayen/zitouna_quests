@@ -1,0 +1,155 @@
+/* assets/css/chatbot.css */
+
+/* Le bouton flottant */
+.chat-btn-toggle {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #0056b3; /* Bleu style Aid for Peace */
+    color: white;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 9999;
+    font-size: 24px;
+    transition: transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-btn-toggle:hover {
+    transform: scale(1.1);
+}
+
+/* La fenêtre de chat */
+.chat-container {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 350px;
+    height: 500px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    z-index: 9999;
+    display: none; /* Caché par défaut */
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+}
+
+/* En-tête bleu */
+.chat-header {
+    background: #0056b3;
+    color: white;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chat-header h4 {
+    margin: 0;
+    font-size: 16px;
+    color: white;
+}
+
+.chat-header p {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.close-chat {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Zone des messages */
+.chat-body {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Bulles de message */
+.message {
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 15px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.bot-message {
+    background: #e9ecef;
+    color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+}
+
+.user-message {
+    background: #0056b3;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+
+/* Zone de saisie */
+.chat-footer {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background: white;
+    display: flex;
+    gap: 10px;
+}
+
+.chat-footer input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+}
+
+.chat-footer button {
+    background: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+/* Suggestions rapides */
+.quick-replies {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+.chip {
+    background: white;
+    border: 1px solid #0056b3;
+    color: #0056b3;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.chip:hover {
+    background: #0056b3;
+    color: white;
+}

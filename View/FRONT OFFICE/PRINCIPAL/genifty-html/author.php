@@ -1,27 +1,32 @@
 <?php
 session_start();
-// Get user name from session, or use default if not logged in
-$user_name = "Guest";
-if (isset($_SESSION['user_prenom']) && isset($_SESSION['user_nom'])) {
-    $user_name = $_SESSION['user_prenom'] . " " . $_SESSION['user_nom'];
-} elseif (isset($_SESSION['user_prenom'])) {
-    $user_name = $_SESSION['user_prenom'];
-} elseif (isset($_SESSION['user_nom'])) {
-    $user_name = $_SESSION['user_nom'];
-}
-$default_image = "assets/images/team/team-01.png"; // <-- Create a default placeholder image
-$user_image_path = $default_image; // Start with the default
+// 1. Inclure le modèle User pour aller chercher les infos en BDD
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Projet2/Model/user.php'); 
 
-// ▼▼▼ IMPORTANT ▼▼▼
-// Make sure 'user_image' is the correct session variable name!
-if (isset($_SESSION['user_image']) && !empty($_SESSION['user_image'])) {
+// 2. Initialiser les variables par défaut
+$user_name = "Guest";
+$user_bio = "";
+$user_audio = "";
+$user_image_path = "assets/images/team/team-01.png"; // Image par défaut
+
+// 3. Si l'utilisateur est connecté, on récupère ses infos fraîches
+if (isset($_SESSION['user_id'])) {
+    // On utilise la méthode statique du Model
+    $currentUser = User::getUserById($_SESSION['user_id']);
     
-    // If your session only stores the filename (e.g., "my-pic.jpg"),
-    // you must add the path to your uploads folder, like this:
-    // $user_image_path = "uploads/" . $_SESSION['user_image'];
-    
-    // If your session stores the full path, just use it:
-    $user_image_path ="../../../../uploads/profiles/" . $_SESSION['user_image'];
+    if ($currentUser) {
+        // Nom complet
+        $user_name = $currentUser['Prenom'] . " " . $currentUser['nom'];
+        
+        // Image (chemin relatif vers le dossier uploads)
+        if (!empty($currentUser['photo']) && $currentUser['photo'] !== 'default.png') {
+            $user_image_path = "../../../../uploads/profiles/" . $currentUser['photo'];
+        }
+        
+        // Bio texte et audio
+        $user_bio = $currentUser['bio'];
+        $user_audio = $currentUser['bio_audio'];
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -185,82 +190,110 @@ if (isset($_SESSION['user_image']) && !empty($_SESSION['user_image'])) {
                         <div class="user-thumbnail">
     <img src="<?php echo htmlspecialchars($user_image_path); ?>" alt="<?php echo htmlspecialchars($user_name); ?>'s Profile Picture">
 </div>
-                        <div class="content-inner">
-                            <h5 class="title">
-                                <?php echo htmlspecialchars($user_name); ?>
-                            </h5>
-                            <span>Joined Secpenber <span>2022</span></span>
-                            <div class="share-wrapper">
-                                <button id="copyProfileButton" data-userid="<?php echo htmlspecialchars($_SESSION['user_id']); ?>" title="Copy profile link"><i class="fas fa-share"></i></button>
-                                <button><i class="far fa-ellipsis-v"></i></button>
-                                <a href="modifierprofil.php" title="Modifier le profil"><button><i class="fad fa-edit"></i></button></a>
-                            </div>
-                        </div>
+                        <<div class="content-inner">
+    <h5 class="title">
+        <?php echo htmlspecialchars($user_name); ?>
+    </h5>
+
+    <div class="bio-display" style="margin-top: 15px; margin-bottom: 20px; min-height: 30px;">
+        
+        <?php 
+        // 1. D'abord, on vérifie et affiche le TEXTE
+        if (!empty($user_bio)): 
+        ?>
+            <p style="color: #cccccc; font-size: 15px; max-width: 600px; margin: 0 auto 15px auto; line-height: 1.6; font-style: italic;">
+                <i class="fas fa-quote-left" style="color: #00C49F; margin-right: 8px; font-size: 12px;"></i>
+                <?php echo nl2br(htmlspecialchars($user_bio)); ?>
+                <i class="fas fa-quote-right" style="color: #00C49F; margin-left: 8px; font-size: 12px;"></i>
+            </p>
+        <?php endif; ?>
+
+        <?php 
+        if (!empty($user_audio)): 
+        ?>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                <span style="font-size: 9px; color: #00C49F; letter-spacing: 1px; text-transform: uppercase; font-weight: bold; opacity: 0.8;">
+                    <i class="fas fa-microphone-alt"></i> Voice Message
+                </span>
+                <audio controls controlsList="nodownload" style="height: 30px; border-radius: 20px; width: 220px; outline: none;">
+                    <source src="../../../../uploads/audio/<?php echo htmlspecialchars($user_audio); ?>" type="audio/mpeg">
+                    <source src="../../../../uploads/audio/<?php echo htmlspecialchars($user_audio); ?>" type="audio/webm">
+                    Votre navigateur ne supporte pas l'audio.
+                </audio>
+            </div>
+        <?php endif; ?>
+
+        <?php 
+        if (empty($user_bio) && empty($user_audio)): 
+        ?>
+            <span style="color: #888; font-size: 13px;">Joined September 2022</span>
+        <?php endif; ?>
+        
+    </div>
+    <div class="share-wrapper">
+        <button id="copyProfileButton" data-userid="<?php echo htmlspecialchars($_SESSION['user_id'] ?? 0); ?>" title="Copy profile link"><i class="fas fa-share"></i></button>
+        <button><i class="far fa-ellipsis-v"></i></button>
+        <a href="modifierprofil.php" title="Modifier le profil"><button><i class="fad fa-edit"></i></button></a>
+    </div>
+</div>
                     </div>
                 </div>
             </div>
             <style>
-    /* This CSS transforms the NFT card into a Quest/Badge card */
     .explore-wrapper .trending-items_wrapper {
-        /* This ensures the glassy card style is applied */
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 20px;
-        overflow: hidden; /* Important for the rounded corners */
+        overflow: hidden; 
     }
 
     .explore-wrapper .header {
-        padding: 20px 25px 15px; /* Add padding to the header */
+        padding: 20px 25px 15px; 
     }
     
     .explore-wrapper .header .title {
         color: #ffffff;
-        font-size: 1.5rem; /* Make title bigger */
+        font-size: 1.5rem; 
     }
     .explore-wrapper .header span {
-        color: #00C49F; /* Use theme color for sub-title */
+        color: #00C49F; 
         font-weight: 500;
     }
 
     .explore-wrapper .thumbnail {
-        position: relative; /* Keep this for the (hidden) button */
+        position: relative;
     }
 
     .explore-wrapper .thumbnail img {
-        aspect-ratio: 16 / 10; /* Give images a uniform shape */
+        aspect-ratio: 16 / 10; 
         object-fit: cover;
     }
 
-    /* --- THIS IS THE "INNOVATIVE" PART --- */
-
-    /* 1. Hide the "Place a Bid" button */
+  
     .explore-wrapper .thumbnail a.rts-btn {
         display: none; 
     }
 
-    /* 2. Hide the "Remaining Time" and "Countdown" */
     .explore-wrapper .product-discription .product-right {
         display: none;
     }
 
-    /* 3. Re-style the "Price" section on the left */
     .explore-wrapper .product-discription .product-left {
-        /* Make it take the full width */
         flex-basis: 100%;
         max-width: 100%;
     }
     .explore-wrapper .product-discription {
-        padding: 20px 25px; /* Add padding */
+        padding: 20px 25px; 
     }
     .explore-wrapper .product-discription .product-left span {
         font-size: 0.9rem;
         color: #eeeeee;
     }
     .explore-wrapper .product-discription .product-left .price {
-        font-size: 1.5rem; /* Make stat bigger */
+        font-size: 1.5rem; 
         font-weight: 700;
-        color: #FFBB28; /* Gold/Reward color */
+        color: #FFBB28; 
     }
 
 </style>
@@ -542,29 +575,19 @@ if (isset($_SESSION['user_image']) && !empty($_SESSION['user_image'])) {
     <script src="assets/js/main.js"></script>
     <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Find the button by its new ID
     const copyButton = document.getElementById('copyProfileButton');
     
     if (copyButton) {
-        // 2. Add a click event listener
         copyButton.addEventListener('click', function() {
-            // 3. Get the user ID we stored in the button
             const userId = this.getAttribute('data-userid');
             
-            // 4. !!! IMPORTANT !!!
-            // Replace 'https://www.yourwebsite.com/author.php' 
-            // with your website's real URL.
             const baseUrl = 'https://www.yourwebsite.com/author.php';
             
-            // 5. Create the full URL to share
             const profileUrl = `${baseUrl}?user_id=${userId}`;
             
-            // 6. Use the modern clipboard API to copy the text
             navigator.clipboard.writeText(profileUrl).then(function() {
-                // 7. Show a success message
                 alert('Profile URL copied to clipboard!\n' + profileUrl);
             }, function(err) {
-                // 8. Show an error message if it fails
                 console.error('Could not copy text: ', err);
                 alert('Failed to copy URL.');
             });
@@ -572,5 +595,43 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<link rel="stylesheet" href="assets/css/chatbot.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<button class="chat-btn-toggle" onclick="toggleChat()">
+    <i class="fas fa-comment-dots"></i>
+</button>
+
+<div class="chat-container" id="chatWindow">
+    <div class="chat-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-robot" style="font-size: 24px;"></i>
+            <div>
+                <h4>Assistant Zitouna</h4>
+                <p>En ligne • Aide instantanée</p>
+            </div>
+        </div>
+        <button class="close-chat" onclick="toggleChat()">&times;</button>
+    </div>
+
+    <div class="chat-body" id="chatBody">
+        <div class="message bot-message">
+            Bonjour ! 👋 Je suis l'IA de Zitouna Quest.<br>
+            Je peux vous aider avec :
+            <div class="quick-replies">
+                <span class="chip" onclick="sendQuickMsg('Problème connexion')">Connexion</span>
+                <span class="chip" onclick="sendQuickMsg('Comment utiliser Face ID ?')">Face ID</span>
+                <span class="chip" onclick="sendQuickMsg('Modifier mon profil')">Profil</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-footer">
+        <input type="text" id="userMsg" placeholder="Écrivez votre question..." onkeypress="handleEnter(event)">
+        <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<?php include_once($_SERVER['DOCUMENT_ROOT'] . '/Projet2/View/includes/chatbot_ui.php'); ?>
 </body>
 </html>
