@@ -447,9 +447,12 @@ $sujet = afficherSujetParId($post_id);
             <p style="color: #bbb; margin-bottom: 20px;">Êtes-vous sûr de vouloir supprimer ce commentaire ? Cette action est irréversible.</p>
             <div class="delete-modal-buttons">
                 <button class="btn-cancel" onclick="closeDeleteModal()">Annuler</button>
-                <form method="POST" action="" id="deleteForm">
-                    <input type="hidden" name="commentaire_id" id="commentaireId">
-                    <button type="submit" name="supprimer_commentaire" class="btn-confirm-delete">Supprimer</button>
+                <form method="GET" action="../../controller/supprimerCommentaireController.php" id="deleteForm">
+                    <input type="hidden" name="id" id="commentaireId">
+                    <input type="hidden" name="position" value="front">
+                    <button type="submit" name="supprimer_commentaire" class="btn-confirm-delete">
+                        Supprimer
+                    </button>
                 </form>
             </div>
         </div>
@@ -632,13 +635,13 @@ $sujet = afficherSujetParId($post_id);
                                     <button class="comment-action">
                                         <i class="far fa-thumbs-up"></i> Utile
                                     </button>
-                                    <button class="comment-action">
-                                        <i class="far fa-reply"></i> Répondre
+                                    <button class="comment-action" onclick="window.location.href='modifierCommentaire.php?id=<?=$commentaire['id']?>&contenu=<?=urlencode($commentaire['contenu'])?>';">
+                                        <i class="far fa-reply"></i> Modifier
                                     </button>
                                     <button class="comment-action">
                                         <i class="far fa-flag"></i> Signaler
                                     </button>
-                                    <button class="comment-action delete" onclick="openDeleteModal(1)">
+                                    <button class="comment-action delete" onclick="openDeleteModal(<?=$commentaire['id']?>)">
                                         <i class="far fa-trash"></i> Supprimer
                                     </button>
                                 </div>
@@ -903,7 +906,9 @@ $sujet = afficherSujetParId($post_id);
         });
         
         // Fonctions pour la modal de suppression
+        let id = null;
         function openDeleteModal(commentId) {
+            id =commentId;
             document.getElementById('commentaireId').value = commentId;
             document.getElementById('deleteModal').style.display = 'flex';
         }
@@ -925,6 +930,8 @@ $sujet = afficherSujetParId($post_id);
                 closeDeleteModal();
             }
         });
+        
+        
     </script>
 </body>
 </html>

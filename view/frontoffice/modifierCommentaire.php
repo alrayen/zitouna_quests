@@ -1,3 +1,13 @@
+<?php
+$id=$_GET["id"];
+$contenu=$_GET["contenu"];
+
+
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -21,44 +31,6 @@
     <link rel="stylesheet" href="assets/css/style.css">
     
     <style>
-        .custom-file-input {
-    position: relative;
-    display: inline-block;
-    width: 250px;
-}
-
-.custom-file-input input[type="file"] {
-    width: 100%;
-    height: 40px;
-    opacity: 0;
-    position: absolute;
-    z-index: 2;
-    cursor: pointer;
-}
-
-.custom-file-input label {
-    display: block;
-    background-color: #6ebe71ff;
-    color: white;
-    padding: 10px;
-    text-align: center;
-    border-radius: 5px;
-    cursor: pointer;
-    z-index: 1;
-    position: relative;
-    transition: background 0.3s;
-}
-
-.custom-file-input label:hover {
-    background-color: #45a049;
-}
-
-.custom-file-input .file-name {
-    display: block;
-    margin-top: 5px;
-    font-size: 0.9em;
-    color: #555;
-}
         /* Styles spécifiques à la création de post */
         .create-post-container {
             min-height: 80vh;
@@ -354,47 +326,42 @@
                 <div class="post-icon">
                     ✍️
                 </div>
-                <h2 class="title">Créer un Nouveau Post</h2>
+                <h2 class="title">Mise à jour du Commentaire</h2>
                 <p class="disc">Partagez vos pensées, questions ou expériences avec la communauté</p>
             </div>
 
-            <form  action="../../controller/ajouterSujetcontroller.php?position=front" method="POST" enctype="multipart/form-data">
+            <form  action="../../controller/modifierCommentaireController.php?id=<?=$id?>&position=front" method="POST" >
                 <div class="content-editor">
                     
                     
                     <textarea 
                         id="postContent" 
                         class="content-textarea" 
-                        placeholder="Qu'avez-vous en tête ? Partagez vos idées, posez des questions ou racontez vos expériences..."
                         maxlength="5000"
-                        name="nom"
-                    ></textarea>
-                    <div class="custom-file-input">
-                    <input type="file" name="image" id="imageInput">
-                    <label for="imageInput">Choisir une image</label>
-                    <span class="file-name">Aucune image sélectionnée</span>
-                    </div><br><br>
+                        name="contenu"
+                        
+                    ><?=$contenu?></textarea>
+                    
                     <div class="character-count">
                         <span id="charCount">0</span>/5000 caractères
                     </div>
                 </div>
 
                 <div class="preview-section" id="previewSection" style="display: none;">
-                    <h4>Aperçu du Post</h4>
+                    <h4>Aperçu du Commentaire</h4>
                     <div class="preview-content" id="previewContent">
                         <!-- L'aperçu sera généré ici -->
                     </div>
                 </div>
 
                 <div class="post-actions">
-                    <a href="forum.html" class="btn-cancel">
-                        <i class="fas fa-arrow-left"></i> Annuler
-                    </a>
+                  
+
                     <button type="button" class="btn-cancel" id="previewBtn">
                         <i class="fas fa-eye"></i> Aperçu
                     </button>
                     <button type="submit" class="btn-submit">
-                        <i class="fas fa-paper-plane"></i> Publier le Post
+                        <i class="fas fa-paper-plane"></i> Modifier le Commentaire
                     </button>
                 </div>
             </form>
@@ -521,16 +488,6 @@
     <script src="assets/js/main.js"></script>
     
     <script>
-                    const input = document.getElementById('imageInput');
-            const fileName = document.querySelector('.file-name');
-
-            input.addEventListener('change', function() {
-                if(this.files.length > 0){
-                    fileName.textContent = this.files[0].name;
-                } else {
-                    fileName.textContent = "Aucune image sélectionnée";
-                }
-            });
         document.addEventListener('DOMContentLoaded', function() {
             const postContent = document.getElementById('postContent');
             const charCount = document.getElementById('charCount');

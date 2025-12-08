@@ -7,7 +7,7 @@ modifierPosts($id,$contenu);
 $position=$_GET["position"];
 if($position=='front')
 {
-     header('Location:../view/frontoffice/forum.php');
+     header('Location:../view/frontoffice/forum.php?success=post_updated#post-' . $id);
 }
 else
 {

@@ -17,7 +17,7 @@ createCommentaire($commentaire);
 $position=$_GET["position"];
 if($position=='front')
 {
-     header('Location:../view/frontoffice/forum.php');
+    header('Location:../view/frontoffice/forum.php?success=comment_added#post-' . $post);
 }
 else
 {

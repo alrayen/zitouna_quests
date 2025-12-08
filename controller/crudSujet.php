@@ -7,6 +7,7 @@ include_once __DIR__ . '/../model/sujets.php';
   {
     $nom= $sujet->getNom();
     $date= $sujet->getDate();
+    $image=$sujet->getImage();
     
     try
     {

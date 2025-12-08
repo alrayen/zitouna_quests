@@ -6,7 +6,7 @@ $position=$_GET['position'];
 deletepost($id);
 if($position=='front')
 {
-   header('Location:../view/frontoffice/forum.php');
+   header('Location:../view/frontoffice/forum.php?success=post_deleted');
 }
 else
 {

@@ -14,6 +14,7 @@ class Sujet
       
         $this->nom=$nom;
         $this->date=$date;
+        $this->image=$image;
     }
     public function getId()
     {
