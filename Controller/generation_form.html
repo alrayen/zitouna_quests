@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Quiz Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🧠 Generate Quiz using Gemini AI</h2>
+        
+        <form action="process_ai_generation.php" method="POST">
+            
+            <p>Enter the details for the quiz you want the AI to create. The AI will generate the questions and options based on your topic and level.</p>
+
+            <label for="titre">Quiz Title / Topic:</label>
+            <input type="text" id="titre" name="titre" value="The Chemistry of Water" required>
+
+            <label for="categorie">Category:</label>
+            <input type="text" id="categorie" name="categorie" value="Science" required>
+            
+            <label for="niveau">Level:</label>
+            <select id="niveau" name="niveau" required>
+                <option value="Easy">Easy</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Hard">Hard</option>
+                <option value="Expert">Expert</option>
+            </select>
+
+            <label for="points">Points per Question (for quiz record):</label>
+            <input type="number" id="points" name="points" value="10" min="1" required>
+
+            <label for="question_count">Number of Questions to Generate:</label>
+            <input type="number" id="question_count" name="question_count" value="5" min="1" max="20" required>
+
+            <input type="hidden" name="action" value="generate_ai_quiz">
+
+            <button type="submit">✨ Generate and Save Quiz</button>
+        </form>
+    </div>
+</body>
+</html>

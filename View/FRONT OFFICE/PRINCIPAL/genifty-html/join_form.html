@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <title>Rejoindre une Partie - Zitouna Quest</title>
+
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <link rel="stylesheet" href="assets/css/plugins/fontawesome-pro-icons.css">
+
+
+
+    <style>
+
+        /* Styles nécessaires pour l'affichage (inspiré de votre design) */
+
+        @keyframes moveGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        body.rt_bg-secondary {
+
+            background: linear-gradient(135deg, #005248, #00c49f, #00796b);
+
+            background-size: 400% 400%;
+
+            animation: moveGradient 20s ease infinite;
+
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+
+        }
+
+        .join-box {
+
+            max-width: 450px; padding: 40px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); 
+
+            border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); color: #fff; text-align: center;
+
+        }
+
+        .form-control { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); color: #fff !important; 
+
+            text-align: center; font-size: 1.5rem; height: 60px; letter-spacing: 5px; text-transform: uppercase; }
+
+        .rts-btn { margin-top: 20px; }
+
+    </style>
+
+</head>
+
+
+
+<body class="rt_bg-secondary">
+
+    <div class="join-box">
+
+        <h1>Rejoindre une Partie</h1>
+
+        <p>Entrez le code d'invitation à 6 caractères pour rejoindre la session.</p>
+
+
+
+        <form id="join-form">
+
+            <div class="form-group">
+
+                <input type="text" id="invitation-code" class="form-control" placeholder="CODE" maxlength="6" required>
+
+            </div>
+
+            <button type="submit" class="rts-btn btn-primary w-100">Rejoindre la Session</button>
+
+            <div id="join-status-message" class="mt-3" style="color: #ff6b6b; font-weight: 600;"></div>
+
+        </form>
+
+    </div>
+
+
+
+    <script src="assets/js/vendor/jquery.min.js"></script>
+
+    <script>
+
+        $(document).ready(function() {
+
+            $('#join-form').on('submit', function(e) {
+
+                e.preventDefault();
+
+
+
+                const code = $('#invitation-code').val().toUpperCase().trim();
+
+                const $status = $('#join-status-message');
+
+                const $btn = $('button[type="submit"]');
+
+                
+
+                if (code.length !== 6) {
+
+                    $status.text('Le code doit contenir 6 caractères.');
+
+                    return;
+
+                }
+
+
+
+                $status.text('Recherche de session en cours...');
+
+                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Connexion...');
+
+
+
+                $.ajax({
+
+                    url: '/../../../../Controller/join_session.php', 
+
+                    type: 'POST',
+
+                    dataType: 'json',
+
+                    data: { code: code },
+
+                    success: function(response) {
+
+                        if (response.success) {
+
+                            $status.css('color', '#00E6A7').text('Session trouvée! Redirection...');
+
+                            setTimeout(() => {
+
+                                // REDIRECTION VERS LE LOBBY
+
+                                window.location.href = `online_lobby.php?session=${response.session_id}`;
+
+                            }, 1000); 
+
+                        } else {
+
+                            $status.css('color', '#FF6B6B').text(response.message);
+
+                        }
+
+                    },
+
+                    error: function() {
+
+                        $status.css('color', '#FF6B6B').text('Erreur de communication avec le serveur.');
+
+                    },
+
+                    complete: function() {
+
+                        if ($status.text().includes('Erreur') || $status.text().includes('manquant') || $status.text().includes('complète')) {
+
+                             $btn.prop('disabled', false).html('Rejoindre la Session');
+
+                        }
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+// log in style hear
+
+
+.login-wrapper{
+    padding: 40px;
+    border: 1px solid #fff1;
+    border-radius: 5px;
+    width: 550px;
+    position: relative;
+    @media #{$large-mobile} {
+        padding: 10px;
+    }
+    @media #{$small-mobile} {
+        padding: 10px;
+    }
+    &::after{
+        content: "";
+        position: absolute;
+        background: linear-gradient(96.11deg, #8200E9 1.74%, #4200E5 100%);
+        height: 310px;
+        width: 310px;
+        top: 7%;
+        left: -10%;
+        opacity: 1;
+        background-repeat: no-repeat;
+        z-index: -1;
+        filter: blur(180px);
+    }
+    input{
+        background: #ffffff09;
+        color: #fff;
+        border: 1px solid var(--color-border-one);
+        height: 60px;
+        border-radius: 5px;
+        transition: var(--transition);
+        &:focus{
+            border-color: var(--color-terciary);
+        }
+    }
+    label{
+        color: #fff !important;
+    }
+}
