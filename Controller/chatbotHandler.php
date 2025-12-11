@@ -2,7 +2,7 @@
 
 header('Content-Type: application/json');
 
-$apiKey = 'AIzaSyBUXtZxNCOM0aIOwaeHdYKtZrkSEuSlnaY'; 
+$apiKey = ''; 
 
 
 $context = "Tu es l'assistant virtuel officiel de la plateforme 'Zitouna Quest'.
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ];
 
 
-    $model = 'gemini-2.0-flash'; 
+   $model = 'gemini-flash-lite-latest';
     $url = "https://generativelanguage.googleapis.com/v1beta/models/" . $model . ":generateContent?key=" . $apiKey;
 
 
