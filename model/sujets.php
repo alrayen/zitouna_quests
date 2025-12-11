@@ -53,6 +53,10 @@ class Sujet
     {
         $this->titre=$titre;
     }
+    public function setImage( $image)
+    {
+        $this->image=$image;
+    }
 }
 
 

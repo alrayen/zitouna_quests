@@ -1051,27 +1051,12 @@ function getImageUrl($image_name, $post_id) {
                                 // Obtenir l'URL de l'image
                                 $image_url = getImageUrl($image_name, $post_id);
                                 
-                                // Catégories pour les badges
-                                $categories = [
-                                    'Environnement',
-                                    'Nature',
-                                    'Science',
-                                    'Technologie',
-                                    'Impact Social'
-                                ];
                                 
-                                $category_icons = [
-                                    'fa-leaf',
-                                    'fa-tree',
-                                    'fa-flask',
-                                    'fa-microchip',
-                                    'fa-heart'
-                                ];
                                 
-                                // Sélectionner une catégorie basée sur l'ID du post
-                                $category_index = $post_id % count($categories);
-                                $selected_category = $categories[$category_index];
-                                $selected_icon = $category_icons[$category_index];
+                                
+                               
+                                
+                                
                         ?>
                         <div class="post-card" data-post-id="<?= $post_id ?>">
                             <!-- Image du post -->
@@ -1081,10 +1066,7 @@ function getImageUrl($image_name, $post_id) {
                                      class="post-image"
                                      onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=400&fit=crop';">
                                 <div class="post-image-overlay"></div>
-                                <div class="post-category-badge">
-                                    <i class="far <?= $selected_icon ?>"></i>
-                                    <?= $selected_category ?>
-                                </div>
+                               
                             </div>
                             
                             <div class="post-header">

@@ -33,6 +33,53 @@ function afficherSujet()
 
     return $sujets;
 }
+function getPostsParJour($days = 7) {
+    $conn = getDatabaseConnexion();
+    
+    // Correction: Utilisation de requête préparée pour éviter les injections SQL
+    $sql = "SELECT DATE(date_sujets) as jour, COUNT(*) as count 
+            FROM sujets 
+            WHERE date_sujets >= DATE_SUB(CURDATE(), INTERVAL :days DAY)
+            GROUP BY DATE(date_sujets) 
+            ORDER BY jour ASC";
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':days', $days, PDO::PARAM_INT);
+    $stmt->execute();
+    
+    // Récupérer les résultats sous forme de tableau associatif
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Transformer en tableau associatif [date => count]
+    $data = [];
+    foreach ($results as $row) {
+        $data[$row['jour']] = (int)$row['count'];
+    }
+    
+    return $data;
+}
+
+// Ajoutez aussi cette fonction pour obtenir le total des posts
+function getTotalPosts() {
+    $conn = getDatabaseConnexion();
+    $sql = "SELECT COUNT(*) as total FROM sujets";
+    $stmt = $conn->query($sql);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    return $result['total'] ?? 0;
+}
+
+// Fonction pour obtenir les posts d'aujourd'hui
+function getPostsToday() {
+    $conn = getDatabaseConnexion();
+    $sql = "SELECT COUNT(*) as aujourdhui 
+            FROM sujets 
+            WHERE DATE(date_sujets) = CURDATE()";
+    $stmt = $conn->query($sql);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    return $result['aujourdhui'] ?? 0;
+}
 function afficherSujetParId($id)
 {
     $conn = getDatabaseConnexion();

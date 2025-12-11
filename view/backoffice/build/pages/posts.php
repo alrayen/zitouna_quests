@@ -193,7 +193,147 @@ body.modal-open {
 .comment-btn:hover {
   transform: translateY(-1px);
 }
-</style>
+
+/* Styles pour les images des posts */
+.post-image-container {
+  width: 100%;
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #f1f5f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  max-height: 400px;
+}
+
+.post-image {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.post-image:hover {
+  transform: scale(1.02);
+}
+
+.image-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.9);
+  animation: fadeIn 0.3s;
+}
+
+.image-modal-content {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 80vh;
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.close-modal:hover {
+  color: #bbb;
+}
+
+.no-image {
+  padding: 3rem;
+  text-align: center;
+  color: #94a3b8;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  border: 2px dashed #e2e8f0;
+}
+
+.no-image i {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #cbd5e1;
+}
+
+/* Styles pour l'affichage des posts */
+.post-content-container {
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  border-left: 4px solid #3b82f6;
+}
+
+.post-content-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.6;
+  color: #334155;
+}
+
+.dark .post-content-container {
+  background: #1e293b;
+  border-left-color: #60a5fa;
+}
+
+.dark .post-content-text {
+  color: #cbd5e1;
+}
+
+/* Animation pour le contenu du post */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.post-row {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Styles pour la table avec images */
+.table-image-cell {
+  max-width: 300px;
+}
+
+.image-preview-cell {
+  padding: 1rem !important;
+}
+
+/* Responsive pour les images */
+@media (max-width: 768px) {
+  .post-image-container {
+    min-height: 150px;
+    max-height: 300px;
+  }
+  
+  .post-image {
+    max-height: 300px;
+  }
+}
+    </style>
   </head>
 
   <body class="m-0 font-sans text-base antialiased font-normal dark:bg-slate-900 leading-default bg-gray-50 text-slate-500">
@@ -250,6 +390,12 @@ body.modal-open {
       </div>
     </div>
   </div>
+</div>
+
+<!-- Modal pour afficher l'image en grand -->
+<div id="imageModal" class="image-modal">
+  <span class="close-modal">&times;</span>
+  <img class="image-modal-content" id="fullImage">
 </div>
 
 <script>
@@ -395,6 +541,39 @@ function toggleComments(sujetId) {
     toggleButton.innerHTML = '<i class="fas fa-chevron-up mr-2"></i>Masquer les commentaires';
   }
 }
+
+// Gestion du modal d'image
+function openImageModal(imageSrc) {
+  const modal = document.getElementById('imageModal');
+  const modalImg = document.getElementById('fullImage');
+  modal.style.display = "block";
+  modalImg.src = imageSrc;
+  document.body.classList.add('modal-open');
+}
+
+// Fermer le modal d'image
+document.querySelector('.close-modal').addEventListener('click', function() {
+  const modal = document.getElementById('imageModal');
+  modal.style.display = "none";
+  document.body.classList.remove('modal-open');
+});
+
+// Fermer le modal d'image en cliquant en dehors
+document.getElementById('imageModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    this.style.display = "none";
+    document.body.classList.remove('modal-open');
+  }
+});
+
+// Fermer le modal d'image avec la touche Échap
+document.addEventListener('keydown', function(e) {
+  const imageModal = document.getElementById('imageModal');
+  if (e.key === 'Escape' && imageModal.style.display === 'block') {
+    imageModal.style.display = "none";
+    document.body.classList.remove('modal-open');
+  }
+});
 </script>
 
     <aside class="fixed inset-y-0 flex-wrap items-center justify-between block w-full p-0 my-4 overflow-y-auto antialiased transition-transform duration-200 -translate-x-full bg-white border-0 shadow-xl dark:shadow-none dark:bg-slate-850 xl:ml-6 max-w-64 ease-nav-brand z-990 rounded-2xl xl:left-0 xl:translate-x-0" aria-expanded="false">
@@ -527,6 +706,7 @@ function toggleComments(sujetId) {
                       <tr>
                         <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Auteur</th>
                         <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Contenu</th>
+                        <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Image</th>
                         <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Date</th>
                         <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Commenter</th>
                         <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Modifier</th>
@@ -539,8 +719,11 @@ function toggleComments(sujetId) {
                   $sujetId = $sujet["id"];
                   $commentairesDuSujet = isset($commentairesParSujet[$sujetId]) ? $commentairesParSujet[$sujetId] : [];
                   $nombreCommentaires = count($commentairesDuSujet);
+                  
+                  // Récupérer l'image du post (ajouté dans la colonne 'image' de la table)
+                  $imagePost = isset($sujet['imagee']) ? $sujet['imagee'] : null;
                 ?>
-                      <tr>
+                      <tr class="post-row">
                         <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                           <div class="flex px-2 py-1">
                             <div>
@@ -553,7 +736,25 @@ function toggleComments(sujetId) {
                           </div>
                         </td>
                         <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                          <span class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80" method="POST"><?=$sujet["nom"]?></span>
+                          <div class="post-content-container">
+                            <p class="post-content-text"><?=htmlspecialchars($sujet["nom"])?></p>
+                          </div>
+                        </td>
+                        <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent image-preview-cell">
+                          <?php if ($imagePost): ?>
+                            <div class="post-image-container">
+                              <img src="../../../../controller/images/<?=htmlspecialchars($imagePost)?>" 
+                                   alt="Image du post" 
+                                   class="post-image"
+                                   onclick="openImageModal('../../../../controller/images/<?=htmlspecialchars($imagePost)?>')"
+                          >
+                            </div>
+                          <?php else: ?>
+                            <div class="no-image">
+                              <i class="fas fa-image"></i>
+                              <p>Pas d'image</p>
+                            </div>
+                          <?php endif; ?>
                         </td>
                         <td class="p-2 text-center align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                           <span class="text-xs font-semibold leading-tight dark:text-white dark:opacity-80 text-slate-400"><?=$sujet["date_sujets"]?></span>
@@ -570,7 +771,7 @@ function toggleComments(sujetId) {
                       </tr>
                       <!-- Section des commentaires pour ce post -->
                       <tr>
-                        <td colspan="6" class="p-0 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                        <td colspan="7" class="p-0 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                           <div class="px-6 py-4 bg-gray-50 dark:bg-slate-800/50">
                             <button onclick="toggleComments(<?=$sujetId?>)" class="toggle-comments flex items-center text-sm font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-700 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-600 w-full text-left">
                               <i class="fas fa-chevron-down mr-2"></i>Voir les commentaires
