@@ -61,11 +61,11 @@ if (!isset($_SESSION['code_verified']) || $_SESSION['code_verified'] !== true) {
                 var password = document.getElementById("password").value;
                 var passwordConfirm = document.getElementById("password2").value;
 
-                // Reset des messages d'erreur
+              
                 document.getElementById("erreurpassword").innerHTML = "";
                 document.getElementById("erreurpassword2").innerHTML = "";
 
-                // --- 1. Validation de la complexité du mot de passe (Ta logique exacte) ---
+             
                 if (password == "") {
                     document.getElementById("erreurpassword").innerHTML = "Mot de passe requis";
                     valid = false;
@@ -81,7 +81,7 @@ if (!isset($_SESSION['code_verified']) || $_SESSION['code_verified'] !== true) {
                     }
                 }
 
-                // --- 2. Validation de la correspondance ---
+              
                 if (passwordConfirm == "") {
                     document.getElementById("erreurpassword2").innerHTML = "Veuillez confirmer le mot de passe";
                     valid = false;
@@ -90,11 +90,11 @@ if (!isset($_SESSION['code_verified']) || $_SESSION['code_verified'] !== true) {
                     valid = false;
                 }
 
-                // Si tout n'est pas bon, on bloque l'envoi
+                
                 if (!valid) {
                     e.preventDefault();
                 }
-                // Sinon, le formulaire part vers update_password.php
+                
             });
         });
     </script>
