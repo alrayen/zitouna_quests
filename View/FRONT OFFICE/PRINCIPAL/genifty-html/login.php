@@ -290,6 +290,9 @@
                         <input type="checkbox" id="remember" name="remember">
                         <label for="remember">Remember me later</label>
                     </div>
+                    <div class="forget-password-link" style="text-align: right; margin-bottom: 15px;">
+                     <a href="forgot_password.php" style="color: #ffffffff; font-size: 14px;">Mot de passe oublié ?</a>
+                    </div>
                     <!-- Ajout du widget reCAPTCHA -->
                     <div class="mb-4">
                         <div class="g-recaptcha" data-sitekey="6LezTR8sAAAAAM70nCpDXMJ1Zb5zasamA7zuPtrE"></div>
