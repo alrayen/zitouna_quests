@@ -25,8 +25,6 @@ class config
         return self::$pdo;
     }
     public static function getGeminiKey(): string {
-        // IMPORTANT: Replace 'YOUR_GEMINI_API_KEY_HERE' with your actual key
-        // For production, always use getenv() to read from a secure environment variable.
         return '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'; 
     }
 }
