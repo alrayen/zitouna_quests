@@ -1,6 +1,6 @@
 <?php 
 session_start();
-// Sécurité : On ne peut pas accéder ici si le code n'a pas été vérifié
+
 if (!isset($_SESSION['code_verified']) || $_SESSION['code_verified'] !== true) {
     header("Location: login.php"); exit();
 }
@@ -54,10 +54,10 @@ if (!isset($_SESSION['code_verified']) || $_SESSION['code_verified'] !== true) {
             var form = document.getElementById("resetForm");
 
             form.addEventListener("submit", function(e) {
-                // On empêche l'envoi pour vérifier d'abord
+         
                 var valid = true;
 
-                // Récupération des valeurs
+           
                 var password = document.getElementById("password").value;
                 var passwordConfirm = document.getElementById("password2").value;
 
