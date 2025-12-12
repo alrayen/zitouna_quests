@@ -61,19 +61,7 @@
     fill: currentColor;
 }
 
-        .face-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 220px;
-            height: 280px;
-            border-radius: 50%;
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
-            border: 3px solid rgba(255, 255, 255, 0.7);
-            display: none;
-            pointer-events: none;
-        }
+
         .face-capture-wrapper {
             position: relative;
             width: 320px;

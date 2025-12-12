@@ -1,6 +1,6 @@
 <?php
 
-// Include the database connection and the Question model
+
 require_once __DIR__ .'../config.php';
 require_once __DIR__ .'../Model/question.php'; 
 
@@ -9,15 +9,11 @@ class QuestionController {
     private $db;
 
     public function __construct() {
-        // Get the database connection from your config class
+        
         $this->db = config::getConnexion();
     }
 
-    /**
-     * READ: Fetches all questions for a specific quiz ID.
-     * @param int $id_quiz The ID of the quiz.
-     * @return array An array of Question objects.
-     */
+
     public function getQuestionsForQuiz(int $id_quiz): array {
         $sql = "SELECT * FROM question WHERE Id_quiz = :id_quiz";
         try {
@@ -45,7 +41,7 @@ class QuestionController {
         }
     }
     
-    // --- We can add addQuestion(), updateQuestion(), deleteQuestion() here later ---
+    
 
 }
 ?>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once($_SERVER['DOCUMENT_ROOT'] . '/Projet2/config.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/Projet2/vendor/autoload.php'); // Pour PHPMailer
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Projet2/vendor/autoload.php'); 
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -18,8 +18,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($user) {
   
         $code = rand(100000, 999999);
-
-
         $update = $pdo->prepare("UPDATE user SET verification_code = :code WHERE email = :email");
         $update->execute(['code' => $code, 'email' => $email]);
 

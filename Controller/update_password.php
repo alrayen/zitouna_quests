@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pass = $_POST['password'];
     $confirm = $_POST['confirm_password'];
     
-    // Vérification de sécurité (Email présent en session)
+ 
     if (!isset($_SESSION['reset_email'])) {
         header("Location: ../View/FRONT OFFICE/PRINCIPAL/genifty-html/login.php");
         exit();

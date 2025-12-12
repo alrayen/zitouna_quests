@@ -2,7 +2,7 @@
 
 header('Content-Type: application/json');
 
-$apiKey = ''; 
+$apiKey = 'AIzaSyAzQ9frDvFpJVa8XEEXTr0dzC0uCMQvbT4'; 
 
 
 $context = "Tu es l'assistant virtuel officiel de la plateforme 'Zitouna Quest'.
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
     
-    // Désactive SSL pour localhost
+
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
@@ -77,7 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     curl_close($ch);
 
-    // Mise en forme
     $botReply = nl2br(htmlspecialchars($botReply)); 
 
     echo json_encode(['response' => $botReply]);
