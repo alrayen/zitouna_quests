@@ -1,6 +1,4 @@
 <?php
-// --- INCLUDES & CONTROLLERS ---
-// Adjust paths to match your specific folder structure if needed
 include_once(__DIR__ . '/../../../../../Controller/challenge-controller.php');
 include_once(__DIR__ . '/../../../../../Model/challenge.php');
 include_once(__DIR__ . '/../../../../../Controller/ressources-controller.php');
@@ -9,10 +7,7 @@ include_once(__DIR__ . '/../../../../../Model/ressources-model.php');
 $ChallengeController = new ChallengeController();
 $RessourceController = new RessourceController();
 
-// =================================================================================
-// ----------------------------- HANDLE CHALLENGE ACTIONS --------------------------
-// =================================================================================
-
+// --- CHALLENGE ACTIONS ---
 if (isset($_POST['add_challenge'])) {
     $titre = $_POST['add_titre'];
     $description = $_POST['add_description'];
@@ -51,31 +46,74 @@ if (isset($_POST['delete_challenge'])) {
     exit();
 }
 
-// =================================================================================
-// ----------------------------- HANDLE RESOURCE ACTIONS ---------------------------
-// =================================================================================
+// --- RESOURCE ACTIONS ---
 
+// 1. ADD RESOURCE (Updated for File Upload)
 if (isset($_POST['add_resource'])) {
     $nom = $_POST['res_nom'];
     $type = $_POST['res_type'];
-    $url = $_POST['res_url'];
     $description = substr($_POST['res_description'], 0, 500);
     $id_defi = (int)$_POST['res_id_defi']; 
     $ordre = (int)$_POST['res_ordre'];
     $necessite_preuve = (bool)$_POST['res_necessite_preuve'];
+    
+    $finalUrl = '';
 
-    $newResource = new Ressource(0, $nom, $type, $url, $description, $id_defi, $ordre, $necessite_preuve);
+    // Logic: If PDF, handle file upload. Else, use URL input.
+    if ($type === 'PDF') {
+        if (isset($_FILES['file_upload']) && $_FILES['file_upload']['error'] === 0) {
+            $allowed = ['pdf'];
+            $filename = $_FILES['file_upload']['name'];
+            $fileExt = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+            if (in_array($fileExt, $allowed)) {
+                $newFileName = uniqid('res_', true) . '.' . $fileExt;
+                // Path relative to where this PHP file runs
+                // Adjust this path if your 'assets' folder is somewhere else!
+                $uploadDir = '../assets/uploads/resources/'; 
+                
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+
+                $destPath = $uploadDir . $newFileName;
+
+                if (move_uploaded_file($_FILES['file_upload']['tmp_name'], $destPath)) {
+                    // Save relative path for front-end access
+                    $finalUrl = 'assets/uploads/resources/' . $newFileName; 
+                } else {
+                    // Error handling (you might want a redirect with error msg)
+                    die("Error moving uploaded file."); 
+                }
+            } else {
+                die("Invalid file type. Only PDF allowed.");
+            }
+        }
+    } else {
+        // For Video/Link/Image types, use the text input
+        $finalUrl = $_POST['res_url_input'];
+    }
+
+    // Fallback if upload failed or input empty
+    if(empty($finalUrl)) $finalUrl = "#";
+
+    $newResource = new Ressource(0, $nom, $type, $finalUrl, $description, $id_defi, $ordre, $necessite_preuve);
     $RessourceController->addResource($newResource);
-    // Reload page but keep context if possible (simple reload here)
     header("Location: challenge.php?open_resources=" . $id_defi); 
     exit();
 }
 
+// 2. UPDATE RESOURCE (Simplified - usually doesn't re-upload file for simplicity here)
 if (isset($_POST['update_resource'])) {
     $id = (int)$_POST['res_edit_id'];
     $nom = $_POST['res_nom'];
     $type = $_POST['res_type'];
-    $url = $_POST['res_url'];
+    
+    // In edit mode, we might just keep the old URL if a new one isn't provided
+    // For this implementation, we'll assume basic text edit or URL edit
+    // (Full re-upload logic in Edit is complex, using text input for now)
+    $url = $_POST['res_url_input']; 
+    
     $description = substr($_POST['res_description'], 0, 500);
     $id_defi = (int)$_POST['res_id_defi'];
     $ordre = (int)$_POST['res_ordre'];
@@ -94,11 +132,9 @@ if (isset($_POST['delete_resource'])) {
     exit();
 }
 
-// --- FETCH DATA ---
 $challenges = $ChallengeController->listChallenges();
 $totalChallenges = count($challenges);
 
-// Fetch ALL resources to pass to JS for client-side filtering
 $allResources = $RessourceController->listResources();
 $resourcesJson = [];
 if(!empty($allResources)) {
@@ -142,6 +178,34 @@ if(!empty($allResources)) {
         }
         .custom-modal-box.wide-modal { max-width: 900px !important; }
         .error-msg { color: #e53e3e; font-size: 0.75rem; font-weight: bold; margin-top: 0.25rem; display: none; }
+
+        /* DRAG & DROP ZONE STYLES */
+        .drop-zone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+            background: #f8fafc;
+            cursor: pointer;
+            position: relative;
+            margin-top: 5px;
+        }
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: #5e72e4;
+            background: #eef2ff;
+        }
+        .drop-zone i { font-size: 2.5rem; color: #94a3b8; margin-bottom: 10px; display: block; }
+        .drop-zone p { margin: 0; color: #64748b; font-weight: 600; font-size: 0.9rem; }
+        .drop-zone span { font-size: 0.75rem; color: #94a3b8; }
+        
+        .file-input {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; cursor: pointer;
+        }
+
+        .drop-zone.has-file { border-color: #2dce89; background: #f0fff4; }
+        .drop-zone.has-file i { color: #2dce89; }
     </style>
 </head>
 
@@ -278,7 +342,6 @@ if(!empty($allResources)) {
                                 <span class="badge bg-gray-100 rounded-full px-2 py-1 text-xs text-slate-500"><?php echo $challenge->getTime(); ?> min</span>
                             </td>
 
-                            <!-- EXPLORE BUTTON (GREEN) -->
                             <td class="p-2 text-center align-middle bg-transparent whitespace-nowrap shadow-transparent">
                                 <button type="button" 
                                     onclick="openResourceManager(<?php echo $challenge->getIdDefi(); ?>, '<?php echo addslashes($challenge->getTitre()); ?>')"
@@ -323,9 +386,6 @@ if(!empty($allResources)) {
       </div>
     </main>
     
-    <!-- ================= MODALS SECTION ================= -->
-
-    <!-- 1. ADD CHALLENGE MODAL (Blue) -->
     <div id="addChallengeModal" class="custom-modal-overlay">
         <div class="custom-modal-box">
             <div style="background-color: #5e72e4;" class="p-6 flex justify-between items-center">
@@ -338,12 +398,10 @@ if(!empty($allResources)) {
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Titre</label>
                         <input type="text" id="add_titre" name="add_titre" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" />
-                        <p id="error_add_titre" class="error-msg"></p>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Description</label>
                         <textarea id="add_description" name="add_description" rows="3" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50"></textarea>
-                        <p id="error_add_description" class="error-msg"></p>
                     </div>
                     <div class="flex gap-4">
                         <div class="w-1/2">
@@ -369,12 +427,10 @@ if(!empty($allResources)) {
                          <div class="w-1/2">
                              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Points</label>
                              <input type="number" id="add_points" name="add_points" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" />
-                             <p id="error_add_points" class="error-msg"></p>
                          </div>
                          <div class="w-1/2">
                              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Time (min)</label>
                              <input type="number" id="add_time" name="add_time" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" />
-                             <p id="error_add_time" class="error-msg"></p>
                          </div>
                     </div>
                     <div class="flex gap-4">
@@ -388,7 +444,6 @@ if(!empty($allResources)) {
                         <div class="w-1/2">
                              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Place</label>
                              <input type="text" id="add_place" name="add_place" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" />
-                             <p id="error_add_place" class="error-msg"></p>
                         </div>
                     </div>
                 </div>
@@ -400,7 +455,6 @@ if(!empty($allResources)) {
         </div>
     </div>
 
-    <!-- 2. EDIT CHALLENGE MODAL (Orange) -->
     <div id="editChallengeModal" class="custom-modal-overlay">
         <div class="custom-modal-box">
              <div style="background-color: #fb6340;" class="p-6 flex justify-between items-center">
@@ -414,12 +468,10 @@ if(!empty($allResources)) {
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Titre</label>
                         <input type="text" id="edit_titre" name="edit_titre" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
-                        <p id="error_edit_titre" class="error-msg"></p>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Description</label>
                         <textarea id="edit_description" name="edit_description" rows="3" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50"></textarea>
-                        <p id="error_edit_description" class="error-msg"></p>
                     </div>
                      <div class="flex gap-4">
                         <div class="w-1/2">
@@ -445,12 +497,10 @@ if(!empty($allResources)) {
                         <div class="w-1/2">
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Points</label>
                             <input type="number" id="edit_points" name="edit_points" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
-                            <p id="error_edit_points" class="error-msg"></p>
                         </div>
                         <div class="w-1/2">
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Time (min)</label>
                             <input type="number" id="edit_time" name="edit_time" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
-                            <p id="error_edit_time" class="error-msg"></p>
                         </div>
                     </div>
                      <div class="flex gap-4">
@@ -464,7 +514,6 @@ if(!empty($allResources)) {
                         <div class="w-1/2">
                              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Place</label>
                              <input type="text" id="edit_place" name="edit_place" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
-                             <p id="error_edit_place" class="error-msg"></p>
                         </div>
                     </div>
                 </div>
@@ -476,7 +525,6 @@ if(!empty($allResources)) {
         </div>
     </div>
 
-    <!-- 3. DELETE CHALLENGE MODAL (Red) -->
     <div id="deleteChallengeModal" class="custom-modal-overlay">
         <div class="custom-modal-box">
             <div style="background-color: #f5365c;" class="p-6 flex justify-between items-center">
@@ -499,7 +547,6 @@ if(!empty($allResources)) {
         </div>
     </div>
 
-    <!-- 4. RESOURCE MANAGER MODAL (Orange Header) -->
     <div id="resourceManagerModal" class="custom-modal-overlay">
         <div class="custom-modal-box wide-modal">
             <div style="background-color: #fb6340;" class="p-6 flex justify-between items-center">
@@ -527,7 +574,6 @@ if(!empty($allResources)) {
                         </tr>
                     </thead>
                     <tbody id="resourceListBody" class="bg-white">
-                        <!-- JS renders rows here -->
                     </tbody>
                 </table>
                 <div id="noResourcesMsg" class="hidden p-8 text-center text-gray-400 text-sm">No resources added yet.</div>
@@ -536,15 +582,13 @@ if(!empty($allResources)) {
         </div>
     </div>
 
-    <!-- 5. RESOURCE FORM MODAL (Add / Edit) -->
     <div id="resourceFormModal" class="custom-modal-overlay">
         <div class="custom-modal-box">
              <div id="resFormHeader" class="p-6 flex justify-between items-center">
                 <h6 class="text-white font-bold text-lg m-0" id="resFormTitle">Add Resource</h6>
                 <button type="button" onclick="closeResourceForm()" class="text-white border-none bg-transparent cursor-pointer"><i class="fas fa-times text-lg"></i></button>
             </div>
-            <form id="resourceForm" action="challenge.php" method="POST">
-                <!-- Helper inputs -->
+            <form id="resourceForm" action="challenge.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="add_resource" id="action_add_res" disabled>
                 <input type="hidden" name="update_resource" id="action_update_res" disabled>
                 <input type="hidden" name="res_id_defi" id="res_id_defi">
@@ -559,45 +603,55 @@ if(!empty($allResources)) {
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Description</label>
                         <textarea id="res_description" name="res_description" rows="3" maxlength="500" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" required></textarea>
                     </div>
+                    
                     <div class="flex gap-4">
                         <div class="w-1/2">
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Type</label>
-                            <select id="res_type" name="res_type" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50">
-                                <option value="PDF">PDF</option>
-                                <option value="Video">Video</option>
-                                <option value="Link">Link</option>
-                                <option value="Image">Image</option>
+                            <select id="res_type" name="res_type" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" onchange="toggleInput()">
+                                <option value="PDF">PDF Document (File Upload)</option>
+                                <option value="Video">Video (URL)</option>
+                                <option value="Link">External Link (URL)</option>
+                                <option value="Image">Image (URL)</option>
                             </select>
                         </div>
-                        <div class="w-1/2">
-                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">URL</label>
-                             <input type="text" id="res_url" name="res_url" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" required />
-                        </div>
-                    </div>
-                    <div class="flex gap-4">
                         <div class="w-1/2">
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Order</label>
                             <input type="number" id="res_ordre" name="res_ordre" value="1" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" />
                         </div>
-                        <div class="w-1/2">
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Requires Proof?</label>
-                            <select id="res_necessite_preuve" name="res_necessite_preuve" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50">
-                                <option value="0">No</option>
-                                <option value="1">Yes</option>
-                            </select>
+                    </div>
+
+                    <div id="fileInputGroup" class="mb-3">
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Upload File</label>
+                        <div class="drop-zone" id="dropZone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag & Drop your PDF here</p>
+                            <span>or click to browse</span>
+                            <input type="file" name="file_upload" class="file-input" accept=".pdf" onchange="updateDropZone(this)">
                         </div>
+                        <div id="fileNameDisplay" style="margin-top:10px; font-weight:bold; color:#2dce89; display:none; font-size: 0.8rem; text-align: center;"></div>
+                    </div>
+
+                    <div id="urlInputGroup" class="mb-3" style="display:none;">
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Resource URL</label>
+                        <input type="text" id="res_url_input" name="res_url_input" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" placeholder="https://..." />
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Requires Proof?</label>
+                        <select id="res_necessite_preuve" name="res_necessite_preuve" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50">
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
                     </div>
                 </div>
                 <div class="px-6 pb-6 flex justify-end gap-3">
                     <button type="button" onclick="closeResourceForm()" class="px-6 py-3 text-slate-600 font-bold text-sm bg-gray-100 rounded-xl cursor-pointer border-none">Cancel</button>
-                    <!-- Submit button color changes based on context in JS -->
                     <button type="submit" id="resFormSubmitBtn" class="text-white px-6 py-3 font-bold text-sm rounded-xl cursor-pointer border-none hover:shadow-lg">Save</button>
                 </div>
             </form>
         </div>
     </div>
     
-    <!-- 6. DELETE RESOURCE MODAL -->
     <div id="deleteResourceModal" class="custom-modal-overlay">
         <div class="custom-modal-box">
             <div style="background-color: #f5365c;" class="p-6 flex justify-between items-center">
@@ -619,7 +673,6 @@ if(!empty($allResources)) {
         </div>
     </div>
 
-    <!-- SCRIPTS -->
     <script src="../assets/js/plugins/perfect-scrollbar.min.js" async></script>
     <script src="../assets/js/argon-dashboard-tailwind.js?v=1.0.1" async></script>
     
@@ -627,18 +680,60 @@ if(!empty($allResources)) {
     const ALL_RESOURCES = <?php echo json_encode($resourcesJson); ?>;
     let currentChallengeId = null;
 
-    // --- FORM VALIDATION FOR CHALLENGES (Basic) ---
-    function validateAddForm() {
-        var titre = document.getElementById('add_titre').value;
-        if (titre.length < 3) {
-            document.getElementById('error_add_titre').innerText = "Too short";
-            document.getElementById('error_add_titre').style.display = "block";
-            return false;
+    // --- DRAG & DROP LOGIC ---
+    function toggleInput() {
+        const type = document.getElementById('res_type').value;
+        const fileGroup = document.getElementById('fileInputGroup');
+        const urlGroup = document.getElementById('urlInputGroup');
+        const fileInput = document.querySelector('.file-input');
+        const urlInput = document.getElementById('res_url_input');
+
+        if (type === 'PDF') {
+            fileGroup.style.display = 'block';
+            urlGroup.style.display = 'none';
+            // In add mode, make file required. In edit, it's optional (keep old file)
+            if(document.getElementById('action_add_res').disabled === false) {
+                 fileInput.required = true;
+            }
+            urlInput.required = false;
+        } else {
+            fileGroup.style.display = 'none';
+            urlGroup.style.display = 'block';
+            fileInput.required = false;
+            urlInput.required = true;
         }
-        return true;
     }
 
-    // --- MODAL FUNCTIONS ---
+    const dropZone = document.getElementById('dropZone');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+    // Visual feedback for drag
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+        });
+    });
+
+    function updateDropZone(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            dropZone.classList.add('has-file');
+            dropZone.querySelector('p').innerText = "File Selected!";
+            fileNameDisplay.innerText = file.name;
+            fileNameDisplay.style.display = 'block';
+            dropZone.querySelector('i').className = "fas fa-check-circle";
+        }
+    }
+    // -------------------------
+
     function openAddModal() {
         document.getElementById('addChallengeModal').style.display = 'flex';
         document.body.style.overflow = 'hidden';
@@ -675,7 +770,6 @@ if(!empty($allResources)) {
         document.body.style.overflow = 'hidden';
     }
 
-    // --- RESOURCE MANAGER (List) ---
     function openResourceManager(defiId, defiTitle) {
         currentChallengeId = defiId;
         document.getElementById('resourceManagerTitle').innerText = "For Challenge: " + defiTitle;
@@ -725,28 +819,34 @@ if(!empty($allResources)) {
         currentChallengeId = null;
     }
 
-    // --- RESOURCE FORM (Add/Edit) ---
     function openResourceForm(mode, resData = null) {
         const form = document.getElementById('resourceForm');
         form.reset();
+        
+        // Reset Drop Zone Visuals
+        dropZone.classList.remove('has-file');
+        dropZone.querySelector('p').innerText = "Drag & Drop your PDF here";
+        dropZone.querySelector('i').className = "fas fa-cloud-upload-alt";
+        fileNameDisplay.style.display = 'none';
         
         const header = document.getElementById('resFormHeader');
         const submitBtn = document.getElementById('resFormSubmitBtn');
 
         if (mode === 'add') {
             document.getElementById('resFormTitle').innerText = "Add Resource";
-            // STYLE: Add Resource Modal -> Blue (same as Add Challenge)
-            header.style.backgroundColor = '#5e72e4'; // Blue
-            submitBtn.style.backgroundColor = '#5e72e4'; // Blue
+            header.style.backgroundColor = '#5e72e4'; 
+            submitBtn.style.backgroundColor = '#5e72e4'; 
 
             document.getElementById('action_add_res').disabled = false;
             document.getElementById('action_update_res').disabled = true;
             document.getElementById('res_id_defi').value = currentChallengeId; 
+            
+            // Trigger input check for default (PDF)
+            toggleInput();
         } else {
             document.getElementById('resFormTitle').innerText = "Edit Resource";
-            // STYLE: Edit Resource Modal -> Orange (same as Update Challenge)
-            header.style.backgroundColor = '#fb6340'; // Orange
-            submitBtn.style.backgroundColor = '#fb6340'; // Orange
+            header.style.backgroundColor = '#fb6340'; 
+            submitBtn.style.backgroundColor = '#fb6340'; 
 
             document.getElementById('action_add_res').disabled = true;
             document.getElementById('action_update_res').disabled = false;
@@ -756,9 +856,17 @@ if(!empty($allResources)) {
             document.getElementById('res_nom').value = resData.nom;
             document.getElementById('res_description').value = resData.description;
             document.getElementById('res_type').value = resData.type;
-            document.getElementById('res_url').value = resData.url;
+            
+            // Populate URL input regardless of type (in case they want to switch)
+            document.getElementById('res_url_input').value = resData.url;
+            
             document.getElementById('res_ordre').value = resData.ordre;
             document.getElementById('res_necessite_preuve').value = resData.necessite_preuve;
+            
+            toggleInput();
+            
+            // In edit mode, file input is optional
+            document.querySelector('.file-input').required = false;
         }
 
         document.getElementById('resourceFormModal').style.display = 'flex';
@@ -777,7 +885,6 @@ if(!empty($allResources)) {
         document.getElementById('deleteResourceModal').style.display = 'none';
     }
 
-    // --- AUTO OPEN AFTER PHP REDIRECT ---
     const urlParams = new URLSearchParams(window.location.search);
     const openResId = urlParams.get('open_resources');
     if (openResId) {
@@ -787,7 +894,6 @@ if(!empty($allResources)) {
         }, 100);
     }
     
-    // --- CLOSE MODALS ON CLICK OUTSIDE ---
     window.onclick = function(event) {
         if (event.target == document.getElementById('addChallengeModal')) closeAddModal();
         if (event.target == document.getElementById('editChallengeModal')) closeEditModal();

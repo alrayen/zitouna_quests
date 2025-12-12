@@ -1,19 +1,14 @@
 <?php
-// chat_api.php (Located in PROJET/Controller/)
-
 session_start();
-session_write_close(); // Prevent site freezing
-
+session_write_close(); 
 header('Content-Type: application/json');
 
-// --- 1. INCLUDES ---
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../Model/challenge.php';
 require_once __DIR__ . '/../Model/ressources-model.php';
 require_once __DIR__ . '/challenge-controller.php';
 require_once __DIR__ . '/ressources-controller.php';
 
-// --- 2. INPUT HANDLING ---
 $input = json_decode(file_get_contents('php://input'), true);
 $userMessage = $input['message'] ?? '';
 $challengeId = $input['challenge_id'] ?? 0;
@@ -23,11 +18,9 @@ if (trim($userMessage) === '') {
     exit;
 }
 
-// --- 3. FETCH DATA & DETERMINE PERSONA ---
 $challengeCtrl = new ChallengeController();
 $challenge = $challengeCtrl->getChallengeById($challengeId);
 
-// Define Tone based on Difficulty
 $difficulty = $challenge ? $challenge->getDifficulty() : 'General';
 $toneInstruction = "";
 
@@ -48,7 +41,6 @@ switch (strtolower($difficulty)) {
         $toneInstruction = "TONE: Be a helpful assistant.";
 }
 
-// --- 4. SMART LOGIC (Greeting vs Context) ---
 $cleanText = trim(strtolower($userMessage));
 $greetingWords = ['hi', 'hello', 'hey', 'bonjour', 'salut', 'yo', 'greetings'];
 $isGreeting = false;
@@ -63,10 +55,8 @@ if (strlen($cleanText) < 20) {
 }
 
 if ($isGreeting) {
-    // Greeting Mode: No context, just personality
     $systemPrompt = "You are an AI mentor. $toneInstruction The user just said hello. Reply with a short, welcoming greeting matching your tone.";
 } else {
-    // Context Mode: Full Brain Power
     $resourceCtrl = new RessourceController();
     $resources = $resourceCtrl->getResourcesByDefiId($challengeId);
     
@@ -86,7 +76,6 @@ if ($isGreeting) {
     }
 }
 
-// --- 5. CALL OLLAMA ---
 $apiUrl = 'http://127.0.0.1:11434/v1/chat/completions';
 
 $payload = [
@@ -116,16 +105,12 @@ if (curl_errno($ch)) {
     if (isset($decoded['choices'][0]['message']['content'])) {
         $rawReply = $decoded['choices'][0]['message']['content'];
         
-        // --- REASONING EXTRACTION ---
         $thoughtProcess = '';
-        // Extract content inside <think> tags
         if (preg_match('/<think>(.*?)<\/think>/s', $rawReply, $matches)) {
             $thoughtProcess = $matches[1];
-            // Remove the thought block from the main reply
             $rawReply = preg_replace('/<think>.*?<\/think>/s', '', $rawReply);
         }
         
-        // Send back Reply AND Thought separately
         echo json_encode([
             'reply' => trim($rawReply), 
             'thought' => trim($thoughtProcess)

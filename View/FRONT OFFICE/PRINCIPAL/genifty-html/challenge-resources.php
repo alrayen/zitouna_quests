@@ -5,6 +5,9 @@ require_once __DIR__ . '/../../../../Controller/challenge-controller.php';
 require_once __DIR__ . '/../../../../Model/ressources-model.php';
 require_once __DIR__ . '/../../../../Controller/ressources-controller.php';
 
+// --- NEW: Help Room Controller ---
+require_once __DIR__ . '/../../../../Controller/help-room-controller.php';
+
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     header("Location: challenge.php");
     exit();
@@ -22,6 +25,10 @@ if (!$challenge) {
 
 $ressourceController = new RessourceController();
 $resources = $ressourceController->getResourcesByDefiId($id_defi);
+
+// --- NEW: Fetch Active Help Rooms ---
+$helpController = new HelpRoomController();
+$activeRooms = $helpController->getActiveRoomsForChallenge($id_defi);
 
 // --- GAMIFICATION CHECK ---
 $userId = $_SESSION['user_id'] ?? 1; // Replace with real session logic
@@ -51,14 +58,11 @@ if (!$isCompleted) {
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Resources - <?php echo htmlspecialchars($challenge->getTitre()); ?></title>
     
-    <!-- CSS Dependencies -->
     <link rel="stylesheet" href="assets/css/plugins/fontawesome-pro-icons.css">
     <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
-    <!-- Syntax Highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark-reasonable.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
@@ -203,6 +207,72 @@ if (!$isCompleted) {
         .btn-complete:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); }
         .btn-complete.disabled { background: #444; color: #aaa; cursor: default; box-shadow: none; pointer-events: none; }
 
+        /* --- NEW: HELP ROOM BUTTON STYLES --- */
+        .btn-stuck {
+            background: rgba(255, 82, 82, 0.15);
+            color: #ff8a80;
+            border: 1px solid rgba(255, 82, 82, 0.4);
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            animation: pulse-border 2s infinite;
+        }
+        .btn-stuck:hover {
+            background: #ff5252;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 82, 82, 0.3);
+        }
+        .btn-stuck .icon-box {
+            background: rgba(255,255,255,0.1);
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .btn-join-room {
+            background: rgba(41, 182, 246, 0.15);
+            border: 1px solid rgba(41, 182, 246, 0.4);
+            color: #81d4fa;
+            padding: 8px 20px 8px 8px; /* Less padding left for avatar */
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        .btn-join-room:hover {
+            background: #29b6f6;
+            color: #000;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(41, 182, 246, 0.3);
+        }
+        .btn-join-room .host-avatar {
+            width: 35px; height: 35px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .btn-join-room .host-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .badge-live {
+            background: #ff1744; color: white;
+            font-size: 0.65rem; padding: 2px 6px;
+            border-radius: 4px; font-weight: 800;
+            letter-spacing: 0.5px;
+            animation: blink-live 1.5s infinite;
+        }
+
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 82, 82, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); } }
+        @keyframes blink-live { 50% { opacity: 0.5; } }
+
         /* --- CHAT STYLES --- */
         .chat-section {
             background: rgba(10, 30, 10, 0.55);
@@ -228,7 +298,6 @@ if (!$isCompleted) {
             gap: 15px;
         }
         
-        /* Dynamic Avatar Style */
         .chat-avatar {
             width: 50px; height: 50px;
             border-radius: 50%;
@@ -270,21 +339,19 @@ if (!$isCompleted) {
             border-top-right-radius: 5px;
         }
 
-        /* --- STRICT CHAT LAYOUT FIX --- */
         .chat-input-area {
             padding: 20px;
             background: rgba(0, 0, 0, 0.2);
             border-top: 1px solid rgba(100, 255, 100, 0.1);
-            display: flex; /* Flexbox is key */
-            align-items: center; /* Vertically center everything */
-            gap: 15px; /* Spacing between buttons and input */
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
         }
 
-        /* The Round Buttons (Mic & Send) */
         .chat-action-btn {
             width: 60px !important;
             height: 60px !important;
-            min-width: 60px !important; /* Prevents squishing */
+            min-width: 60px !important; 
             border-radius: 50% !important;
             background: #fff;
             color: #1b5e20;
@@ -296,8 +363,8 @@ if (!$isCompleted) {
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             transition: transform 0.2s, background 0.3s;
-            padding: 0 !important; /* Removes template padding */
-            margin: 0 !important; /* Resets template margins */
+            padding: 0 !important; 
+            margin: 0 !important; 
         }
 
         .chat-action-btn:hover {
@@ -305,14 +372,13 @@ if (!$isCompleted) {
             background: #69f0ae;
         }
 
-        /* The Text Input Field */
         .chat-input {
-            flex-grow: 1; /* Takes up all remaining space */
-            height: 60px !important; /* Match button height */
+            flex-grow: 1; 
+            height: 60px !important; 
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 30px !important;
-            padding: 0 25px; /* Text padding inside input */
+            padding: 0 25px; 
             color: #fff;
             outline: none;
             font-size: 1rem;
@@ -329,7 +395,6 @@ if (!$isCompleted) {
             color: rgba(255, 255, 255, 0.5);
         }
 
-        /* --- CODE & REASONING STYLES --- */
         .message code {
             background: rgba(255,255,255,0.1);
             padding: 2px 4px;
@@ -376,7 +441,6 @@ if (!$isCompleted) {
             font-family: monospace;
         }
 
-        /* --- ANIMATIONS & CONTROLS --- */
         .typing-indicator span {
             display: inline-block; width: 6px; height: 6px; background: #fff; border-radius: 50%;
             animation: typing 1.4s infinite ease-in-out both; margin: 0 2px;
@@ -452,7 +516,42 @@ if (!$isCompleted) {
                 <strong><?php echo count($resources); ?></strong> Files Available
             </div>
 
-            <!-- COMPLETE MISSION BUTTON -->
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                
+                <?php if (!empty($activeRooms)): ?>
+                    <h5 style="color: #69f0ae; margin-bottom: 15px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">
+                        <i class="fas fa-broadcast-tower"></i> Live Help Sessions
+                    </h5>
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <?php foreach ($activeRooms as $room): ?>
+                            <a href="help-room.php?room=<?php echo $room['room_code']; ?>" class="btn-join-room">
+                                <div class="host-avatar">
+                                    <?php if(!empty($room['photo'])): ?>
+                                        <img src="<?php echo htmlspecialchars($room['photo']); ?>" alt="img">
+                                    <?php else: ?>
+                                        <i class="fas fa-user"></i>
+                                    <?php endif; ?>
+                                </div>
+                                <span>Join <?php echo htmlspecialchars($room['prenom']); ?>'s Room</span>
+                                <span class="badge-live">LIVE</span>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+
+                <?php else: ?>
+                    <form action="create_room_action.php" method="POST">
+                        <input type="hidden" name="challenge_id" value="<?php echo $id_defi; ?>">
+                        <button type="submit" class="btn-stuck">
+                            <span class="icon-box"><i class="fas fa-life-ring"></i></span>
+                            <span>Stuck? Ask for Help</span>
+                        </button>
+                    </form>
+                    <p style="font-size: 0.85rem; color: #aaa; margin-top: 8px; font-style: italic;">
+                        Opens a voice room for other students to join.
+                    </p>
+                <?php endif; ?>
+                
+            </div>
             <?php if ($isCompleted): ?>
                 <button class="btn-complete disabled" disabled>
                     <i class="fas fa-check-circle"></i> Mission Completed
@@ -529,14 +628,12 @@ if (!$isCompleted) {
             </div>
             
             <div class="chat-input-area">
-                <!-- Mic Button with updated class -->
                 <button class="chat-action-btn" id="micBtn" onclick="toggleVoice()">
                     <i class="fas fa-microphone"></i>
                 </button>
                 
                 <input type="text" id="chatInput" class="chat-input" placeholder="Ask about this challenge or resources..." onkeypress="handleEnter(event)">
                 
-                <!-- Send Button with updated class -->
                 <button class="chat-action-btn" onclick="sendMessage()">
                     <i class="fas fa-paper-plane"></i>
                 </button>
@@ -549,15 +646,11 @@ if (!$isCompleted) {
         const challengeId = <?php echo $id_defi; ?>;
         const challengePoints = <?php echo $challenge->getPoints(); ?>;
 
-        // --- 1. GAMIFICATION FUNCTION ---
         async function completeMission() {
             const btn = document.getElementById('btnComplete');
-            
-            // 1. Visual feedback immediately
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
             
             try {
-                // 2. Call the Gamification API
                 const response = await fetch('../../../../Controller/gamification_api.php', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
@@ -571,18 +664,16 @@ if (!$isCompleted) {
                 const data = await response.json();
                 
                 if (data.status === 'success' || data.status === 'already_completed') {
-                    // 3. Success State
                     btn.innerHTML = '<i class="fas fa-check-circle"></i> Completed!';
                     btn.classList.add('disabled');
                     btn.disabled = true;
                     
-                    // 4. Celebration!
                     confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
-                    
+
                     if (data.level_up) {
                         setTimeout(() => {
-                            alert("🎉 LEVEL UP! You reached Level " + data.new_level + "!");
-                            confetti({ particleCount: 500, spread: 360, startVelocity: 50 });
+                            showLevelUpModal(data.new_level); 
+                            confetti({ particleCount: 500, spread: 360, startVelocity: 50, zIndex: 100000 });
                         }, 500);
                     }
                 } else {
@@ -768,7 +859,6 @@ if (!$isCompleted) {
                 let replyRaw = data.reply || "I'm having trouble connecting to my brain right now.";
                 
                 let thoughtProcess = '';
-                // Adjust parsing logic to match the new chat_api.php response
                 if (data.thought) {
                     thoughtProcess = data.thought;
                 } else {
@@ -819,6 +909,89 @@ if (!$isCompleted) {
                 console.error(error);
                 loadingDiv.innerText = "Error connecting to AI.";
             }
+        }
+    </script>
+
+    <div id="resourceLevelUpModal" class="levelup-overlay">
+        <div class="levelup-card">
+            <div class="levelup-shine"></div>
+            <div class="levelup-header">LEVEL UP!</div>
+            <div class="levelup-badge-container">
+                <i class="fas fa-trophy levelup-icon"></i>
+            </div>
+            <div class="levelup-text">You are now Level <span id="dynamicLevelNum"></span></div>
+            <div class="levelup-sub">New challenges unlocked! Keep pushing your limits.</div>
+            <button class="levelup-btn" onclick="closeResourceLevelUp()">AWESOME!</button>
+        </div>
+    </div>
+
+    <style>
+        .levelup-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); z-index: 999999;
+            display: none; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.5s ease;
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+        }
+        .levelup-overlay.active { display: flex; opacity: 1; }
+        
+        .levelup-card {
+            position: relative; width: 90%; max-width: 550px;
+            background: rgba(10, 10, 10, 0.65); 
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
+            border: 2px solid rgba(255, 215, 0, 0.5); border-radius: 40px;
+            padding: 60px 40px; text-align: center; color: #fff;
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.1), inset 0 0 20px rgba(255, 215, 0, 0.05);
+            transform: scale(0.5); transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+        .levelup-overlay.active .levelup-card { transform: scale(1); }
+
+        .levelup-shine {
+            position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+            transform: skewX(-25deg); animation: shine 6s infinite;
+        }
+        @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
+
+        .levelup-header {
+            font-size: 3.8rem; font-weight: 900; margin-bottom: 10px; text-transform: uppercase;
+            background: linear-gradient(to bottom, #fff, #ffd700, #ff8c00);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 4px 0px rgba(0,0,0,0.5)); animation: bounceIn 1s ease;
+        }
+        .levelup-icon { font-size: 7rem; color: #ffd700; filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.6)); margin: 20px 0; animation: float 4s infinite; }
+        .levelup-text { font-size: 1.6rem; margin-bottom: 10px; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .levelup-sub { font-size: 1.1rem; color: #e0e0e0; margin-bottom: 35px; opacity: 0.9; }
+        .levelup-btn {
+            background: linear-gradient(90deg, #ff8c00, #ffd700); border: none; color: #000;
+            padding: 15px 50px; font-size: 1.2rem; font-weight: 800; border-radius: 50px; cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); transition: all 0.3s; text-transform: uppercase;
+        }
+        .levelup-btn:hover { transform: scale(1.05); box-shadow: 0 0 40px rgba(255, 215, 0, 0.7); }
+        @keyframes bounceIn { 0% { opacity: 0; transform: translateY(-50px); } 60% { opacity: 1; transform: translateY(10px); } 100% { transform: translateY(0); } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+    </style>
+
+    <script>
+        function showLevelUpModal(newLevel) {
+            const levelSpan = document.getElementById('dynamicLevelNum');
+            if(levelSpan) levelSpan.innerText = newLevel;
+
+            const modal = document.getElementById('resourceLevelUpModal');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 50);
+        }
+
+        function closeResourceLevelUp() {
+            const modal = document.getElementById('resourceLevelUpModal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                window.location.href = 'challenge.php'; 
+            }, 500);
         }
     </script>
 
