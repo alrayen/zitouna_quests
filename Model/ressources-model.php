@@ -1,5 +1,4 @@
 <?php
-// Model/ressources-model.php
 
 require_once __DIR__ . '/../config.php';
 
@@ -13,7 +12,6 @@ class Ressource {
     private int $ordre;
     private bool $necessite_preuve;
 
-    // Constructor
     public function __construct(
         int $id_ressource = 0, 
         string $nom = "", 
@@ -34,7 +32,6 @@ class Ressource {
         $this->necessite_preuve = $necessite_preuve;
     }
 
-    // Getters
     public function getIdRessource(): int { return $this->id_ressource; }
     public function getNom(): string { return $this->nom; }
     public function getType(): string { return $this->type; }
@@ -44,7 +41,6 @@ class Ressource {
     public function getOrdre(): int { return $this->ordre; }
     public function getNecessitePreuve(): bool { return $this->necessite_preuve; }
 
-    // Setters
     public function setNom(string $nom): void { $this->nom = $nom; }
     public function setType(string $type): void { $this->type = $type; }
     public function setUrl(string $url): void { $this->url = $url; }

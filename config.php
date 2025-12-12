@@ -1,5 +1,6 @@
 <?php
-class config
+
+define('ABSOLUTE_UPLOAD_ROOT', '/Projet/View/BACK OFFICE/VIEW/build/assets/uploads/resources/');class config
 {   private static $pdo = null;
     public static function getConnexion()
     {

@@ -1,16 +1,13 @@
 <?php
-// Controller/ressources-controller.php
 
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../Model/ressources-model.php';
 
 class RessourceController {
 
-    // --- 1. ADD RESOURCE ---
     public function addResource(Ressource $ressource) {
         try {
             $pdo = config::getConnexion();
-            // Changed table name from 'ressources' to 'ressource'
             $query = "INSERT INTO ressource (nom, type, url, description, id_defi, ordre, necessite_preuve) 
                       VALUES (:nom, :type, :url, :description, :id_defi, :ordre, :necessite_preuve)";
             
@@ -32,11 +29,9 @@ class RessourceController {
         }
     }
 
-    // --- 2. UPDATE RESOURCE ---
     public function updateResource(Ressource $ressource) {
         try {
             $pdo = config::getConnexion();
-            // Changed table name from 'ressources' to 'ressource'
             $query = "UPDATE ressource SET 
                         nom = :nom, 
                         type = :type, 
@@ -66,11 +61,9 @@ class RessourceController {
         }
     }
 
-    // --- 3. DELETE RESOURCE ---
     public function deleteResource(int $id) {
         try {
             $pdo = config::getConnexion();
-            // Changed table name from 'ressources' to 'ressource'
             $query = "DELETE FROM ressource WHERE id_ressource = :id";
             $stmt = $pdo->prepare($query);
             $stmt->execute(['id' => $id]);
@@ -81,11 +74,9 @@ class RessourceController {
         }
     }
 
-    // --- 4. LIST ALL RESOURCES ---
     public function listResources() {
         try {
             $pdo = config::getConnexion();
-            // Changed table name from 'ressources' to 'ressource'
             $query = "SELECT * FROM ressource ORDER BY id_defi, ordre";
             $stmt = $pdo->query($query);
             
@@ -109,11 +100,9 @@ class RessourceController {
         }
     }
 
-    // --- 5. GET RESOURCES BY CHALLENGE ID (Specific Method for Frontend) ---
     public function getResourcesByDefiId(int $id_defi) {
         try {
             $pdo = config::getConnexion();
-            // Changed table name from 'ressources' to 'ressource'
             $query = "SELECT * FROM ressource WHERE id_defi = :id_defi ORDER BY ordre ASC";
             $stmt = $pdo->prepare($query);
             $stmt->execute(['id_defi' => $id_defi]);
@@ -138,11 +127,9 @@ class RessourceController {
         }
     }
     
-    // --- 6. GET SINGLE RESOURCE BY ID ---
     public function getResourceById(int $id) {
         try {
             $pdo = config::getConnexion();
-            // Changed table name from 'ressources' to 'ressource'
             $query = "SELECT * FROM ressource WHERE id_ressource = :id";
             $stmt = $pdo->prepare($query);
             $stmt->execute(['id' => $id]);

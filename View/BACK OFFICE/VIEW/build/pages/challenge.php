@@ -7,7 +7,6 @@ include_once(__DIR__ . '/../../../../../Model/ressources-model.php');
 $ChallengeController = new ChallengeController();
 $RessourceController = new RessourceController();
 
-// --- CHALLENGE ACTIONS ---
 if (isset($_POST['add_challenge'])) {
     $titre = $_POST['add_titre'];
     $description = $_POST['add_description'];
@@ -46,9 +45,6 @@ if (isset($_POST['delete_challenge'])) {
     exit();
 }
 
-// --- RESOURCE ACTIONS ---
-
-// 1. ADD RESOURCE (Updated for File Upload)
 if (isset($_POST['add_resource'])) {
     $nom = $_POST['res_nom'];
     $type = $_POST['res_type'];
@@ -59,7 +55,6 @@ if (isset($_POST['add_resource'])) {
     
     $finalUrl = '';
 
-    // Logic: If PDF, handle file upload. Else, use URL input.
     if ($type === 'PDF') {
         if (isset($_FILES['file_upload']) && $_FILES['file_upload']['error'] === 0) {
             $allowed = ['pdf'];
@@ -68,8 +63,7 @@ if (isset($_POST['add_resource'])) {
 
             if (in_array($fileExt, $allowed)) {
                 $newFileName = uniqid('res_', true) . '.' . $fileExt;
-                // Path relative to where this PHP file runs
-                // Adjust this path if your 'assets' folder is somewhere else!
+                
                 $uploadDir = '../assets/uploads/resources/'; 
                 
                 if (!is_dir($uploadDir)) {
@@ -79,10 +73,8 @@ if (isset($_POST['add_resource'])) {
                 $destPath = $uploadDir . $newFileName;
 
                 if (move_uploaded_file($_FILES['file_upload']['tmp_name'], $destPath)) {
-                    // Save relative path for front-end access
                     $finalUrl = 'assets/uploads/resources/' . $newFileName; 
                 } else {
-                    // Error handling (you might want a redirect with error msg)
                     die("Error moving uploaded file."); 
                 }
             } else {
@@ -90,11 +82,9 @@ if (isset($_POST['add_resource'])) {
             }
         }
     } else {
-        // For Video/Link/Image types, use the text input
         $finalUrl = $_POST['res_url_input'];
     }
 
-    // Fallback if upload failed or input empty
     if(empty($finalUrl)) $finalUrl = "#";
 
     $newResource = new Ressource(0, $nom, $type, $finalUrl, $description, $id_defi, $ordre, $necessite_preuve);
@@ -103,15 +93,12 @@ if (isset($_POST['add_resource'])) {
     exit();
 }
 
-// 2. UPDATE RESOURCE (Simplified - usually doesn't re-upload file for simplicity here)
 if (isset($_POST['update_resource'])) {
     $id = (int)$_POST['res_edit_id'];
     $nom = $_POST['res_nom'];
     $type = $_POST['res_type'];
     
-    // In edit mode, we might just keep the old URL if a new one isn't provided
-    // For this implementation, we'll assume basic text edit or URL edit
-    // (Full re-upload logic in Edit is complex, using text input for now)
+    
     $url = $_POST['res_url_input']; 
     
     $description = substr($_POST['res_description'], 0, 500);
@@ -179,7 +166,6 @@ if(!empty($allResources)) {
         .custom-modal-box.wide-modal { max-width: 900px !important; }
         .error-msg { color: #e53e3e; font-size: 0.75rem; font-weight: bold; margin-top: 0.25rem; display: none; }
 
-        /* DRAG & DROP ZONE STYLES */
         .drop-zone {
             border: 2px dashed #cbd5e1;
             border-radius: 10px;
@@ -680,7 +666,6 @@ if(!empty($allResources)) {
     const ALL_RESOURCES = <?php echo json_encode($resourcesJson); ?>;
     let currentChallengeId = null;
 
-    // --- DRAG & DROP LOGIC ---
     function toggleInput() {
         const type = document.getElementById('res_type').value;
         const fileGroup = document.getElementById('fileInputGroup');
@@ -691,7 +676,6 @@ if(!empty($allResources)) {
         if (type === 'PDF') {
             fileGroup.style.display = 'block';
             urlGroup.style.display = 'none';
-            // In add mode, make file required. In edit, it's optional (keep old file)
             if(document.getElementById('action_add_res').disabled === false) {
                  fileInput.required = true;
             }
@@ -707,7 +691,6 @@ if(!empty($allResources)) {
     const dropZone = document.getElementById('dropZone');
     const fileNameDisplay = document.getElementById('fileNameDisplay');
 
-    // Visual feedback for drag
     ['dragenter', 'dragover'].forEach(eventName => {
         dropZone.addEventListener(eventName, (e) => {
             e.preventDefault();
@@ -732,7 +715,6 @@ if(!empty($allResources)) {
             dropZone.querySelector('i').className = "fas fa-check-circle";
         }
     }
-    // -------------------------
 
     function openAddModal() {
         document.getElementById('addChallengeModal').style.display = 'flex';
@@ -823,7 +805,6 @@ if(!empty($allResources)) {
         const form = document.getElementById('resourceForm');
         form.reset();
         
-        // Reset Drop Zone Visuals
         dropZone.classList.remove('has-file');
         dropZone.querySelector('p').innerText = "Drag & Drop your PDF here";
         dropZone.querySelector('i').className = "fas fa-cloud-upload-alt";
@@ -841,7 +822,6 @@ if(!empty($allResources)) {
             document.getElementById('action_update_res').disabled = true;
             document.getElementById('res_id_defi').value = currentChallengeId; 
             
-            // Trigger input check for default (PDF)
             toggleInput();
         } else {
             document.getElementById('resFormTitle').innerText = "Edit Resource";
@@ -857,7 +837,6 @@ if(!empty($allResources)) {
             document.getElementById('res_description').value = resData.description;
             document.getElementById('res_type').value = resData.type;
             
-            // Populate URL input regardless of type (in case they want to switch)
             document.getElementById('res_url_input').value = resData.url;
             
             document.getElementById('res_ordre').value = resData.ordre;
@@ -865,7 +844,6 @@ if(!empty($allResources)) {
             
             toggleInput();
             
-            // In edit mode, file input is optional
             document.querySelector('.file-input').required = false;
         }
 

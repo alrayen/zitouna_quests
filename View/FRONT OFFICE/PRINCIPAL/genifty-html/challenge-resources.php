@@ -5,9 +5,8 @@ require_once __DIR__ . '/../../../../Controller/challenge-controller.php';
 require_once __DIR__ . '/../../../../Model/ressources-model.php';
 require_once __DIR__ . '/../../../../Controller/ressources-controller.php';
 
-// --- NEW: Help Room Controller ---
 require_once __DIR__ . '/../../../../Controller/help-room-controller.php';
-
+$file_prefix = '/Projet/View/BACK OFFICE/VIEW/build/uploads/';
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     header("Location: challenge.php");
     exit();
@@ -26,22 +25,17 @@ if (!$challenge) {
 $ressourceController = new RessourceController();
 $resources = $ressourceController->getResourcesByDefiId($id_defi);
 
-// --- NEW: Fetch Active Help Rooms ---
 $helpController = new HelpRoomController();
 $activeRooms = $helpController->getActiveRoomsForChallenge($id_defi);
 
-// --- GAMIFICATION CHECK ---
-$userId = $_SESSION['user_id'] ?? 1; // Replace with real session logic
+$userId = $_SESSION['user_id'] ?? 1; 
 $pdo = config::getConnexion();
 
-// Check if mission is already completed
 $stmt = $pdo->prepare("SELECT id FROM user_challenge_progress WHERE user_id = ? AND challenge_id = ? AND status = 'completed'");
 $stmt->execute([$userId, $id_defi]);
 $isCompleted = $stmt->rowCount() > 0;
 
-// If not completed, mark as 'started' (if not already)
 if (!$isCompleted) {
-    // Check if entry exists at all
     $checkStart = $pdo->prepare("SELECT id FROM user_challenge_progress WHERE user_id = ? AND challenge_id = ?");
     $checkStart->execute([$userId, $id_defi]);
     if ($checkStart->rowCount() == 0) {
@@ -66,7 +60,6 @@ if (!$isCompleted) {
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        /* --- CORE ANIMATIONS & BACKGROUND --- */
         @keyframes moveGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes float { 0% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-20px) translateX(20px); } 100% { transform: translateY(0) translateX(0); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -88,7 +81,6 @@ if (!$isCompleted) {
 
         .container { max-width: 1000px; position: relative; z-index: 2; } 
 
-        /* --- HEADER & RESOURCES --- */
         .header-card {
             background: rgba(20, 60, 20, 0.35);
             backdrop-filter: blur(15px);
@@ -193,7 +185,6 @@ if (!$isCompleted) {
             color: #ccc; 
         }
 
-        /* --- COMPLETE BUTTON --- */
         .btn-complete {
             background: linear-gradient(45deg, #ffd700, #ffa500);
             color: #000; border: none;
@@ -207,7 +198,6 @@ if (!$isCompleted) {
         .btn-complete:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); }
         .btn-complete.disabled { background: #444; color: #aaa; cursor: default; box-shadow: none; pointer-events: none; }
 
-        /* --- NEW: HELP ROOM BUTTON STYLES --- */
         .btn-stuck {
             background: rgba(255, 82, 82, 0.15);
             color: #ff8a80;
@@ -273,7 +263,6 @@ if (!$isCompleted) {
         @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 82, 82, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); } }
         @keyframes blink-live { 50% { opacity: 0.5; } }
 
-        /* --- CHAT STYLES --- */
         .chat-section {
             background: rgba(10, 30, 10, 0.55);
             backdrop-filter: blur(15px);
@@ -599,9 +588,8 @@ if (!$isCompleted) {
                             <?php endif; ?>
                         </div>
                         <div class="res-action">
-                            <a href="<?php echo htmlspecialchars($res->getUrl()); ?>" target="_blank" class="btn-access">
-                                <?php echo (strpos($type, 'link') !== false) ? 'Visit Link' : 'Download'; ?> 
-                                <i class="fas fa-external-link-alt" style="font-size: 1.2rem;"></i>
+                            <a href="<?php echo ABSOLUTE_UPLOAD_ROOT . htmlspecialchars($res->getUrl()); ?>" target="_blank" class="btn-access">
+                                Open <i class="fas fa-external-link-alt"></i>
                             </a>
                         </div>
                     </div>
@@ -686,7 +674,6 @@ if (!$isCompleted) {
             }
         }
 
-        // --- 2. TTS WARM-UP & HELPERS ---
         function warmUpTTS() {
             if ('speechSynthesis' in window && !window.speechSynthesis.getVoices().length) {
                 window.speechSynthesis.getVoices(); 
@@ -702,7 +689,6 @@ if (!$isCompleted) {
             if (e.key === 'Enter') sendMessage();
         }
 
-        // --- 3. DYNAMIC MENTOR PERSONA ---
         function updateAvatarByDifficulty(difficulty) {
             const avatar = document.querySelector('.chat-avatar');
             const avatarIcon = document.querySelector('.chat-avatar i');
@@ -724,7 +710,6 @@ if (!$isCompleted) {
         updateAvatarByDifficulty('<?php echo strtolower($challenge->getDifficulty()); ?>');
 
 
-        // --- 4. SPEECH RECOGNITION (Voice Input) ---
         let recognition;
         if ('webkitSpeechRecognition' in window) {
             recognition = new webkitSpeechRecognition();
@@ -753,7 +738,6 @@ if (!$isCompleted) {
             else alert("Voice input not supported in this browser.");
         }
 
-        // --- 5. TYPEWRITER ---
         function typeWriter(element, text, index = 0) {
             if (index < text.length) {
                 if (text.charAt(index) === '<') {
@@ -775,7 +759,6 @@ if (!$isCompleted) {
             }
         }
 
-        // --- 6. OPTIMIZED SPEAK TEXT ---
         function speakText(btn) {
             if (!('speechSynthesis' in window)) {
                 alert("Sorry, your browser doesn't support Text-to-Speech!");
@@ -817,14 +800,12 @@ if (!$isCompleted) {
             window.speechSynthesis.speak(utterance);
         }
 
-        // --- 7. HIGHLIGHTING ---
         function highlightCode() {
             document.querySelectorAll('.message pre code').forEach((block) => {
                 hljs.highlightElement(block);
             });
         }
 
-        // --- 8. SEND MESSAGE ---
         async function sendMessage() {
             const inputField = document.getElementById('chatInput');
             const message = inputField.value.trim();

@@ -10,10 +10,7 @@ class ChallengeController {
         $this->db = config::getConnexion();
     }
 
-    /**
-     * READ: Fetches all challenges from the database.
-     * @return array An array of Challenge objects.
-     */
+    
     public function listChallenges(): array {
         $sql = "SELECT * FROM challenge";
         try {
@@ -44,11 +41,7 @@ class ChallengeController {
         }
     }
 
-    /**
-     * READ: Fetches a single challenge by its ID.
-     * @param int $id The ID of the challenge to fetch.
-     * @return Challenge|null A Challenge object if found, otherwise null.
-     */
+    
     public function getChallengeById(int $id): ?Challenge {
         $sql = "SELECT * FROM challenge WHERE id_defi = :id";
         try {
@@ -76,11 +69,7 @@ class ChallengeController {
         }
     }
 
-    /**
-     * CREATE: Adds a new challenge to the database.
-     * @param Challenge $challenge A Challenge object populated with the new data.
-     * @return bool True on success, false on failure.
-     */
+   
     public function addChallenge(Challenge $challenge): bool {
         $sql = "INSERT INTO challenge (titre, description, categorie, points, time, difficulty, status, place) 
                 VALUES (:titre, :description, :categorie, :points, :time, :difficulty, :status, :place)";
@@ -103,11 +92,7 @@ class ChallengeController {
         }
     }
 
-    /**
-     * UPDATE: Updates an existing challenge in the database.
-     * @param Challenge $challenge A Challenge object with the ID and updated data.
-     * @return bool True on success, false on failure.
-     */
+   
     public function updateChallenge(Challenge $challenge): bool {
         $sql = "UPDATE challenge 
                 SET titre = :titre, 
@@ -140,11 +125,7 @@ class ChallengeController {
         }
     }
 
-    /**
-     * DELETE: Deletes a challenge from the database.
-     * @param int $id The ID of the challenge to delete.
-     * @return bool True on success, false on failure.
-     */
+    
     public function deleteChallenge(int $id): bool {
         $sql = "DELETE FROM challenge WHERE id_defi = :id";
         try {
