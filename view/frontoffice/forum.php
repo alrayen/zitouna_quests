@@ -1395,47 +1395,72 @@ function getImageUrl($image_name, $post_id) {
         }
         
         // Vérifier les paramètres URL pour afficher les notifications
-        function checkUrlParams() {
-            const urlParams = new URLSearchParams(window.location.search);
-            
-            if (urlParams.has('success')) {
-                const action = urlParams.get('success');
-                
-                switch(action) {
-                    case 'post_added':
-                        showNotification('success', 'Post créé !', 'Votre post a été publié avec succès.');
-                        break;
-                    case 'post_updated':
-                        showNotification('success', 'Post modifié !', 'Votre post a été mis à jour avec succès.');
-                        break;
-                    case 'post_deleted':
-                        showNotification('success', 'Post supprimé !', 'Le post a été supprimé avec succès.');
-                        break;
-                    case 'comment_added':
-                        showNotification('success', 'Commentaire ajouté !', 'Votre commentaire a été publié avec succès.');
-                        break;
-                    case 'comment_updated':
-                        showNotification('success', 'Commentaire modifié !', 'Votre commentaire a été mis à jour avec succès.');
-                        break;
-                    case 'comment_deleted':
-                        showNotification('success', 'Commentaire supprimé !', 'Le commentaire a été supprimé avec succès.');
-                        break;
-                }
-                
-                // Nettoyer l'URL sans recharger la page
-                const cleanUrl = window.location.pathname;
-                window.history.replaceState({}, document.title, cleanUrl);
-            }
-            
-            if (urlParams.has('error')) {
-                const error = urlParams.get('error');
-                showNotification('error', 'Erreur', error || 'Une erreur est survenue.');
-                
-                // Nettoyer l'URL
-                const cleanUrl = window.location.pathname;
-                window.history.replaceState({}, document.title, cleanUrl);
-            }
+        // Vérifier les paramètres URL pour afficher les notifications
+function checkUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    if (urlParams.has('success')) {
+        const action = urlParams.get('success');
+        
+        switch(action) {
+            case 'post_added':
+                showNotification('success', 'Post créé !', 'Votre post a été publié avec succès.');
+                break;
+            case 'post_updated':
+                showNotification('success', 'Post modifié !', 'Votre post a été mis à jour avec succès.');
+                break;
+            case 'post_deleted':
+                showNotification('success', 'Post supprimé !', 'Le post a été supprimé avec succès.');
+                break;
+            case 'comment_added':
+                showNotification('success', 'Commentaire ajouté !', 'Votre commentaire a été publié avec succès.');
+                break;
+            case 'comment_updated':
+                showNotification('success', 'Commentaire modifié !', 'Votre commentaire a été mis à jour avec succès.');
+                break;
+            case 'comment_deleted':
+                showNotification('success', 'Commentaire supprimé !', 'Le commentaire a été supprimé avec succès.');
+                break;
         }
+        
+        // Nettoyer l'URL sans recharger la page
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+    }
+    
+    if (urlParams.has('error')) {
+        const error = urlParams.get('error');
+        
+        // Gérer les erreurs spécifiques
+        if (error === 'inappropriate_content') {
+            showNotification('error', 'Contenu inapproprié', 'Votre commentaire contient du contenu inapproprié et ne peut pas être publié. Veuillez modifier votre message.');
+            
+            // Si un post_id est présent, ouvrir la section commentaires
+            const postId = urlParams.get('post');
+            if (postId) {
+                setTimeout(() => {
+                    const commentsSection = document.getElementById('comments-' + postId);
+                    const addCommentForm = document.getElementById('add-comment-form-' + postId);
+                    
+                    if (commentsSection) {
+                        commentsSection.classList.add('active');
+                        commentsSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    
+                    if (addCommentForm) {
+                        addCommentForm.classList.add('active');
+                    }
+                }, 500);
+            }
+        } else {
+            showNotification('error', 'Erreur', error || 'Une erreur est survenue.');
+        }
+        
+        // Nettoyer l'URL
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+    }
+}
         
         // Appeler au chargement de la page
         document.addEventListener('DOMContentLoaded', checkUrlParams);

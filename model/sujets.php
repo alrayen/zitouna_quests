@@ -7,18 +7,24 @@ class Sujet
     private $date;
     private $titre;
     private $image;
+    private $like;
 
 
-    public function __construct($nom,$date,$titre,$image)
+    public function __construct($nom,$date,$titre,$image,$likes)
     {
       
         $this->nom=$nom;
         $this->date=$date;
         $this->image=$image;
+        $this->likes=$likes;
     }
     public function getId()
     {
         return $this->id;
+    }
+    public function getLikes()
+    {
+        return $this->likes;
     }
     public function getDate()
     {
@@ -56,6 +62,10 @@ class Sujet
     public function setImage( $image)
     {
         $this->image=$image;
+    }
+    public function setLikes( $likes)
+    {
+        $this->likes=$likes;
     }
 }
 

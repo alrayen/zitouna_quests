@@ -1,5 +1,6 @@
 <?php 
 	
+	define('GEMINI_API_KEY','AIzaSyDBzFWeL_iDkMAFRAcAT6ZeqRgcqNygREc');
 	function getDatabaseConnexion() {
 		try {
 		    $user = "root";
