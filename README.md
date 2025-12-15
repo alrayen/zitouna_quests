@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="logo2.png" alt="Zitouna Quest Logo" width="300"/>
+  <img src="View/FRONT%20OFFICE/PRINCIPAL/genifty-html/assets/images/logo2.png" alt="Zitouna Quest Logo" width="300"/>
   <br>
   <h1>🌿 Zitouna Quest</h1>
   <p>
