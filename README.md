@@ -1,7 +1,6 @@
 <div align="center">
   <img src="View/FRONT%20OFFICE/PRINCIPAL/genifty-html/assets/images/logo/logo2.png" alt="Zitouna Quest Logo" width="300"/>
-  <br>
-  <h1>🌿 Zitouna Quest</h1>
+ 
   <p>
     <b>Apprendre, Jouer, Progresser.</b><br>
     Une plateforme web interactive pour tester ses connaissances à travers des quêtes et des défis ludiques.
