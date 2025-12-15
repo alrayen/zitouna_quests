@@ -42,8 +42,6 @@ Ce projet a été réalisé dans le cadre de notre cursus universitaire (2025).
 ## 📸 Aperçu de l'interface
 
 | Page d'Accueil |
-| :---: | :---: |
-
 | <img width="1899" height="905" alt="captureg1" src="https://github.com/user-attachments/assets/a72ecf4e-8b62-48fd-b6c0-3ccbaef50ba3" /> |
 <br>
 | Interface de Quiz |
