@@ -47,10 +47,10 @@ Ce projet a été réalisé dans le cadre de notre cursus universitaire (2025).
 
 ## 👥 L'Équipe
 
-Mohamed Ben Hariz  
-Rayen Gaied 
-Ahmed El Mokhtar
-Naffisatou Souley BouBou
+Mohamed Ben Hariz  <br>
+Rayen Gaied <br>
+Ahmed El Mokhtar<br>
+Naffisatou Souley BouBou <br>
 Hossem Laasili
 
 ---
