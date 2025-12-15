@@ -10,7 +10,6 @@ if ($session_id === 0 || $current_user_id === 0) {
     exit;
 }
 
-// Puzzle Setup
 $puzzle_bg = "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=300&q=80"; 
 $quiz_title = "Mystery Quest";
 
@@ -35,7 +34,10 @@ try {
     <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/plugins/fontawesome-pro-icons.css">
-
+	<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
     <style>
         @keyframes moveGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         body.rt_bg-secondary {
@@ -86,7 +88,13 @@ try {
 </head>
 
 <body class="rt_bg-secondary">
-    
+    <div id="gesture-container" style="position: fixed; bottom: 20px; right: 20px; width: 220px; height: 165px; border: 3px solid #00E6A7; border-radius: 12px; z-index: 9999; background: #000; box-shadow: 0 0 20px rgba(0,230,167,0.5);">
+    <video id="input_video" style="display: none;"></video>
+    <canvas id="output_canvas" width="220" height="165" style="width: 100%; height: 100%; border-radius: 8px;"></canvas>
+    <div id="gesture-status" style="position: absolute; top: 0; left: 0; width:100%; background: rgba(0,0,0,0.8); color: #fff; padding: 4px; font-size: 12px; text-align: center; border-radius: 8px 8px 0 0;">
+        🖐 Loading AI...
+    </div>
+</div>
     <div class="container-fluid" style="padding-top: 50px;">
         <div class="row justify-content-center">
             
@@ -144,6 +152,111 @@ try {
 
 <script src="assets/js/vendor/jquery.min.js"></script>
 <script>
+  
+    const videoElement = document.getElementById('input_video');
+    const canvasElement = document.getElementById('output_canvas');
+    const canvasCtx = canvasElement.getContext('2d');
+    const statusDiv = document.getElementById('gesture-status');
+
+    const REQUIRED_HOLD_FRAMES = 15; 
+    let currentHoldFrames = 0;
+    let lastDetectedFingerCount = -1;
+
+    function onResults(results) {
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+        if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+            const landmarks = results.multiHandLandmarks[0];
+            
+            drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: '#00E6A7', lineWidth: 2});
+            drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 1});
+
+            let fingersUp = 0;
+            if (landmarks[8].y < landmarks[6].y) fingersUp++;
+            if (landmarks[12].y < landmarks[10].y) fingersUp++;
+            if (landmarks[16].y < landmarks[14].y) fingersUp++;
+            if (landmarks[20].y < landmarks[18].y) fingersUp++;
+
+            statusDiv.innerHTML = `🖐 Fingers: <strong>${fingersUp}</strong>`;
+
+            if (fingersUp >= 1 && fingersUp <= 4) {
+                highlightPotentialChoice(fingersUp);
+
+                if (fingersUp === lastDetectedFingerCount) {
+                    currentHoldFrames++;
+                    let percent = Math.min(100, Math.round((currentHoldFrames/REQUIRED_HOLD_FRAMES)*100));
+                    statusDiv.innerHTML += ` <div style="height:4px; width:${percent}%; background:#00E6A7; margin-top:2px;"></div>`;
+
+                    if (currentHoldFrames === REQUIRED_HOLD_FRAMES) {
+                        triggerAnswerClick(fingersUp);
+                        currentHoldFrames = 0; 
+                    }
+                } else {
+                    currentHoldFrames = 0;
+                    lastDetectedFingerCount = fingersUp;
+                    resetHighlights();
+                }
+            } else {
+                currentHoldFrames = 0;
+                lastDetectedFingerCount = -1;
+                resetHighlights();
+            }
+        } else {
+            statusDiv.innerHTML = "👀 Show hand to answer";
+            currentHoldFrames = 0;
+            resetHighlights();
+        }
+        canvasCtx.restore();
+    }
+
+    function highlightPotentialChoice(num) {
+        $('.option-btn').css('border', '1px solid rgba(255, 255, 255, 0.3)');
+        $(`#option-btn-${num}`).css('border', '3px solid #00E6A7');
+    }
+
+    function resetHighlights() {
+        $('.option-btn').css('border', '1px solid rgba(255, 255, 255, 0.3)');
+    }
+
+    function triggerAnswerClick(number) {
+        const btnId = `option-btn-${number}`;
+        const btn = document.getElementById(btnId);
+        
+        if (btn && !btn.classList.contains('disabled')) {
+            statusDiv.innerHTML = `✅ Selected Option ${number}`;
+            btn.click();
+            
+            btn.style.transform = "scale(0.98)";
+            setTimeout(() => btn.style.transform = "scale(1)", 100);
+        }
+    }
+
+    const hands = new Hands({locateFile: (file) => {
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+    }});
+
+    hands.setOptions({
+        maxNumHands: 1,
+        modelComplexity: 1,
+        minDetectionConfidence: 0.7,
+        minTrackingConfidence: 0.5
+    });
+
+    hands.onResults(onResults);
+
+    const camera = new Camera(videoElement, {
+        onFrame: async () => {
+            await hands.send({image: videoElement});
+        },
+        width: 320,
+        height: 240
+    });
+    
+    camera.start();
+</script>
+<script>
     const SESSION_ID = <?php echo $session_id; ?>;
     const USER_ID = <?php echo $current_user_id; ?>;
     
@@ -192,7 +305,6 @@ try {
                 }
             });
 
-            // --- AI HINT CLICK LOGIC (Standard POST) ---
             $('#ai-hint-btn').click(function() {
                 const $btn = $(this);
                 const $hintBox = $('#ai-hint-box');
@@ -304,12 +416,19 @@ try {
                         }, botDelay);
                     }
 
-                    response.options.forEach(option => {
-                        const optionHtml = $(`<li class="option-btn">${option.text}</li>`);
-                        optionHtml.data('option-id', option.option_id);
-                        optionHtml.on('click', submitAnswer);
-                        $('#options-list').append(optionHtml);
-                    });
+                    // --- MODIFIED SECTION FOR GESTURE CONTROL ---
+response.options.forEach((option, index) => {
+    // We add an ID like "option-btn-1", "option-btn-2" based on the index
+    const optionHtml = $(`<li class="option-btn" id="option-btn-${index + 1}">${option.text}</li>`);
+    
+    // Add a visual badge so user knows 1 finger = this button
+    optionHtml.prepend(`<span style="background:rgba(0,0,0,0.3); padding:2px 8px; border-radius:5px; margin-right:10px; font-weight:bold;">${index + 1}🖐</span>`);
+    
+    optionHtml.data('option-id', option.option_id);
+    optionHtml.on('click', submitAnswer);
+    $('#options-list').append(optionHtml);
+});
+// ---------------------------------------------
                 }
             }
         });

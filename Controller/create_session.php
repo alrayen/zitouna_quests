@@ -51,9 +51,6 @@ try {
     $pdo->beginTransaction();
 
 
-
-    // 1. Créer la session
-
     $sql_session = "INSERT INTO online_sessions (code_invitation, host_user_id) VALUES (?, ?)";
 
     $stmt_session = $pdo->prepare($sql_session);
@@ -63,8 +60,6 @@ try {
     $session_id = $pdo->lastInsertId();
 
 
-
-    // 2. Ajouter le Host comme joueur de la session
 
     $sql_player = "INSERT INTO session_players (session_id, user_id, is_host) VALUES (?, ?, TRUE)";
 

@@ -7,7 +7,6 @@ $session_id = isset($_GET['session']) ? (int)$_GET['session'] : 0;
 $current_user_id = $_SESSION['user_id'] ?? 0;
 $code_invitation = 'N/A';
 
-// 1. Get Session Info & Generate QR URL
 if ($session_id > 0) {
     try {
         $stmt = $pdo->prepare("SELECT code_invitation FROM online_sessions WHERE session_id = ?");
@@ -16,13 +15,10 @@ if ($session_id > 0) {
         if ($result) {
             $code_invitation = htmlspecialchars($result['code_invitation']);
             
-            // --- GENERATE QR LINK ---
             $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
-            // Dynamically find the path to join_scan.php (assumed to be in same folder)
             $currentDir = dirname($_SERVER['PHP_SELF']);
             $joinLink = $protocol . "://" . $_SERVER['HTTP_HOST'] . $currentDir . "/join_scan.php?code=" . $code_invitation;
             
-            // Use Free API to generate QR Image
             $qrImage = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($joinLink);
         }
     } catch (Exception $e) { }
@@ -33,7 +29,6 @@ if ($session_id === 0 || $current_user_id === 0) {
     exit;
 }
 
-// 2. Fetch Categories
 $categories = [];
 try {
     $catStmt = $pdo->query("SELECT DISTINCT categorie FROM quiz WHERE categorie IS NOT NULL AND categorie != '' ORDER BY categorie"); 

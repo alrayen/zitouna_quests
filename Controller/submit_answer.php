@@ -1,7 +1,4 @@
 <?php
-// Controller/submit_answer.php
-
-// 1. CLEANING MODE ON
 ob_start();
 ini_set('display_errors', 0);
 error_reporting(0);
@@ -27,14 +24,12 @@ $option_id = isset($_POST['option_id']) ? (int)$_POST['option_id'] : 0;
 try {
     $pdo = config::getConnexion();
 
-    // Check if already answered
     $checkStmt = $pdo->prepare("SELECT id FROM session_answers WHERE session_id=? AND user_id=? AND question_index=?");
     $checkStmt->execute([$session_id, $user_id, $question_index]);
     if ($checkStmt->fetch()) {
         throw new Exception('Déjà répondu');
     }
 
-    // Get Quiz ID
     $sessStmt = $pdo->prepare("SELECT current_quiz_id FROM online_sessions WHERE session_id = ?");
     $sessStmt->execute([$session_id]);
     $session = $sessStmt->fetch();
@@ -43,15 +38,13 @@ try {
     
     $quiz_id = $session['current_quiz_id'];
 
-    // Get Question
     if (!class_exists('QuestionController')) {
         throw new Exception("Controller introuvable");
     }
     
     $qController = new QuestionController();
     $questions = $qController->listQuestionsByQuizId($quiz_id);
-    
-    // Safety check for index
+
     $array_index = $question_index - 1;
     if (!isset($questions[$array_index])) {
         throw new Exception("Question introuvable");
@@ -59,7 +52,6 @@ try {
 
     $q = $questions[$array_index]; 
 
-    // Verify Answer
     $selected_text = "";
     if ($option_id == 1) $selected_text = $q->getOption1();
     if ($option_id == 2) $selected_text = $q->getOption2();
@@ -67,28 +59,21 @@ try {
     if ($option_id == 4) $selected_text = $q->getOption4();
 
     $correct_text = $q->getBonneReponse();
-    
-    // Compare (Trim to be safe)
+
     $is_correct = (trim($selected_text) === trim($correct_text));
     $points = $is_correct ? 10 : 0; 
 
-    // Record Answer
     $insertStmt = $pdo->prepare("INSERT INTO session_answers (session_id, user_id, question_index, submitted_answer, is_correct, points_earned) VALUES (?, ?, ?, ?, ?, ?)");
     $insertStmt->execute([$session_id, $user_id, $question_index, utf8_encode($selected_text), $is_correct ? 1 : 0, $points]);
 
-    // Update Score
     if ($is_correct) {
         $scoreStmt = $pdo->prepare("UPDATE session_players SET score_total = score_total + ? WHERE session_id = ? AND user_id = ?");
         $scoreStmt->execute([$points, $session_id, $user_id]);
     }
 
-    // ======================================================
-    // NEW BLOCK: CHECK END OF QUIZ & SAVE COLLECTION
-    // ======================================================
     $collection_unlocked = false;
     $total_questions = count($questions);
 
-    // If this is the LAST question (and they answered it)
     if ($question_index >= $total_questions) {
         
         // 1. Fetch Quiz Title (Needed for the Image Prompt)
@@ -114,7 +99,6 @@ try {
             }
         }
     }
-    // ======================================================
 
     $response = [
         'success' => true,
@@ -128,7 +112,6 @@ try {
     $response = ['success' => false, 'message' => $e->getMessage()];
 }
 
-// 2. CLEAN AND SEND
 ob_end_clean();
 echo json_encode($response);
 ?>

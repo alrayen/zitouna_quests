@@ -1,12 +1,9 @@
 <?php
-// Controller/get_ai_hint.php
 
-// 1. PREVENT HTML ERROR OUTPUT
 ini_set('display_errors', 0); 
 error_reporting(0);
 header('Content-Type: application/json');
 
-// 2. CATCH FATAL ERRORS
 register_shutdown_function(function() {
     $error = error_get_last();
     if ($error && ($error['type'] === E_ERROR || $error['type'] === E_PARSE)) {
@@ -94,8 +91,6 @@ try {
     curl_close($ch);
 
     $json = json_decode($api_result, true);
-
-    // 7. PARSE RESPONSE
     if (isset($json['error'])) {
         $hint = "Hint: Focus on the keywords.";
     } else {

@@ -28,14 +28,8 @@ class QuestionController {
         } catch (PDOException $e) { die('Error: ' . $e->getMessage()); }
     }
 
-    // --- NEW FUNCTIONS START HERE ---
-// In question-controller.php
-
-// Change the signature to require boolean return
-// In Controller/question-controller.php
 
 public function addQuestion(Question $q): bool { 
-    // 1. We use backticks (` `) around "text" because it is a reserved SQL keyword.
     $sql = "INSERT INTO question (id_quiz, `text`, option1, option2, option3, option4, bonne) 
             VALUES (:id, :txt, :o1, :o2, :o3, :o4, :bon)";
             
@@ -53,8 +47,7 @@ public function addQuestion(Question $q): bool {
         ]);
         return $result; 
     } catch (PDOException $e) {
-        // --- DEBUGGING BLOCK START ---
-        // This will print the error in big red text and STOP the page.
+       
         echo '<div style="background-color: #ffe6e6; border: 2px solid red; padding: 20px; margin: 20px;">';
         echo '<h2 style="color: red;">❌ SQL INSERT ERROR DETECTED</h2>';
         
@@ -66,8 +59,7 @@ public function addQuestion(Question $q): bool {
         echo 'Correct Answer (Bonne): ' . $q->getBonneReponse() . '<br>';
         echo '</div>';
         
-        exit(); // STOP SCRIPT HERE so you can read the error
-        // --- DEBUGGING BLOCK END ---
+        exit(); 
     }
 }
 

@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php'; 
 require_once __DIR__ . '/../Model/quiz.php';
-require_once __DIR__ . '/../Model/question.php'; // Ensure Model/question is included here
+require_once __DIR__ . '/../Model/question.php'; 
 require_once __DIR__ . '/AIService.php';
 require_once __DIR__ . '/question-controller.php';
 
@@ -12,26 +12,19 @@ class QuizController {
         $this->db = config::getConnexion();
     }
 
-    // New AI generation and save function
     public function generateAndSaveQuiz(string $titre, string $categorie, string $niveau, int $points, int $questionCount): bool {
-        
-        // --- 1. Generate the Quiz Data using AI ---
-        $aiService = new AIService();
+                $aiService = new AIService();
         $generatedQuestionsData = $aiService->generateQuiz($titre, $niveau, $questionCount);
         
         if (empty($generatedQuestionsData)) {
             error_log("Failed to generate questions using AI.");
             return false;
         }
-
-        // --- 2. Save the New Quiz (Parent Record) ---
         $newQuiz = new Quiz(null, $titre, $categorie, $niveau, $points);
         if (!$this->addQuiz($newQuiz)) {
             error_log("Failed to save the new quiz record.");
             return false;
         }
-
-        // Get the ID of the newly inserted quiz
         $newQuizId = $this->db->lastInsertId();
 if ($newQuizId <= 0) {
 echo "<h3>❌ FATAL ERROR: Quiz ID Retrieval Failed!</h3>";
@@ -39,7 +32,6 @@ echo "The last inserted ID was: " . $newQuizId;
 return false;
 }
 
-        // --- 3. Save the Generated Questions (Child Records) ---
         $questionController = new QuestionController();
         $successfulInserts = 0;
         $totalQuestions = count($generatedQuestionsData);
@@ -62,7 +54,6 @@ return false;
         if ($insert_success === true) {
             $successfulInserts++;
         } else {
-            // Don't return false immediately, just log it so we can see which specific question failed
             echo "Failed to insert question index: $index <br>";
         }
     } else {
@@ -70,7 +61,6 @@ return false;
     }
 }
 
-// Logic to determine success (e.g., if at least 1 question was added)
 if ($successfulInserts == 0) {
      echo "<h3>🛑 ALL INSERTS FAILED</h3>";
      return false; 
