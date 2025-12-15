@@ -41,10 +41,12 @@ Ce projet a été réalisé dans le cadre de notre cursus universitaire (2025).
 
 ## 📸 Aperçu de l'interface
 
-| Page d'Accueil | Interface de Quiz |
+| Page d'Accueil |
 | :---: | :---: |
 
-| <img width="1899" height="905" alt="captureg1" src="https://github.com/user-attachments/assets/a72ecf4e-8b62-48fd-b6c0-3ccbaef50ba3" /> | <img width="1087" height="878" alt="captureg" src="https://github.com/user-attachments/assets/380c8d72-381a-44d7-8520-925032ddfcac" /> |
+| <img width="1899" height="905" alt="captureg1" src="https://github.com/user-attachments/assets/a72ecf4e-8b62-48fd-b6c0-3ccbaef50ba3" /> |
+| Interface de Quiz |
+| <img width="1087" height="878" alt="captureg" src="https://github.com/user-attachments/assets/380c8d72-381a-44d7-8520-925032ddfcac" /> |
 
 ## 👥 L'Équipe
 
