@@ -16,14 +16,14 @@ class Quiz {
         $this->points = $points;
     }
 
-    // Getters...
+    
     public function getIdQuiz(): ?int { return $this->id_quiz; }
     public function getTitre(): string { return $this->titre; }
     public function getCategorie(): string { return $this->categorie; }
     public function getNiveau(): string { return $this->niveau; }
     public function getPoints(): int { return $this->points; }
 
-    // Setters (with the bug fixed)
+    
     public function setTitre(string $titre): void { $this->titre = $titre; }
     public function setCategorie(string $categorie): void { $this->categorie = $categorie; }
     public function setNiveau(string $niveau): void { $this->niveau = $niveau; }

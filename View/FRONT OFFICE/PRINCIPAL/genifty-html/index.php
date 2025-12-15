@@ -24,6 +24,10 @@
 
 <body class="rt_bg-secondary">
 
+ <div class="bg-animation">
+        <div class="blob blob1"></div>
+        <div class="blob blob2"></div>
+    </div>
     <!-- start header area -->
 
     <div class="rts-header-area header-inner-one header--sticky">
@@ -50,7 +54,7 @@
                                     <a class="navmain" href="quiz.php">Quests</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="take-quiz.php">Quiz</a>
+                                    <a class="navmain" href="quiz.php">Quiz</a>
                                 </li>
                                 <li class="single-items off-arrow">
                                     <a class="navmain" href="#">Forum</a>
@@ -188,6 +192,58 @@
     <!-- banner area start -->
 
 <style>
+    /* --- START: Custom Modal Styling for Quiz Mode --- */
+.modal-content.quiz-mode-modal-content {
+    /* Glassy, dark theme styles */
+    background: rgba(0, 0, 0, 0.7); /* Darker background for visibility */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    color: #fff; /* White text */
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-title {
+    color: #00C49F; /* Your primary color for the title */
+    font-weight: 700;
+    font-size: 1.8rem;
+}
+
+.modal-description {
+    color: #eeeeee;
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+}
+
+.modal-btn-option {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+/* Specific styling for the Offline (Primary) button */
+.modal-btn-option.btn-primary {
+    background: #00C49F;
+    color: #000;
+}
+
+/* Specific styling for the Online (Secondary/Disabled) button */
+.modal-btn-option.btn-secondary.disabled {
+    background: rgba(255, 255, 255, 0.1);
+    color: #999;
+    cursor: not-allowed;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+/* --- END: Custom Modal Styling for Quiz Mode --- */
     /* This CSS creates the "awesome" look for your feature cards.
       It matches the glassy, modern style of your template.
     */
@@ -363,215 +419,258 @@
         aspect-ratio: 1 / 1;
         object-fit: cover;
     }
+ /* --- Animation Keyframes --- */
+        @keyframes float { 0% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-20px) translateX(20px); } 100% { transform: translateY(0) translateX(0); } }
+        @keyframes moveGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
+        body.rt_bg-secondary {
+            background: linear-gradient(135deg, #005248, #00c49f, #00796b);
+            background-size: 400% 400%;
+            animation: moveGradient 20s ease infinite;
+            overflow-x: hidden;
+        }
+
+        /* --- Background Blobs --- */
+        .bg-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; overflow: hidden; }
+        .bg-animation .blob { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.4; animation: float 25s ease-in-out infinite alternate; }
+        .bg-animation .blob1 { width: 400px; height: 400px; background: rgba(89, 255, 228, 0.5); top: -50px; left: -100px; animation-duration: 20s; }
+        .bg-animation .blob2 { width: 300px; height: 300px; background: rgba(255, 255, 255, 0.3); bottom: -80px; right: -80px; animation-duration: 30s; animation-delay: -5s; }
+
+        /* --- Creative Filter Styles --- */
+        .quiz-filter-controls {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .quiz-filter-group {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        .quiz-filter-group li {
+            display: inline-block;
+            margin: 0 5px;
+        }
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            backdrop-filter: blur(5px);
+        }
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        .filter-btn.is-active {
+            background: #fff;
+            color: #00796b;
+            box-shadow: 0 5px 15px rgba(0, 196, 159, 0.4);
+            border-color: #fff;
+        }
+
+        /* --- Isotope Card Wrapper --- */
+        .quiz-card-wrapper {
+            /* Isotope handles transitions */
+        }
+        .quiz-card-wrapper.isotope-hidden {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .quiz-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            text-decoration: none;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            height: 100%;
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        .quiz-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(0, 196, 159, 0.6);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* --- Card Content Styles (All English) --- */
+        .quiz-card-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; font-weight: 600; margin-bottom: 20px; }
+        .quiz-card-header .categorie { background: rgba(0, 196, 159, 0.2); color: #94FFEA; padding: 5px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .quiz-card-header .niveau { font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .niveau.easy { color: #00E6A7; text-shadow: 0 0 10px rgba(0, 230, 167, 0.7); }
+        .niveau.medium { color: #FFBB28; text-shadow: 0 0 10px rgba(255, 187, 40, 0.7); }
+        .niveau.hard { color: #FF6B6B; text-shadow: 0 0 10px rgba(255, 107, 107, 0.7); }
+        .niveau.extreme {
+    color: #d051ff; /* Bright Neon Purple */
+    text-shadow: 0 0 15px rgba(208, 81, 255, 0.8);
+    font-weight: 800; /* Extra bold */
+}
+        .quiz-card-body { flex-grow: 1; }
+        .quiz-card-body .titre { font-size: 1.75rem; font-weight: 600; margin: 0; line-height: 1.3; color: #fff; }
+        .quiz-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px; }
+        .quiz-card-footer .points { font-size: 1.1rem; font-weight: 700; color: #FFBB28; text-shadow: 0 0 8px rgba(255, 187, 40, 0.5); }
+        .quiz-card-footer .start-btn { background: rgba(255, 255, 255, 0.9); color: #00796B; padding: 10px 25px; border-radius: 25px; font-weight: 700; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
+        .quiz-card:hover .start-btn { background: #00C49F; color: #fff; box-shadow: 0 5px 15px rgba(0, 196, 159, 0.4); transform: scale(1.05); }
+
+        /* --- Page Title (All English) --- */
+        .page-title-area { text-align: center; margin-bottom: 50px; }
+        .page-title-area .title { font-size: 3.5rem; color: #fff; font-weight: 700; text-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
+        .page-title-area .disc { font-size: 1.3rem; color: #d4fcf5; opacity: 0.9; }
 </style>
 
 
-<div class="rts-explore-area iso-expo-one iso-bg rts-section-gap">
-    <div class="container">
-        <div class="row align-items-end">
-            <div class="col-lg-6">
-                <div class="title-area text-start">
-                    <span class="sub-title">
-                        Our Topics
-                    </span>
-                    <h3 class="title">Explore Our Quests & Challenges</h3>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="button-group filters-button-group d-flex flex-wrap mt_md--30 mt_sm--30">
-                    <button class="button is-checked ml_md--0 ml_sm--0" data-filter="*">All</button>
-                    <img src="assets/images/icon/sm/Vector01.png" alt="separator">
-                    <button class="button" data-filter=".quizzes">Quizzes</button>
-                    <img src="assets/images/icon/sm/Vector01.png" alt="separator">
-                    <button class="button" data-filter=".challenges">Challenges</button>
-                    <img src="assets/images/icon/sm/Vector01.png" alt="separator">
-                    <button class="button" data-filter=".environment">Environment</button>
-                    <img src="assets/images/icon/sm/Vector01.png" alt="separator">
-                    <button class="button" data-filter=".science">Science</button>
-                    <img src="assets/images/icon/sm/Vector01.png" alt="separator">
-                    <button class="button" data-filter=".history">History</button>
-                </div>
-            </div>
-        </div>
-        <div class="row mt--50">
-            <div class="col-lg-12 filter-explore">
-                <div class="grid">
+<?php
+// --- 1. FORCE PHP TO SHOW ERRORS ---
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-                    <div class="element-item quizzes environment" data-category="transition">
-                        <div class="explore-wrapper">
-                            <div class="trending-items_wrapper">
-                                <div class="thumbnail">
-                                    <a href="quest-details.html">
-                                        <img src="https://placehold.co/400x400/00C49F/ffffff?text=🌍" alt="Green Guardians Quest">
-                                    </a>
-                                    <span class="heart">
-                                        <img src="assets/images/live-bidding/ico/01.png" alt="Favorite">
-                                    </span>
-                                    </div>
-                                <div class="product-discription">
-                                    <div class="product-left">
-                                        <a href="quest-details.html">
-                                            <h5 class="title">Green Guardians Quest</h5>
-                                        </a>
-                                        <span class="deg-description" style="color: #eeeeee;">
-                                            Test your knowledge on climate change.
-                                        </span>
-                                        <a class="rts-btn btn-secondary radious-5" href="quest-details.html">Start Quiz</a>
-                                    </div>
-                                    <div class="product-right">
-                                        <h5 class="quest-reward">+50 Points</h5>
-                                        <span class="quest-participants">1,280+ Learners</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+// --- 2. INCLUDE FILES ---
+require_once __DIR__ . '/../../../../config.php';
+require_once __DIR__ . '/../../../../Model/quiz.php';
+require_once __DIR__ . '/../../../../Controller/quiz-controller.php';
+
+// --- 3. GET THE DATA ---
+$quizController = new QuizController();
+$allQuizzes = $quizController->listQuizzes();
+
+// --- 4. PREPARE DATA FOR FILTERS & TRANSLATION ---
+$uniqueCategories = [];
+$uniqueDifficulties = [];
+$difficultyMap = [
+    'Facile' => 'Easy',
+    'Moyen' => 'Medium',
+    'Difficile' => 'Hard',
+    'Extreme'   => 'Extreme'
+];
+
+foreach ($allQuizzes as $quiz) {
+    $uniqueCategories[$quiz->getCategorie()] = true;
+
+    $dbDifficulty = $quiz->getNiveau();
+    if (isset($difficultyMap[$dbDifficulty])) {
+        $uniqueDifficulties[$difficultyMap[$dbDifficulty]] = true;
+    }
+}
+$uniqueCategories = array_keys($uniqueCategories);
+$uniqueDifficulties = array_keys($uniqueDifficulties);
+?>
+<div class="rts-explore-area rts-section-gap" style="padding-top: 150px; position: relative; z-index: 2;">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-area">
+                        <span class="sub">Zitouna Quests</span>
+                        <h3 class="title">Explore Our Quests</h3>
+                        <p class="disc">Test your knowledge and earn points!</p>
                     </div>
-                    <div class="element-item quizzes science" data-category="metalloid">
-                        <div class="explore-wrapper">
-                            <div class="trending-items_wrapper">
-                                <div class="thumbnail">
-                                    <a href="quest-details.html"><img src="https://placehold.co/400x400/0088FE/ffffff?text=🔬" alt="Future Innovators Quiz"></a>
-                                    <span class="heart">
-                                        <img src="assets/images/live-bidding/ico/01.png" alt="Favorite">
-                                    </span>
-                                </div>
-                                <div class="product-discription">
-                                    <div class="product-left">
-                                        <a href="quest-details.html">
-                                            <h5 class="title">Future Innovators</h5>
-                                        </a>
-                                        <span class="deg-description" style="color: #eeeeee;">
-                                            Explore breakthroughs in science & tech.
-                                        </span>
-                                        <a class="rts-btn btn-secondary radious-5" href="quest-details.html">Start Quiz</a>
-                                    </div>
-                                    <div class="product-right">
-                                        <h5 class="quest-reward">+75 Points</h5>
-                                        <span class="quest-participants">950+ Learners</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="element-item challenges community" data-category="post-transition">
-                        <div class="explore-wrapper">
-                            <div class="trending-items_wrapper">
-                                <div class="thumbnail">
-                                    <a href="challenge-details.html"><img src="https://placehold.co/400x400/FF8042/ffffff?text=🤝" alt="Local Impact Heroes Challenge"></a>
-                                    <span class="heart">
-                                        <img src="assets/images/live-bidding/ico/01.png" alt="Favorite">
-                                    </span>
-                                    </div>
-                                <div class="product-discription">
-                                    <div class="product-left">
-                                        <a href="challenge-details.html">
-                                            <h5 class="title">Local Impact Heroes</h5>
-                                        </a>
-                                        <span class="deg-description" style="color: #eeeeee;">
-                                          Organize a cleanup in your area.
-                                        </span>
-                                        <a class="rts-btn btn-secondary radious-5" href="challenge-details.html">View Challenge</a>
-                                    </div>
-                                    <div class="product-right">
-                                        <h5 class="quest-reward">+200 Points</h5>
-                                        <span class="quest-participants">410+ Participants</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="element-item quizzes history" data-category="post-transition">
-                        <div class="explore-wrapper">
-                            <div class="trending-items_wrapper">
-                                <div class="thumbnail">
-                                    <a href="quest-details.html"><img src="https://placehold.co/400x400/FFBB28/ffffff?text=🏛️" alt="World Heritage Quest"></a>
-                                    <span class="heart">
-                                        <img src="assets/images/live-bidding/ico/01.png" alt="Favorite">
-                                    </span>
-                                </div>
-                                <div class="product-discription">
-                                    <div class="product-left">
-                                        <a href="quest-details.html">
-                                            <h5 class="title">World Heritage Journey</h5>
-                                        </a>
-                                        <span class="deg-description" style="color: #eeeeee;">
-                                            Explore ancient wonders and cultures.
-                                        </span>
-                                        <a class="rts-btn btn-secondary radious-5" href="quest-details.html">Start Quiz</a>
-                                    </div>
-                                    <div class="product-right">
-                                        <h5 class="quest-reward">+50 Points</h5>
-                                        <span class="quest-participants">1,020+ Learners</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="element-item challenges environment" data-category="post-transition">
-                        <div class="explore-wrapper">
-                            <div class="trending-items_wrapper">
-                                <div class="thumbnail">
-                                    <a href="challenge-details.html"><img src="https://placehold.co/400x400/28a745/ffffff?text=♻️" alt="Eco-Habit Builder Challenge"></a>
-                                    <span class="heart">
-                                        <img src="assets/images/live-bidding/ico/01.png" alt="Favorite">
-                                    </span>
-                                    </div>
-                                <div class="product-discription">
-                                    <div class="product-left">
-                                        <a href="challenge-details.html">
-                                            <h5 class="title">Eco-Habit Builder</h5>
-                                        </a>
-                                        <span class="deg-description" style="color: #eeeeee;">
-                                            Complete a 7-day waste reduction task.
-                                        </span>
-                                        <a class="rts-btn btn-secondary radious-5" href="challenge-details.html">View Challenge</a>
-                                    </div>
-                                    <div class="product-right">
-                                        <h5 class="quest-reward">+150 Points</h5>
-                                        <span class="quest-participants">760+ Participants</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="element-item quizzes science" data-category="metalloid">
-                        <div class="explore-wrapper">
-                            <div class="trending-items_wrapper">
-                                <div class="thumbnail">
-                                    <a href="quest-details.html"><img src="https://placehold.co/400x400/9C27B0/ffffff?text=🧬" alt="Biology Buffs Quiz"></a>
-                                    <span class="heart">
-                                        <img src="assets/images/live-bidding/ico/01.png" alt="Favorite">
-                                    </span>
-                                </div>
-                                <div class="product-discription">
-                                    <div class="product-left">
-                                        <a href="quest-details.html">
-                                            <h5 class="title">Biology Buffs</h5>
-                                        </a>
-                                        <span class="deg-description" style="color: #eeeeee;">
-                                           Dive into the wonders of life sciences.
-                                        </span>
-                                        <a class="rts-btn btn-secondary radious-5" href="quest-details.html">Start Quiz</a>
-                                    </div>
-                                    <div class="product-right">
-                                        <h5 class="quest-reward">+50 Points</h5>
-                                        <span class="quest-participants">810+ Learners</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
+                </div>
             </div>
-        </div>
-        <div class="row mt--45">
-            <div class="col-12 text-center">
-                <a class="rts-btn btn-secondary filter-explore" href="all-quests.html">View All Quests</a>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="quiz-filter-controls">
+                        <ul id="category-filters" class="quiz-filter-group">
+                            <li><button class="filter-btn is-active" data-filter="*">All Categories</button></li>
+                            <?php foreach ($uniqueCategories as $category): ?>
+                                <?php $categorySelector = strtolower(str_replace(' ', '-', preg_replace("/[^A-Za-z0-9 ]/", '', $category))); ?>
+                                <li><button class="filter-btn" data-filter=".<?php echo $categorySelector; ?>">
+                                    <?php echo htmlspecialchars($category); ?>
+                                </button></li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <br>
+                        <ul id="difficulty-filters" class="quiz-filter-group">
+                            <li><button class="filter-btn is-active" data-filter="*">All Difficulties</button></li>
+                            <?php foreach ($uniqueDifficulties as $difficulty): ?>
+                                <?php $difficultySelector = strtolower(htmlspecialchars($difficulty)); ?>
+                                <li><button class="filter-btn" data-filter=".<?php echo $difficultySelector; ?>">
+                                    <?php echo htmlspecialchars($difficulty); ?>
+                                </button></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-5 mt--20" id="quiz-grid">
+
+                <?php if (empty($allQuizzes)): ?>
+                    <div class="col-12">
+                        <p class="text-center" style="font-size: 1.2rem; color: #fff;">No quizzes are available at the moment. Check back soon!</p>
+                    </div>
+                <?php else: ?>
+                    <?php
+                    $delayCounter = 0;
+                    $quizCounter = 0;
+                    ?>
+                    <?php foreach ($allQuizzes as $quiz): ?>
+                        <?php
+                        if ($quizCounter >= 6) {
+                            break;
+                        }
+                        $quizCounter++;
+
+                        $delayCounter++;
+                        $animationDelay = $delayCounter * 100;
+
+                        $dbDifficulty = $quiz->getNiveau();
+                        $difficultyEnglish = $difficultyMap[$dbDifficulty] ?? 'medium';
+                        $difficultyClass = strtolower($difficultyEnglish);
+
+                        $categoryFromDB = htmlspecialchars($quiz->getCategorie());
+                        $titleFromDB = htmlspecialchars($quiz->getTitre());
+
+                        // Create a "slug" for the category class
+                        $categoryClass = strtolower(str_replace(' ', '-', preg_replace("/[^A-Za-z0-9 ]/", '', $categoryFromDB)));
+                        ?>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 quiz-card-wrapper <?php echo $categoryClass; ?> <?php echo $difficultyClass; ?>">
+
+                            <a href="take-quiz.php?id=<?php echo htmlspecialchars($quiz->getIdQuiz()); ?>" class="quiz-card" style="animation-delay: <?php echo $animationDelay; ?>ms;">
+
+                                <div class="quiz-card-header">
+                                    <span class="categorie"><?php echo $categoryFromDB; ?></span>
+                                    <span class="niveau <?php echo $difficultyClass; ?>"><?php echo $difficultyEnglish; ?></span>
+                                </div>
+
+                                <div class="quiz-card-body">
+                                    <h5 class="titre"><?php echo $titleFromDB; ?></h5>
+                                </div>
+
+                                <div class="quiz-card-footer">
+                                    <span class="points"><?php echo htmlspecialchars($quiz->getPoints()); ?> Points</span>
+                                    <span class="start-btn">Start</span>
+                                </div>
+
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
+
+                <?php endif; ?>
+
+            </div>
+            <div class="row mt--45">
+                <div class="col-12 text-center">
+                    <a class="rts-btn btn-secondary filter-explore" href="quiz.php">View All Quests</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
     <!-- isotop explore style end -->
 <div class="rts-categories-area rts-section-gap bg-shape-one rt_bg-secondary">
         <div class="container">
@@ -1496,6 +1595,32 @@
     </div>
     <!-- progress Back to top End -->
 
+<div class="modal fade" id="quizModeModal" tabindex="-1" aria-labelledby="quizModeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content quiz-mode-modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quizModeModalLabel">Choose Your Mode</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="modal-description">How would you like to explore quizzes?</p>
+
+                <div class="row g-3 mt-3">
+                    <div class="col-6">
+                        <a href="offline-quiz.php" class="rts-btn btn-primary modal-btn-option">
+                            <i class="fas fa-plug me-2"></i> Offline Mode
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <button class="rts-btn btn-secondary modal-btn-option disabled" disabled>
+                            <i class="fas fa-wifi me-2"></i> Online Mode (Coming Soon)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     <!-- all scripts are hear -->
     <script src="assets/js/vendor/jquery.min.js"></script>
     <script src="assets/js/vendor/jquery-ui.min.js"></script>
@@ -1515,6 +1640,70 @@
 
     <!-- main js -->
     <script src="assets/js/main.js"></script>
+	    <script>
+        $(window).on('load', function () {
+
+            // 1. Initialize Isotope
+            var $grid = $('#quiz-grid').isotope({
+                itemSelector: '.quiz-card-wrapper',
+                layoutMode: 'fitRows',
+                transitionDuration: '0.6s',
+                hiddenStyle: { opacity: 0, transform: 'scale(0.9)' },
+                visibleStyle: { opacity: 1, transform: 'scale(1)' }
+            });
+
+            // 2. Store filters
+            var filters = {
+                category: '*', // '*' means 'show all'
+                difficulty: '*'
+            };
+
+            // 3. Handle click events on filter buttons
+            $('.quiz-filter-controls').on('click', '.filter-btn', function () {
+                var $this = $(this);
+
+                var $buttonGroup = $this.closest('.quiz-filter-group');
+                var filterGroup = $buttonGroup.attr('id');
+
+                $buttonGroup.find('.is-active').removeClass('is-active');
+                $this.addClass('is-active');
+
+                var filterValue = $this.attr('data-filter');
+
+                // Store the filter
+                if (filterGroup === 'category-filters') {
+                    filters.category = filterValue;
+                } else if (filterGroup === 'difficulty-filters') {
+                    filters.difficulty = filterValue;
+                }
+
+                // 4. Combine the filters
+                var catFilter = filters.category;
+                var diffFilter = filters.difficulty;
+
+                // [FIX] This is the new logic
+                // If both are 'all', show all
+                if (catFilter === '*' && diffFilter === '*') {
+                    combinedFilter = '*';
+                }
+                // If category is 'all' but difficulty is not, just use difficulty
+                else if (catFilter === '*' && diffFilter !== '*') {
+                    combinedFilter = diffFilter;
+                }
+                // If difficulty is 'all' but category is not, just use category
+                else if (catFilter !== '*' && diffFilter === '*') {
+                    combinedFilter = catFilter;
+                }
+                // If neither is 'all', combine them
+                else {
+                    combinedFilter = catFilter + diffFilter;
+                }
+
+                // 5. Apply the combined filter to Isotope
+                $grid.isotope({ filter: combinedFilter });
+            });
+        });
+    </script>
     <?php include_once($_SERVER['DOCUMENT_ROOT'] . '/Projet2/View/includes/chatbot_ui.php'); ?>
 </body>
 

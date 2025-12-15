@@ -2,8 +2,8 @@
 
 class Question {
 
-    // --- Properties ---
-    private int $id_question;
+    
+    private ?int $id_question;
     private ?int $id_quiz; 
     private string $text;
     private string $option1;

@@ -75,6 +75,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
 
+        // Vérification mot de passe 2
         if (password2 == "") {
             document.getElementById("erreurpassword2").innerHTML = "Veuillez confirmer le mot de passe";
             valid = false;

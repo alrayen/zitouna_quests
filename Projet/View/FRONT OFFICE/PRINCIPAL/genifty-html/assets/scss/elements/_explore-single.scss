@@ -1,0 +1,275 @@
+
+
+// exploire single option
+
+.explore-thumbnail{
+    display: block;
+    overflow: hidden;
+    border-radius: 8px;
+    img{
+        border-radius: 8px;
+        transition: .3s;
+        &:hover{
+            transform: scale(1.02);
+        }
+    }
+}
+
+
+.expo-cart-wrapper{
+    @media #{$sm-layout} {
+        padding-left: 15px;
+    }
+    .title{
+        margin-bottom: 30px;
+    }
+    .meata-option{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .meta-left{
+            display: flex;
+            span{
+                i{
+                    height: 50px;
+                    width: 50px;
+                    background-color: #ffffff17;
+                    border-radius: 50%;
+                    text-align: center;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                &.heart{
+                    cursor: pointer;
+                    transition: .3s;
+                    margin-left: 7px;
+                }
+            }
+        }
+        .meta-right{
+            display: flex;
+            .share{
+                margin-right: 7px;
+            }
+            a{
+                i{
+                    height: 50px;
+                    width: 50px;
+                    background-color: #ffffff17;
+                    border-radius: 50%;
+                    text-align: center;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+        }
+    }
+    .rts-client-info{
+        margin-top: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        @media #{$large-mobile} {
+            flex-direction: column;
+        }
+        .meta-info{
+            display: flex;
+            align-items: center;
+            background: #ffffff17;
+            padding: 10px 20px;
+            flex-basis: 48%;
+            border-radius: 10px;
+            @media #{$large-mobile} {
+                flex-basis: 100%;
+                width: 100%;
+                margin-bottom: 15px;
+                &:last-child{
+                    margin-bottom: 0;
+                }
+            }
+            .thumbnail{
+                margin-right: 10px;
+                img{
+                    max-width: 50px;
+                    height: auto;
+                }
+            }
+            .info{
+                .desig{
+                    margin-bottom: 0;
+                    color: #fff;
+                    font-size: 14px;
+                }
+                .title{
+                    margin-bottom: 0;
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+    .disc-pricing{
+        margin-bottom: 25px;
+        color: #fff7;
+    }
+    .explore-single-pricing{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        .last-price{
+            span{
+                color: #fff;
+            }
+            .price{
+                margin-bottom: 0;
+                margin-top: 15px;
+                @media #{$laptop-device} {
+                    font-size: 14px;
+                }
+                @media #{$lg-layout} {
+                    font-size: 14px;
+                }
+                @media #{$md-layout} {
+                    font-size: 14px;
+                }
+                @media #{$sm-layout} {
+                    font-size: 14px;
+                }
+            }
+        }
+        .explore-p{
+            padding: 10px 20px;
+            background: #ffffff17;
+            border-radius: 10px;
+            flex-basis: 48%;
+            height: 100%;
+            @media #{$large-mobile} {
+                margin-bottom: 15px;
+                flex-basis: 100%;
+            }
+        }
+        .count-down-timeer{
+            .countdown{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                @media #{$large-mobile} {
+                    justify-content: flex-start;
+                }
+                .countdown-container{
+                    margin-right: 25px;
+                    display: flex;
+                    flex-direction: column;
+                    @media #{$laptop-device} {
+                        margin-right: 5px;
+                    }
+                    @media #{$lg-layout} {
+                        margin-right: 10px;
+                    }
+                    &:last-child{
+                        margin-right: 0;
+                    }
+                    .countdown-value{
+                        font-size: 24px;
+                        color: #fff;
+                        @media #{$laptop-device} {
+                            font-size: 18px;
+                        }
+                        @media #{$lg-layout} {
+                            font-size: 20px;
+                        }
+                        @media #{$md-layout} {
+                            font-size: 20px;
+                        }
+                        @media #{$sm-layout} {
+                            font-size: 20px;
+                        }
+                    }
+                    .countdown-heading{
+                        font-size: 18px;
+                        color: #fff;
+                        @media #{$laptop-device} {
+                            font-size: 18px;
+                        }
+                        @media #{$lg-layout} {
+                            font-size: 14px;
+                        }
+                        @media #{$md-layout} {
+                            font-size: 14px;
+                        }
+                        @media #{$sm-layout} {
+                            font-size: 14px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+.bit-history{
+    margin-top: 40px;
+    nav{
+        .nav{
+            border: none;
+            button{
+                display: inline-block;
+                max-width: max-content;
+                background: #ffffff17;
+                margin-right: 15px;
+                padding: 10px 20px;
+                border-radius: 6px;
+                border: none;
+                color: #fff;
+                @media #{$small-mobile} {
+                    margin-bottom: 10px;
+                }
+                &.active{
+                    border-radius: 6px;
+                    background: #4200E5;
+                    color: #fff;
+                }
+            }
+        }
+    }
+}
+
+
+
+.disc-tab-in{
+    margin-top: 25px;
+    color: #fff;
+}
+
+.single-person-bids-wrapper{
+    .bid-details-single{
+        margin-top: 15px;
+        display: flex;
+        align-items: center;
+        &:first-child{
+            margin-top: 25px;
+        }
+        img{
+            max-width: 50px;
+            height: auto;
+            margin-right: 10px;
+        }
+        .details{
+            p{
+                &.accepted{
+                    margin-bottom: 0;
+                    font-size: 14px;
+                    color: #fff;
+                }
+            }
+            .date-time{
+                font-size: 12px;
+                color: #fff;
+            }
+        }
+    }
+}

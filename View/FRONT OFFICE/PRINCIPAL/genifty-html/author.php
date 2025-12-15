@@ -1,7 +1,7 @@
 <?php
 session_start();
 // 1. Inclure le modèle User pour aller chercher les infos en BDD
-require_once($_SERVER['DOCUMENT_ROOT'] . '/Projet2/Model/user.php'); 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Projet2/Model/user.php');
 
 // 2. Initialiser les variables par défaut
 $user_name = "Guest";
@@ -13,16 +13,16 @@ $user_image_path = "assets/images/team/team-01.png"; // Image par défaut
 if (isset($_SESSION['user_id'])) {
     // On utilise la méthode statique du Model
     $currentUser = User::getUserById($_SESSION['user_id']);
-    
+
     if ($currentUser) {
         // Nom complet
         $user_name = $currentUser['Prenom'] . " " . $currentUser['nom'];
-        
+
         // Image (chemin relatif vers le dossier uploads)
         if (!empty($currentUser['photo']) && $currentUser['photo'] !== 'default.png') {
             $user_image_path = "../../../../uploads/profiles/" . $currentUser['photo'];
         }
-        
+
         // Bio texte et audio
         $user_bio = $currentUser['bio'];
         $user_audio = $currentUser['bio_audio'];
@@ -196,10 +196,10 @@ if (isset($_SESSION['user_id'])) {
     </h5>
 
     <div class="bio-display" style="margin-top: 15px; margin-bottom: 20px; min-height: 30px;">
-        
-        <?php 
+
+        <?php
         // 1. D'abord, on vérifie et affiche le TEXTE
-        if (!empty($user_bio)): 
+        if (!empty($user_bio)):
         ?>
             <p style="color: #cccccc; font-size: 15px; max-width: 600px; margin: 0 auto 15px auto; line-height: 1.6; font-style: italic;">
                 <i class="fas fa-quote-left" style="color: #00C49F; margin-right: 8px; font-size: 12px;"></i>
@@ -208,8 +208,8 @@ if (isset($_SESSION['user_id'])) {
             </p>
         <?php endif; ?>
 
-        <?php 
-        if (!empty($user_audio)): 
+        <?php
+        if (!empty($user_audio)):
         ?>
             <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
                 <span style="font-size: 9px; color: #00C49F; letter-spacing: 1px; text-transform: uppercase; font-weight: bold; opacity: 0.8;">
@@ -223,12 +223,12 @@ if (isset($_SESSION['user_id'])) {
             </div>
         <?php endif; ?>
 
-        <?php 
-        if (empty($user_bio) && empty($user_audio)): 
+        <?php
+        if (empty($user_bio) && empty($user_audio)):
         ?>
             <span style="color: #888; font-size: 13px;">Joined September 2022</span>
         <?php endif; ?>
-        
+
     </div>
     <div class="share-wrapper">
         <button id="copyProfileButton" data-userid="<?php echo htmlspecialchars($_SESSION['user_id'] ?? 0); ?>" title="Copy profile link"><i class="fas fa-share"></i></button>
@@ -245,19 +245,19 @@ if (isset($_SESSION['user_id'])) {
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 20px;
-        overflow: hidden; 
+        overflow: hidden;
     }
 
     .explore-wrapper .header {
-        padding: 20px 25px 15px; 
+        padding: 20px 25px 15px;
     }
     
     .explore-wrapper .header .title {
         color: #ffffff;
-        font-size: 1.5rem; 
+        font-size: 1.5rem;
     }
     .explore-wrapper .header span {
-        color: #00C49F; 
+        color: #00C49F;
         font-weight: 500;
     }
 
@@ -266,7 +266,7 @@ if (isset($_SESSION['user_id'])) {
     }
 
     .explore-wrapper .thumbnail img {
-        aspect-ratio: 16 / 10; 
+        aspect-ratio: 16 / 10;
         object-fit: cover;
     }
 
@@ -284,16 +284,16 @@ if (isset($_SESSION['user_id'])) {
         max-width: 100%;
     }
     .explore-wrapper .product-discription {
-        padding: 20px 25px; 
+        padding: 20px 25px;
     }
     .explore-wrapper .product-discription .product-left span {
         font-size: 0.9rem;
         color: #eeeeee;
     }
     .explore-wrapper .product-discription .product-left .price {
-        font-size: 1.5rem; 
+        font-size: 1.5rem;
         font-weight: 700;
-        color: #FFBB28; 
+        color: #FFBB28;
     }
 
 </style>

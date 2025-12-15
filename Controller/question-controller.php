@@ -1,47 +1,83 @@
 <?php
-
-
-require_once __DIR__ .'../config.php';
-require_once __DIR__ .'../Model/question.php'; 
+require_once __DIR__ .'/../config.php';
+require_once __DIR__ .'/../Model/question.php'; 
 
 class QuestionController {
-
     private $db;
 
     public function __construct() {
-        
         $this->db = config::getConnexion();
     }
 
-
-    public function getQuestionsForQuiz(int $id_quiz): array {
-        $sql = "SELECT * FROM question WHERE Id_quiz = :id_quiz";
+    public function listQuestionsByQuizId(int $id_quiz): array {
+        $sql = "SELECT * FROM question WHERE id_quiz = :id_quiz";
         try {
             $query = $this->db->prepare($sql);
             $query->bindParam(':id_quiz', $id_quiz, PDO::PARAM_INT);
             $query->execute();
             $results = $query->fetchAll();
-            
             $questions = [];
             foreach ($results as $row) {
                 $questions[] = new Question(
-                    $row['Id_question'],
-                    $row['Id_quiz'],
-                    $row['Text_question'],
-                    $row['Option1'],
-                    $row['Option2'],
-                    $row['Option3'],
-                    $row['Option4'],
-                    $row['Bonne_reponse']
+                    $row['id_question'], $row['id_quiz'], $row['text'],
+                    $row['option1'], $row['option2'], $row['option3'], $row['option4'],
+                    $row['bonne']
                 );
             }
             return $questions;
-        } catch (PDOException $e) {
-            die('Error fetching questions: ' . $e->getMessage());
-        }
+        } catch (PDOException $e) { die('Error: ' . $e->getMessage()); }
     }
-    
-    
 
+
+public function addQuestion(Question $q): bool { 
+    $sql = "INSERT INTO question (id_quiz, `text`, option1, option2, option3, option4, bonne) 
+            VALUES (:id, :txt, :o1, :o2, :o3, :o4, :bon)";
+            
+    $req = $this->db->prepare($sql);
+    
+    try {
+        $result = $req->execute([
+            ':id'  => $q->getIdQuiz(), 
+            ':txt' => $q->getTextQuestion(),
+            ':o1'  => $q->getOption1(), 
+            ':o2'  => $q->getOption2(),
+            ':o3'  => $q->getOption3(), 
+            ':o4'  => $q->getOption4(), 
+            ':bon' => $q->getBonneReponse()
+        ]);
+        return $result; 
+    } catch (PDOException $e) {
+       
+        echo '<div style="background-color: #ffe6e6; border: 2px solid red; padding: 20px; margin: 20px;">';
+        echo '<h2 style="color: red;">❌ SQL INSERT ERROR DETECTED</h2>';
+        
+        echo '<strong>Database said:</strong> ' . $e->getMessage() . '<br><br>';
+        
+        echo '<strong>We tried to insert this data:</strong><br>';
+        echo 'Quiz ID: ' . $q->getIdQuiz() . '<br>';
+        echo 'Question: ' . htmlspecialchars($q->getTextQuestion()) . '<br>';
+        echo 'Correct Answer (Bonne): ' . $q->getBonneReponse() . '<br>';
+        echo '</div>';
+        
+        exit(); 
+    }
+}
+
+    public function updateQuestion(Question $q) {
+        $sql = "UPDATE question SET text=:txt, option1=:o1, option2=:o2, option3=:o3, option4=:o4, bonne=:bon 
+                WHERE id_question=:id";
+        $req = $this->db->prepare($sql);
+        $req->execute([
+            ':id' => $q->getIdQuestion(), ':txt' => $q->getTextQuestion(),
+            ':o1' => $q->getOption1(), ':o2' => $q->getOption2(),
+            ':o3' => $q->getOption3(), ':o4' => $q->getOption4(), ':bon' => $q->getBonneReponse()
+        ]);
+    }
+
+    public function deleteQuestion($id) {
+        $sql = "DELETE FROM question WHERE id_question = :id";
+        $req = $this->db->prepare($sql);
+        $req->execute([':id' => $id]);
+    }
 }
 ?>
