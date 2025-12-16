@@ -4,9 +4,17 @@ require_once __DIR__ . '/../../../../Model/challenge.php';
 require_once __DIR__ . '/../../../../Controller/challenge-controller.php';
 require_once __DIR__ . '/../../../../Model/ressources-model.php';
 require_once __DIR__ . '/../../../../Controller/ressources-controller.php';
-
 require_once __DIR__ . '/../../../../Controller/help-room-controller.php';
-$file_prefix = '/Projet/View/BACK OFFICE/VIEW/build/uploads/';
+
+// [FIX START] -----------------------------------------------------------
+// 1. Wrapped in !defined() to stop the PHP Warning.
+// 2. Changed 'BACK OFFICE' to 'BACK%20OFFICE' (URL encoded space).
+// 3. Pointed to '/build/' because your DB path starts with 'assets/'.
+if (!defined('ABSOLUTE_UPLOAD_ROOT')) {
+    define('ABSOLUTE_UPLOAD_ROOT', '/Projet/View/BACK%20OFFICE/VIEW/build/');
+}
+// [FIX END] -------------------------------------------------------------
+
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     header("Location: challenge.php");
     exit();
@@ -588,10 +596,25 @@ if (!$isCompleted) {
                             <?php endif; ?>
                         </div>
                         <div class="res-action">
-                            <a href="<?php echo ABSOLUTE_UPLOAD_ROOT . htmlspecialchars($res->getUrl()); ?>" target="_blank" class="btn-access">
-                                Open <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
+    <?php 
+        // 1. Get the URL from DB (e.g., "../pages/assets/uploads/resources/res_...")
+        $rawUrl = $res->getUrl();
+
+        // 2. Remove the "../" prefix
+        $cleanUrl = str_replace('../', '', $rawUrl);
+
+        // 3. Define the base path manually here to override any config.php issues
+        // We use the exact path from your "Correct URL"
+        $manualBase = '/Projet/View/BACK%20OFFICE/VIEW/build/';
+
+        // 4. Combine them
+        // Result: /Projet/View/BACK%20OFFICE/VIEW/build/pages/assets/uploads/resources/...
+        $finalLink = $manualBase . htmlspecialchars($cleanUrl);
+    ?>
+    <a href="<?php echo $finalLink; ?>" target="_blank" class="btn-access">
+        Open <i class="fas fa-external-link-alt"></i>
+    </a>
+</div>
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
@@ -630,6 +653,68 @@ if (!$isCompleted) {
 
     </div>
 
+    <div id="resourceLevelUpModal" class="levelup-overlay">
+        <div class="levelup-card">
+            <div class="levelup-shine"></div>
+            <div class="levelup-header">LEVEL UP!</div>
+            <div class="levelup-badge-container">
+                <i class="fas fa-trophy levelup-icon"></i>
+            </div>
+            <div class="levelup-text">You are now Level <span id="dynamicLevelNum"></span></div>
+            <div class="levelup-sub">New challenges unlocked! Keep pushing your limits.</div>
+            <button class="levelup-btn" onclick="closeResourceLevelUp()">AWESOME!</button>
+        </div>
+    </div>
+
+    <style>
+        .levelup-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); z-index: 999999;
+            display: none; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.5s ease;
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+        }
+        .levelup-overlay.active { display: flex; opacity: 1; }
+        
+        .levelup-card {
+            position: relative; width: 90%; max-width: 550px;
+            background: rgba(10, 10, 10, 0.65); 
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
+            border: 2px solid rgba(255, 215, 0, 0.5); border-radius: 40px;
+            padding: 60px 40px; text-align: center; color: #fff;
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.1), inset 0 0 20px rgba(255, 215, 0, 0.05);
+            transform: scale(0.5); transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+        .levelup-overlay.active .levelup-card { transform: scale(1); }
+
+        .levelup-shine {
+            position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+            transform: skewX(-25deg); animation: shine 6s infinite;
+        }
+        @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
+
+        .levelup-header {
+            font-size: 3.8rem; font-weight: 900; margin-bottom: 10px; text-transform: uppercase;
+            background: linear-gradient(to bottom, #fff, #ffd700, #ff8c00);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 4px 0px rgba(0,0,0,0.5)); animation: bounceIn 1s ease;
+        }
+        .levelup-icon { font-size: 7rem; color: #ffd700; filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.6)); margin: 20px 0; animation: float 4s infinite; }
+        .levelup-text { font-size: 1.6rem; margin-bottom: 10px; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .levelup-sub { font-size: 1.1rem; color: #e0e0e0; margin-bottom: 35px; opacity: 0.9; }
+        .levelup-btn {
+            background: linear-gradient(90deg, #ff8c00, #ffd700); border: none; color: #000;
+            padding: 15px 50px; font-size: 1.2rem; font-weight: 800; border-radius: 50px; cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); transition: all 0.3s; text-transform: uppercase;
+        }
+        .levelup-btn:hover { transform: scale(1.05); box-shadow: 0 0 40px rgba(255, 215, 0, 0.7); }
+        @keyframes bounceIn { 0% { opacity: 0; transform: translateY(-50px); } 60% { opacity: 1; transform: translateY(10px); } 100% { transform: translateY(0); } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+    </style>
+
+    <script src="assets/js/vendor/jquery.min.js"></script>
     <script>
         const challengeId = <?php echo $id_defi; ?>;
         const challengePoints = <?php echo $challenge->getPoints(); ?>;
@@ -672,6 +757,26 @@ if (!$isCompleted) {
                 console.error(e);
                 btn.innerHTML = 'Error';
             }
+        }
+
+        function showLevelUpModal(newLevel) {
+            const levelSpan = document.getElementById('dynamicLevelNum');
+            if(levelSpan) levelSpan.innerText = newLevel;
+
+            const modal = document.getElementById('resourceLevelUpModal');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 50);
+        }
+
+        function closeResourceLevelUp() {
+            const modal = document.getElementById('resourceLevelUpModal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                window.location.href = 'challenge.php'; 
+            }, 500);
         }
 
         function warmUpTTS() {
@@ -890,89 +995,6 @@ if (!$isCompleted) {
                 console.error(error);
                 loadingDiv.innerText = "Error connecting to AI.";
             }
-        }
-    </script>
-
-    <div id="resourceLevelUpModal" class="levelup-overlay">
-        <div class="levelup-card">
-            <div class="levelup-shine"></div>
-            <div class="levelup-header">LEVEL UP!</div>
-            <div class="levelup-badge-container">
-                <i class="fas fa-trophy levelup-icon"></i>
-            </div>
-            <div class="levelup-text">You are now Level <span id="dynamicLevelNum"></span></div>
-            <div class="levelup-sub">New challenges unlocked! Keep pushing your limits.</div>
-            <button class="levelup-btn" onclick="closeResourceLevelUp()">AWESOME!</button>
-        </div>
-    </div>
-
-    <style>
-        .levelup-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9); z-index: 999999;
-            display: none; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.5s ease;
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-        }
-        .levelup-overlay.active { display: flex; opacity: 1; }
-        
-        .levelup-card {
-            position: relative; width: 90%; max-width: 550px;
-            background: rgba(10, 10, 10, 0.65); 
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
-            border: 2px solid rgba(255, 215, 0, 0.5); border-radius: 40px;
-            padding: 60px 40px; text-align: center; color: #fff;
-            box-shadow: 0 0 80px rgba(255, 215, 0, 0.1), inset 0 0 20px rgba(255, 215, 0, 0.05);
-            transform: scale(0.5); transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            overflow: hidden;
-        }
-        .levelup-overlay.active .levelup-card { transform: scale(1); }
-
-        .levelup-shine {
-            position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
-            transform: skewX(-25deg); animation: shine 6s infinite;
-        }
-        @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
-
-        .levelup-header {
-            font-size: 3.8rem; font-weight: 900; margin-bottom: 10px; text-transform: uppercase;
-            background: linear-gradient(to bottom, #fff, #ffd700, #ff8c00);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 4px 0px rgba(0,0,0,0.5)); animation: bounceIn 1s ease;
-        }
-        .levelup-icon { font-size: 7rem; color: #ffd700; filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.6)); margin: 20px 0; animation: float 4s infinite; }
-        .levelup-text { font-size: 1.6rem; margin-bottom: 10px; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        .levelup-sub { font-size: 1.1rem; color: #e0e0e0; margin-bottom: 35px; opacity: 0.9; }
-        .levelup-btn {
-            background: linear-gradient(90deg, #ff8c00, #ffd700); border: none; color: #000;
-            padding: 15px 50px; font-size: 1.2rem; font-weight: 800; border-radius: 50px; cursor: pointer;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); transition: all 0.3s; text-transform: uppercase;
-        }
-        .levelup-btn:hover { transform: scale(1.05); box-shadow: 0 0 40px rgba(255, 215, 0, 0.7); }
-        @keyframes bounceIn { 0% { opacity: 0; transform: translateY(-50px); } 60% { opacity: 1; transform: translateY(10px); } 100% { transform: translateY(0); } }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
-    </style>
-
-    <script>
-        function showLevelUpModal(newLevel) {
-            const levelSpan = document.getElementById('dynamicLevelNum');
-            if(levelSpan) levelSpan.innerText = newLevel;
-
-            const modal = document.getElementById('resourceLevelUpModal');
-            modal.style.display = 'flex';
-            setTimeout(() => {
-                modal.classList.add('active');
-            }, 50);
-        }
-
-        function closeResourceLevelUp() {
-            const modal = document.getElementById('resourceLevelUpModal');
-            modal.classList.remove('active');
-            setTimeout(() => {
-                modal.style.display = 'none';
-                window.location.href = 'challenge.php'; 
-            }, 500);
         }
     </script>
 

@@ -64,7 +64,7 @@ if (isset($_POST['add_resource'])) {
             if (in_array($fileExt, $allowed)) {
                 $newFileName = uniqid('res_', true) . '.' . $fileExt;
                 
-                $uploadDir = '../assets/uploads/resources/'; 
+                $uploadDir = '../pages/assets/uploads/resources/'; 
                 
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
@@ -73,7 +73,7 @@ if (isset($_POST['add_resource'])) {
                 $destPath = $uploadDir . $newFileName;
 
                 if (move_uploaded_file($_FILES['file_upload']['tmp_name'], $destPath)) {
-                    $finalUrl = 'assets/uploads/resources/' . $newFileName; 
+                    $finalUrl = '../pages/assets/uploads/resources/' . $newFileName; 
                 } else {
                     die("Error moving uploaded file."); 
                 }

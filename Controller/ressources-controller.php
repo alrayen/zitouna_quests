@@ -5,6 +5,38 @@ require_once __DIR__ . '/../Model/ressources-model.php';
 
 class RessourceController {
 
+    // [ADDED] This function ensures the file path is saved correctly for the frontend to read.
+    public function uploadFile($file) {
+        // Target: Projet/View/BACK OFFICE/VIEW/build/assets/uploads/resources/
+        $targetDir = __DIR__ . '/../View/BACK OFFICE/VIEW/build/pages';
+        
+        // Create directory if it doesn't exist
+        if (!is_dir($targetDir)) {
+            mkdir($targetDir, 0777, true);
+        }
+
+        $originalName = basename($file["name"]);
+        $imageFileType = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+        
+        // Generate unique name to prevent overwriting
+        $uniqueName = uniqid('res_') . '.' . $imageFileType;
+        $targetFilePath = $targetDir . $uniqueName;
+
+        // Allow PDF, Video, and Image formats
+        $allowedTypes = array('jpg', 'png', 'jpeg', 'gif', 'pdf', 'mp4', 'avi', 'mkv');
+        if (!in_array($imageFileType, $allowedTypes)) {
+            throw new Exception("Sorry, file type not allowed. (Allowed: Images, PDF, Video)");
+        }
+
+        if (move_uploaded_file($file["tmp_name"], $targetFilePath)) {
+            // Return the path relative to the 'build' folder
+            // This combines with the constant in challenge-resources.php
+            return "assets/uploads/resources/" . $uniqueName;
+        } else {
+            throw new Exception("Sorry, there was an error uploading your file.");
+        }
+    }
+
     public function addResource(Ressource $ressource) {
         try {
             $pdo = config::getConnexion();
