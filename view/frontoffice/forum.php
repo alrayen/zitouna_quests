@@ -931,6 +931,11 @@ function getImageUrl($image_name, $post_id) {
                 padding: 6px 12px;
                 font-size: 12px;
             }
+
+        }
+        .coeur-rouge
+        {
+            color:red;
         }
     </style>
 </head>
@@ -1090,7 +1095,8 @@ function getImageUrl($image_name, $post_id) {
                                                 id="post-input-<?= $post_id ?>"
                                                 value="<?= htmlspecialchars($sujet['nom']) ?>" 
                                                 
-                                                maxlength="200"
+                                                
+
                                                 style="width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 12px 15px; border-radius: 10px; font-size: 18px; font-weight: 600; transition: all 0.3s ease;"
                                                 oninput="validatePostInput(<?= $post_id ?>)"
                                             >
@@ -1121,14 +1127,19 @@ function getImageUrl($image_name, $post_id) {
                             
                             <!-- Statistiques du post -->
                             <div class="post-stats">
-                                <div class="post-stat-item">
-                                    <i class="far fa-eye"></i>
-                                    <span class="stat-number">1.2k</span> vues
+                               
+                                <?php if($sujet['likes']>0):?>
+                                <div onclick="window.location.href='../../controller/likeController.php?id=<?=$sujet['id']?>&choix=decrement';" class="post-stat-item">
+                                   <span style="color:red; font-size:24px;">❤️ </span>
+                                    <span class="stat-number"><?=$sujet['likes']?></span> likes
                                 </div>
-                                <div class="post-stat-item">
-                                    <i class="far fa-heart"></i>
-                                    <span class="stat-number">42</span> likes
+                                <?php else:?>
+                                <div onclick="window.location.href='../../controller/likeController.php?id=<?=$sujet['id']?>&choix=increment';" class="post-stat-item">
+                                    <span style="font-size:24px;">🤍</span>
+
+                                    <span class="stat-number"><?=$sujet['likes']?></span> likes
                                 </div>
+                                <?php endif;?>
                               <!--  <div class="post-stat-item">
                                     <i class="far fa-share"></i>
                                     <span class="stat-number">15</span> partages
@@ -1177,8 +1188,7 @@ function getImageUrl($image_name, $post_id) {
                                             class="form-textarea" 
                                             placeholder="Partagez votre avis, posez une question..."
                                             
-                                            minlength="10"
-                                            maxlength="1000"
+                                            
                                             oninput="validateCommentInput('add', <?= $post_id ?>)"
                                         ></textarea>
                                         <div class="char-counter" id="add-comment-counter-<?= $post_id ?>">
@@ -1241,8 +1251,7 @@ function getImageUrl($image_name, $post_id) {
                                                     id="edit-comment-textarea-<?= $commentaire['id'] ?>"
                                                     class="form-textarea" 
                                                     
-                                                    minlength="10"
-                                                    maxlength="1000"
+                                                   
                                                     style="margin-left: 45px; min-height: 80px;"
                                                     oninput="validateCommentInput('edit', <?= $commentaire['id'] ?>)"
                                                 ><?= htmlspecialchars($commentaire['contenu']) ?></textarea>

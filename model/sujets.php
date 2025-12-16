@@ -7,6 +7,7 @@ class Sujet
     private $date;
     private $titre;
     private $image;
+    private $like;
    
 
 
@@ -16,6 +17,8 @@ class Sujet
         $this->nom=$nom;
         $this->date=$date;
         $this->image=$image;
+        $this->like=0;
+       
        
     }
     public function getId()

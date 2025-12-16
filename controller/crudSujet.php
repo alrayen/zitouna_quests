@@ -123,6 +123,39 @@ function modifierposts($id,$contenu)
         echo $e->getMessage();
 
     } 
+    
+}
+function incrementLike($id)
+{
+  try
+    {
+             $conn=getDatabaseConnexion();
+             $sql="UPDATE sujets SET likes=likes+1 WHERE id='$id'";
+             
+             $conn->query($sql);
+           
+    }
+    catch(PDOException $e )
+    {
+        echo $e->getMessage();
+
+    } 
+}
+function decrementLike($id)
+{
+   try
+    {
+             $conn=getDatabaseConnexion();
+             $sql="UPDATE sujets SET likes=GREATEST(likes-1,0 )WHERE id='$id'";
+             
+             $conn->query($sql);
+           
+    }
+    catch(PDOException $e )
+    {
+        echo $e->getMessage();
+
+    } 
 }
 
 ?>
