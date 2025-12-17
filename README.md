@@ -73,5 +73,10 @@ Modération IA des contenus
 
 Equipe
 
+Mohamed Ben Hariz
+Rayen Gaied
+Ahmed El Mokhtar
+Nafissatou Souley BouBou
+Houssem Laasili
 
 
