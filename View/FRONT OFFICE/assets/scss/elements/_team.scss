@@ -1,0 +1,175 @@
+/*start team style hear */
+
+
+
+.team-wrapper{
+    background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, #ffffff2e 0%, #ffffff0f 100%);
+    padding: 30px;
+    border-radius: 10px;
+    border: 2px solid var(--color-border-one);
+    height: 100%;
+    .team-image-wrapper{
+        margin-bottom: 25px;
+        overflow: hidden;
+        border-radius: 50%;
+        width: max-content;
+        max-height: 350px;
+        margin-right: auto;
+        position: relative;
+        margin-left: auto;
+        width: auto;
+        max-width: max-content;
+        &::after{
+            position: absolute;
+            content: '';
+            background: linear-gradient(96.11deg, hsl(273, 100%, 46%,.65) 1.74%, hsl(257, 100%, 45%,.65) 100%);
+            border-radius: 50%;
+            height: 0%;
+            width: 100%;
+            bottom: -8px;
+            left: 0;
+            z-index: 1;
+            transition: .6s;
+            border-top: 4px solid #fff;
+            border-bottom: 4px solid #fff;
+        }
+        img{
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .social-wrapper{
+            position: absolute;
+            bottom: -100px;
+            transition: 0.3s;
+            left: 53%;
+            transform: translateX(-50%);
+            z-index: 2;
+            li{
+                margin-right: 0;
+                a{
+                    transition: var(--transition);
+                    &::after{
+                        background: #fff;
+                        transition: var(--transition);
+                        height: 40px;
+                        width: 40px;
+                    }
+                    i{
+                        font-size: 16px;
+                        background: linear-gradient(96.11deg, #8200E9 1.74%, #4200E5 100%);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        transition: var(--transition);
+                    }
+                    &:hover{
+                        &::after{
+                            background: #fff;
+                        }
+                        i{
+                            color: #fff;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .team-details{
+        p{
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        a{
+            .title{
+                color: #fff;
+                margin-bottom: 0;
+            }
+        }
+    }
+    &:hover{
+        .team-image-wrapper{
+            .social-wrapper{
+                bottom: 60px;
+            }
+            &::after{
+                height: 100%;
+                width: 100%;
+                bottom: 0;
+            }
+        }
+    }
+}
+
+.over-link{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.rts-team-area{
+    &.team-filter{
+        position: relative;
+        &::after{
+            content: "";
+            position: absolute;
+            background: linear-gradient(95.66deg, #B16CEA 0%, #FF504B 51.04%, #FFA84B 100%);
+            height: 510px;
+            width: 510px;
+            left: 14%;
+            top: 28%;
+            opacity: 0.25;
+            background-repeat: no-repeat;
+            z-index: -1;
+            filter: blur(100px);
+        }
+        &::before{
+            content: "";
+            position: absolute;
+            background: linear-gradient(96.11deg, #8200E9 1.74%, #4200E5 100%);
+            height: 310px;
+            width: 310px;
+            right: 7%;
+            bottom: 10%;
+            opacity: 0.35;
+            background-repeat: no-repeat;
+            z-index: 1;
+            filter: blur(100px);
+        }
+    }
+}
+
+.team-elements{
+    background-image: url(../images/team/elements.png);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.rts-team-details-area{
+    .about-thumbnail{
+        img{
+            width: 100%;
+        }
+    }
+}
+.team-share-wrapper{
+    .title{
+        font-size: 17px;
+        font-weight: 500;
+        line-height: 24px;
+        color:#fff;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+

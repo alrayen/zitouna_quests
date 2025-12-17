@@ -1,0 +1,216 @@
+/*=========================
+    section Service style
+==========================*/
+
+
+.service-inner{
+    .thumbnail{
+        position: relative;
+        &::after{
+            position: absolute;
+            content: "";
+            background: url(../images/service/rounded.png);
+            right: 12%;
+            top: 19%;
+            height: 140px;
+            width: 140px;
+            z-index: 1;
+            animation: rotateIt 7s linear infinite;
+            background-repeat: no-repeat;
+        }
+        img{
+            width: 108%;
+            position: relative;
+            left: -52px;
+            top: -35px;
+            @media #{$sm-layout} {
+                width: 80%;
+            }
+        }
+    }
+    .service-details{
+        .sub-title{
+            font-size: 17px;
+            color: #fff;
+        }
+        .title{
+            margin-top: 20px;
+            line-height: 54px;
+            margin-bottom: 20px;
+        }
+    }
+}
+
+.service-sm-inner{
+    display: flex;
+    flex-wrap: wrap;
+}
+.service-details{
+    @media #{$large-mobile} {
+        padding: 0 15px;
+    }
+    @media #{$small-mobile} {
+        padding: 0 15px;
+    }
+}
+
+.service-sm{
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: var(--grtadient-three);
+    max-width: max-content;
+    border-radius: 5px;
+    border: 2px solid var(--color-border-one);
+    margin-right: 20px;
+    margin-bottom: 20px;
+    transition: .3s;
+    i{
+        padding: 10px;
+        background: var(--color-terciary);
+        border-radius: 52%;
+        font-size: 24px;
+        line-height: 21px;
+        color: #000000;
+    }
+    p{
+        margin-left: 10px;
+        color: #fff;
+        font-size: 16px;
+    }
+    &:hover{
+        transform: translateY(-5px);
+    }
+}
+
+
+// about service
+
+.about-service-wrapper{
+    text-align: center;
+    background: radial-gradient(97.57% 210.75% at 0.9% 2.98%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+    padding: 40px 15px;
+    border-radius: 5px;
+    backdrop-filter: blur(20px);
+    transition: .3s;
+    border: 2px solid #fff3;
+    height: 100%;
+    &:hover{
+        background: radial-gradient(97.25% 286.02% at 0.9% 2.97%, rgb(255 255 255 / 26%) 0%, rgba(255, 255, 255, 0) 100%);
+        border: 2px solid #fff5;
+    }
+    .thumbnail{
+        margin-bottom: 20px;
+        img{
+            transition: var(--transition);
+        }
+    }
+    .title{
+        margin-bottom: 10px;
+    }
+    p{
+        color: #fff;
+    }
+    &:hover{
+        .thumbnail{
+            img{
+                transform: translateY(-10px);
+            }
+        }
+    }
+}
+
+
+
+// about section service
+
+
+.why-choose-bg{
+    background-image: url(../images/service/Why-Choose-us-bg.png);
+}
+
+.why-choose-left{
+    &.bg-filter{
+        p{
+            &.disc{
+                font-weight: 400
+            }
+        }
+    }
+}
+
+.bg-filter{
+    position: relative;
+    &::after{
+        content: "";
+        position: absolute;
+        background: linear-gradient(95.66deg, #B16CEA 0%, #FF504B 51.04%, #FFA84B 100%);
+        height: 410px;
+        width: 410px;
+        right: 0px;
+        bottom: -35%;
+        opacity: 0.20;
+        background-repeat: no-repeat;
+        z-index: -1;
+        filter: blur(100px);
+    }
+}
+
+
+
+.why-choose-right{
+    display: flex;
+    justify-content: center;
+    @media #{$md-layout} {
+        justify-content: flex-start;
+    }
+    .thumbnail{
+        position: relative;
+        .small-image{
+            position: absolute;
+            left: -144px;
+            bottom: -47px;
+            animation: jump-1 3s linear infinite;
+            @media #{$laptop-device} {
+                left: -30px;
+            }
+            @media #{$smlg-device} {
+                right: -66px;
+                left: auto;
+            }
+            @media #{$lg-layout} {
+                right: -66px;
+                left: auto;
+            }
+            @media #{$md-layout} {
+                right: -66px;
+                left: auto;
+                bottom: -10px;
+            }
+            @media #{$sm-layout} {
+                right: -1px;
+                left: auto;
+                bottom: -10px;
+                width: 160px;
+            }
+        }
+        .rounded{
+            position: absolute;
+            top: 9%;
+            left: -15%;
+            animation: rotateIt2 3s linear infinite;
+            @media #{$smlg-device} {
+                left: 0;
+                top: 0;
+                height: 150px;
+                width: 150px;
+            }
+            @media #{$lg-layout} {
+                left: 0;
+                top: 0;
+                height: 150px;
+                width: 150px;
+            }
+        }
+    }
+}
