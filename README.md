@@ -8,15 +8,15 @@ PHP MySQL HTML5 CSS3 JavaScript
 À propos
 Zitouna Quest est une application web éducative conçue pour encourager l'échange et la collaboration entre étudiants. Les utilisateurs peuvent partager leurs connaissances, poser des questions, et participer à des discussions dans un environnement sécurisé et moderne.
 
-Projet réalisé dans le cadre du cursus universitaire à ESPRIT et Université Laval (2024-2025).
+Projet réalisé dans le cadre du cursus universitaire à ESPRIT  (2025-2026).
 
 Fonctionnalités
-Gestion des Posts
-Création, modification et suppression de posts
+
+Gestion des Posts: Création, modification et suppression de posts
 Upload d'images pour illustrer les discussions
 Recherche dynamique par mots-clés
-Système de Commentaires
-Ajout et édition de commentaires avec validation (10-1000 caractères)
+
+Système de Commentaires: Ajout et édition de commentaires avec validation (10-1000 caractères)
 Modération automatique par IA pour détecter les contenus inappropriés
 Compteur de caractères en temps réel
 Système de Likes
