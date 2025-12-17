@@ -6,7 +6,6 @@ require_once __DIR__ . '/../../../../Controller/challenge-controller.php';
 $challengeController = new ChallengeController();
 $allChallenges = $challengeController->listChallenges();
 
-// --- 1. FETCH USER STATS (Analytics) ---
 $userId = $_SESSION['user_id'] ?? 1; 
 $pdo = config::getConnexion();
 
@@ -14,17 +13,14 @@ $userStmt = $pdo->prepare("SELECT xp, level FROM user WHERE id_user = ?");
 $userStmt->execute([$userId]);
 $userData = $userStmt->fetch(PDO::FETCH_ASSOC) ?: ['xp' => 0, 'level' => 1];
 
-// Get Completed Challenges
 $progStmt = $pdo->prepare("SELECT challenge_id FROM user_challenge_progress WHERE user_id = ? AND status = 'completed'");
 $progStmt->execute([$userId]);
 $completedIds = $progStmt->fetchAll(PDO::FETCH_COLUMN);
 
-// Get Started (but not completed) Challenges
 $startStmt = $pdo->prepare("SELECT challenge_id FROM user_challenge_progress WHERE user_id = ? AND status = 'started'");
 $startStmt->execute([$userId]);
 $startedIds = $startStmt->fetchAll(PDO::FETCH_COLUMN);
 
-// Fetch Earned Badges
 $badgeStmt = $pdo->prepare("
     SELECT b.* FROM badges b 
     JOIN user_badges ub ON b.id = ub.badge_id 
@@ -33,13 +29,11 @@ $badgeStmt = $pdo->prepare("
 $badgeStmt->execute([$userId]);
 $myBadges = $badgeStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Calculate Progress Bar (XP for next level)
 $xpForNextLevel = $userData['level'] * 100;
 $currentLevelBaseXp = ($userData['level'] - 1) * 100;
 $xpInCurrentLevel = $userData['xp'] - $currentLevelBaseXp;
 $progressPercent = min(100, max(0, ($xpInCurrentLevel / 100) * 100)); // Clamp between 0-100
 
-// Filter Logic
 $uniqueCategories = [];
 $uniqueDifficulties = [];
 foreach ($allChallenges as $challenge) {
@@ -60,9 +54,6 @@ usort($uniqueDifficulties, function($a, $b) use ($difficultyOrder) {
     return $posA - $posB;
 });
 
-// --- AUTOMATIC LEVEL UP TRIGGER ---
-// We check if the Controller set the session flag. 
-// If yes, we set a PHP variable to TRUE and clear the session so it doesn't show again on refresh.
 $shouldShowLevelUp = false;
 if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
     $shouldShowLevelUp = true;
@@ -104,7 +95,6 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
         @keyframes moveGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-        /* --- GAMIFICATION HEADER --- */
         .gamification-bar {
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
@@ -127,7 +117,6 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
         .xp-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; margin-top: 5px; }
         .xp-bar-fill { height: 100%; background: #00e676; width: <?php echo $progressPercent; ?>%; transition: width 1s ease; }
 
-        /* --- BADGES --- */
         .badge-card {
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
@@ -144,7 +133,6 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
         .badge-icon { font-size: 1.8rem; color: #ffd700; margin-bottom: 5px; }
         .badge-name { font-size: 0.7rem; font-weight: 700; color: #fff; line-height: 1.2; }
 
-        /* --- CHALLENGE CARDS ENHANCED --- */
         .quiz-card {
             background: rgba(20, 60, 20, 0.35); backdrop-filter: blur(15px);
             border: 1px solid rgba(100, 255, 100, 0.2); border-radius: 24px; 
@@ -223,20 +211,17 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
         .btn-accept-lg:hover { transform: scale(1.02); box-shadow: 0 0 40px rgba(0, 230, 118, 0.6); }
         .confirm-box { background: #1a1a1a; border: 2px solid #69f0ae; padding: 30px; border-radius: 20px; text-align: center; max-width: 400px; }
         .confirm-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
-        .btn-yes { background: #69f0ae; color: #000; padding: 10px 30px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; }
+        .btn-yes { background: #69f0ae; color: #000; padding: 10px 30px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; text-decoration: none; }
         .btn-no { background: transparent; color: #ff8a80; padding: 10px 30px; border-radius: 10px; font-weight: 700; border: 1px solid #ff8a80; cursor: pointer; }
         
         .rts-header-area { position: fixed !important; top: 0; left: 0; width: 100%; z-index: 999; background: rgba(20, 60, 20, 0.65) !important; backdrop-filter: blur(12px); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.1); transition: transform 0.4s ease-in-out; padding-top: 10px; padding-bottom: 10px; }
         .header-hidden { transform: translateY(-100%); }
 
-        /* =========================================================================
-           CUSTOM DARK GLASS LEVEL UP MODAL STYLES 
-           ========================================================================= */
         
         .levelup-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9); /* Dark background */
-            z-index: 999999; /* Highest z-index possible */
+            background: rgba(0, 0, 0, 0.9); 
+            z-index: 999999; 
             display: none; justify-content: center; align-items: center;
             opacity: 0; transition: opacity 0.5s ease;
             backdrop-filter: blur(15px);
@@ -248,12 +233,11 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
             position: relative;
             width: 90%; max-width: 550px;
             
-            /* DARK GLASS EFFECT */
             background: rgba(10, 10, 10, 0.65); 
-            backdrop-filter: blur(25px);         
+            backdrop-filter: blur(25px);        
             -webkit-backdrop-filter: blur(25px); 
             
-            border: 2px solid rgba(255, 215, 0, 0.5); /* Gold Border */
+            border: 2px solid rgba(255, 215, 0, 0.5); 
             border-radius: 40px;
             padding: 60px 40px;
             text-align: center;
@@ -266,7 +250,6 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
         }
         .levelup-overlay.active .levelup-card { transform: scale(1); }
 
-        /* Shine Animation */
         .levelup-shine {
             position: absolute; top: 0; left: -100%;
             width: 50%; height: 100%;
@@ -279,7 +262,6 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
         .levelup-header {
             font-size: 3.8rem; font-weight: 900;
             
-            /* GOLD TEXT EFFECT */
             background: linear-gradient(to bottom, #fff, #ffd700, #ff8c00);
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent;
@@ -419,6 +401,38 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
                 </div>
             </div>
 
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-10">
+                    <div class="ai-banner" style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 40px; border-radius: 24px; color: white; text-align: center; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(118, 75, 162, 0.4);">
+                        
+                        <div style="position: absolute; top: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                        <div style="position: absolute; bottom: -50px; right: -20px; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                        <div style="position: absolute; top: 20px; right: 40px; font-size: 2rem; opacity: 0.2; animation: float 6s infinite;"><i class="fas fa-code"></i></div>
+
+                        <span style="background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; display: inline-block;">
+                            <i class="fas fa-sparkles"></i> New Feature
+                        </span>
+                        
+                        <h2 style="font-weight: 800; margin-bottom: 15px; color: #fff; text-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                            Need a Custom Challenge?
+                        </h2>
+                        <p style="opacity: 0.95; margin-bottom: 30px; font-size: 1.1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                            Our AI analyzes your skills and generates a unique mission tailored just for you.
+                        </p>
+                        
+                        <button id="btnGenerateAI" onclick="generateAiChallenge()" style="background: white; color: #764ba2; border: none; padding: 15px 40px; border-radius: 50px; font-weight: 800; cursor: pointer; transition: all 0.3s; font-size: 1rem; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: inline-flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-magic"></i> Generate My Challenge
+                        </button>
+                        
+                        <div id="aiLoading" style="display:none; margin-top: 20px;">
+                            <div class="spinner-border text-light" role="status" style="width: 2rem; height: 2rem;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div style="margin-top: 10px; font-size: 0.95rem; font-weight: 600;">Creating your mission...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-12">
                     <div class="quiz-filter-controls">
@@ -576,6 +590,18 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
         </div>
     </div>
 
+    <div id="loginModal" class="modal-overlay" style="z-index: 10001;">
+        <div class="confirm-box">
+            <div style="font-size: 3rem; color: #ff8a80; margin-bottom: 20px;"><i class="fas fa-lock"></i></div>
+            <h3 style="color: white; margin-bottom: 10px;">Login Required</h3>
+            <p style="color: #ccc; margin-bottom: 25px;">You need to be logged in to generate a personalized challenge.</p>
+            <div class="confirm-actions">
+                <button onclick="closeLoginModal()" class="btn-no">Cancel</button>
+                <a href="login.html" class="btn-yes" style="text-decoration:none; display:inline-block;">Connect</a>
+            </div>
+        </div>
+    </div>
+
     <div id="levelUpModal" class="levelup-overlay">
         <div class="levelup-card">
             <div class="levelup-shine"></div>
@@ -620,10 +646,55 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
-        // Pass the PHP session flag to JS
         const triggerLevelUp = <?php echo $shouldShowLevelUp ? 'true' : 'false'; ?>;
 
         let currentChallengeId = 0;
+        
+        async function generateAiChallenge() {
+            const btn = document.getElementById('btnGenerateAI');
+            const loading = document.getElementById('aiLoading');
+            
+            btn.style.display = 'none';
+            loading.style.display = 'block';
+            
+            try {
+                // Adjust the path if your controller is in a different location relative to this file
+                const response = await fetch('../../../../Controller/generate_challenge_api.php');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Success! Go to the new challenge
+                    window.location.href = 'challenge-resources.php?id=' + data.challenge_id;
+                } else {
+                    // Handle error - specifically for login
+                    if (data.message === 'Please login first') {
+                        openLoginModal();
+                    } else {
+                        alert("AI Error: " + data.message);
+                    }
+                    btn.style.display = 'inline-flex';
+                    loading.style.display = 'none';
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Connection error. Please try again.");
+                btn.style.display = 'inline-flex';
+                loading.style.display = 'none';
+            }
+        }
+
+        function openLoginModal() {
+            var modal = document.getElementById('loginModal');
+            modal.style.display = 'flex';
+            void modal.offsetWidth; 
+            setTimeout(() => { modal.classList.add('active'); }, 50);
+        }
+
+        function closeLoginModal() {
+            var modal = document.getElementById('loginModal');
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 350);
+        }
 
         $(window).on('load', function () {
             var $grid = $('#quiz-grid').isotope({
@@ -667,7 +738,6 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
                 $grid.isotope({ filter: combinedFilter });
             });
 
-            // CHECK FLAG AND TRIGGER MODAL
             if (triggerLevelUp) {
                 setTimeout(function(){
                     openLevelUp();
@@ -726,9 +796,7 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
             setTimeout(() => { modal.style.display = 'none'; }, 350);
         }
 
-        // ======================================================
-        // LEVEL UP LOGIC & CONFETTI
-        // ======================================================
+        
         function openLevelUp() {
             var modal = document.getElementById('levelUpModal');
             modal.style.display = 'flex';
@@ -747,23 +815,22 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
             var end = Date.now() + duration;
 
             (function frame() {
-                // Confetti from left
                 confetti({
                     particleCount: 7,
                     angle: 60,
                     spread: 55,
                     origin: { x: 0 },
-                    colors: ['#ffd700', '#ff8c00', '#ffffff'], // Gold & White
-                    zIndex: 1000000 // HIGHER THAN MODAL
+                    colors: ['#ffd700', '#ff8c00', '#ffffff'], 
+                    zIndex: 1000000 
                 });
-                // Confetti from right
+               
                 confetti({
                     particleCount: 7,
                     angle: 120,
                     spread: 55,
                     origin: { x: 1 },
                     colors: ['#ffd700', '#ff8c00', '#ffffff'],
-                    zIndex: 1000000 // HIGHER THAN MODAL
+                    zIndex: 1000000 
                 });
 
                 if (Date.now() < end) {
@@ -783,7 +850,6 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
                 })
             });
 
-            // "Challenge Accepted" Celebration Confetti (Different from Level Up)
             var duration = 1500;
             var animationEnd = Date.now() + duration;
             var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10001 };
@@ -808,6 +874,7 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
         window.onclick = function(event) {
             if (event.target == document.getElementById('detailModal')) closeDetailModal();
             if (event.target == document.getElementById('confirmModal')) closeConfirmModal();
+            if (event.target == document.getElementById('loginModal')) closeLoginModal();
         }
     </script>
 </body>

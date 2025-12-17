@@ -1,4 +1,6 @@
 <?php
+session_start(); 
+
 require_once __DIR__ . '/../../../../config.php';
 require_once __DIR__ . '/../../../../Model/challenge.php';
 require_once __DIR__ . '/../../../../Controller/challenge-controller.php';
@@ -6,14 +8,9 @@ require_once __DIR__ . '/../../../../Model/ressources-model.php';
 require_once __DIR__ . '/../../../../Controller/ressources-controller.php';
 require_once __DIR__ . '/../../../../Controller/help-room-controller.php';
 
-// [FIX START] -----------------------------------------------------------
-// 1. Wrapped in !defined() to stop the PHP Warning.
-// 2. Changed 'BACK OFFICE' to 'BACK%20OFFICE' (URL encoded space).
-// 3. Pointed to '/build/' because your DB path starts with 'assets/'.
 if (!defined('ABSOLUTE_UPLOAD_ROOT')) {
     define('ABSOLUTE_UPLOAD_ROOT', '/Projet/View/BACK%20OFFICE/VIEW/build/');
 }
-// [FIX END] -------------------------------------------------------------
 
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     header("Location: challenge.php");
@@ -36,7 +33,13 @@ $resources = $ressourceController->getResourcesByDefiId($id_defi);
 $helpController = new HelpRoomController();
 $activeRooms = $helpController->getActiveRoomsForChallenge($id_defi);
 
-$userId = $_SESSION['user_id'] ?? 1; 
+// Ensure user is logged in
+if (!isset($_SESSION['user_id'])) {
+    $userId = 1; // Dev fallback
+} else {
+    $userId = $_SESSION['user_id'];
+}
+
 $pdo = config::getConnexion();
 
 $stmt = $pdo->prepare("SELECT id FROM user_challenge_progress WHERE user_id = ? AND challenge_id = ? AND status = 'completed'");
@@ -64,14 +67,56 @@ if (!$isCompleted) {
     <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark-reasonable.min.css">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 
     <style>
         @keyframes moveGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes float { 0% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-20px) translateX(20px); } 100% { transform: translateY(0) translateX(0); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
+        .mission-box {
+            background: rgba(10, 20, 25, 0.85);
+            border: 1px solid #00e676;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 230, 118, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .mission-header {
+            background: rgba(0, 230, 118, 0.1);
+            padding: 15px 25px;
+            border-bottom: 1px solid #00e676;
+            color: #00e676;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mission-body {
+            padding: 30px;
+            color: #e0f2f1;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .mission-body pre {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #333;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
         body.rt_bg-secondary {
             background: linear-gradient(135deg, #14b8a6, #14b8a6, #3ddf43ff, #81c784);
             background-size: 400% 400%;
@@ -319,6 +364,34 @@ if (!$isCompleted) {
 
         .message { max-width: 80%; padding: 15px 20px; border-radius: 20px; font-size: 1rem; line-height: 1.6; }
         
+        /* [FIX] START: Formatting for AI Responses to look perfect */
+        .message strong {
+            font-weight: 700;
+            color: #fff;
+        }
+        .message ul, .message ol {
+            margin: 10px 0;
+            padding-left: 25px; /* Ensures bullets are visible inside the bubble */
+        }
+        .message li {
+            list-style: disc; /* Forces bullets */
+            margin-bottom: 5px;
+        }
+        .message pre {
+            background: rgba(0, 0, 0, 0.3); /* Dark box for code snippets */
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            overflow-x: auto; /* Allow scrolling for long lines */
+            border: 1px solid rgba(100, 255, 100, 0.2);
+            white-space: pre-wrap; /* Wrap text */
+            word-wrap: break-word;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+            color: #e0f2f1;
+        }
+        /* [FIX] END */
+
         .message.bot {
             align-self: flex-start;
             background: rgba(255, 255, 255, 0.1);
@@ -403,10 +476,8 @@ if (!$isCompleted) {
             display: block;
             overflow-x: auto;
             padding: 1em;
-            background: rgba(0,0,0,0.4); 
-            border-radius: 10px;
-            margin-top: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            background: transparent; /* Background handled by pre */
+            box-shadow: none;
         }
         
         .ai-thought-details {
@@ -445,14 +516,6 @@ if (!$isCompleted) {
         .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
         .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
         @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
-
-        .typing-cursor::after {
-            content: '|';
-            animation: blink 0.8s step-start infinite;
-            color: #69f0ae;
-            margin-left: 2px;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
 
         .msg-controls {
             display: flex;
@@ -559,7 +622,14 @@ if (!$isCompleted) {
                 </button>
             <?php endif; ?>
         </div>
-
+        <div class="mission-box">
+            <div class="mission-header">
+                <i class="fas fa-terminal"></i> Mission Briefing
+            </div>
+            <div class="mission-body">
+                <?php echo $challenge->getDescription(); ?>
+            </div>
+        </div>
         <div class="resource-container">
             <?php if (empty($resources)): ?>
                 <div class="empty-state">
@@ -572,11 +642,9 @@ if (!$isCompleted) {
                 $delay = 0;
                 foreach ($resources as $res): 
                     $delay += 100; 
-                    
                     $type = strtolower($res->getType());
                     $iconClass = "fa-file-alt"; 
                     $colorClass = "type-default";
-
                     if (strpos($type, 'pdf') !== false) { $iconClass = "fa-file-pdf"; $colorClass = "type-pdf"; } 
                     elseif (strpos($type, 'video') !== false || strpos($type, 'mp4') !== false) { $iconClass = "fa-play-circle"; $colorClass = "type-video"; } 
                     elseif (strpos($type, 'link') !== false || strpos($type, 'http') !== false) { $iconClass = "fa-link"; $colorClass = "type-link"; } 
@@ -597,18 +665,9 @@ if (!$isCompleted) {
                         </div>
                         <div class="res-action">
     <?php 
-        // 1. Get the URL from DB (e.g., "../pages/assets/uploads/resources/res_...")
         $rawUrl = $res->getUrl();
-
-        // 2. Remove the "../" prefix
         $cleanUrl = str_replace('../', '', $rawUrl);
-
-        // 3. Define the base path manually here to override any config.php issues
-        // We use the exact path from your "Correct URL"
         $manualBase = '/Projet/View/BACK%20OFFICE/VIEW/build/';
-
-        // 4. Combine them
-        // Result: /Projet/View/BACK%20OFFICE/VIEW/build/pages/assets/uploads/resources/...
         $finalLink = $manualBase . htmlspecialchars($cleanUrl);
     ?>
     <a href="<?php echo $finalLink; ?>" target="_blank" class="btn-access">
@@ -843,27 +902,6 @@ if (!$isCompleted) {
             else alert("Voice input not supported in this browser.");
         }
 
-        function typeWriter(element, text, index = 0) {
-            if (index < text.length) {
-                if (text.charAt(index) === '<') {
-                    let tagEnd = text.indexOf('>', index);
-                    if (tagEnd !== -1) {
-                        element.innerHTML += text.substring(index, tagEnd + 1);
-                        index = tagEnd + 1;
-                    } else {
-                        element.innerHTML += text.charAt(index);
-                        index++;
-                    }
-                } else {
-                    element.innerHTML += text.charAt(index);
-                    index++;
-                }
-                setTimeout(() => typeWriter(element, text, index), 20); 
-            } else {
-                element.classList.remove('typing-cursor'); 
-            }
-        }
-
         function speakText(btn) {
             if (!('speechSynthesis' in window)) {
                 alert("Sorry, your browser doesn't support Text-to-Speech!");
@@ -955,25 +993,37 @@ if (!$isCompleted) {
                     }
                 }
 
+                // 1. Format URLs
                 let replyHtml = replyRaw.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#69f0ae; text-decoration:underline;">$1</a>');
-                replyHtml = replyHtml.replace(/\n/g, '<br>');
+                
+                // [FIX] Smart Newline Conversion: 
+                // Only convert \n to <br> if the string DOES NOT contain actual HTML block tags (like <p>, <ul>, <br>)
+                // This prevents adding extra gaps to pre-formatted HTML responses.
+                if (!replyRaw.includes('<br>') && !replyRaw.includes('</p>') && !replyRaw.includes('<ul>')) {
+                    replyHtml = replyHtml.replace(/\n/g, '<br>');
+                }
 
+                // 2. Prepare Text for Speech
                 let speechText = replyRaw.replace(/```[\s\S]*?```/g, " [Code Block] ");
                 speechText = speechText.replace(/<[^>]*>?/gm, '');
 
                 const botMsgDiv = document.createElement('div');
                 botMsgDiv.className = 'message bot';
 
+                // 3. Add Thought Process
                 if (thoughtProcess) {
+                     const cleanThought = DOMPurify.sanitize(thoughtProcess.replace(/\n/g, '<br>'));
                      const thoughtHtml = `<details class="ai-thought-details">
                         <summary>✨ View AI Reasoning</summary>
-                        <div class="ai-thought-content">${thoughtProcess.replace(/\n/g, '<br>')}</div>
+                        <div class="ai-thought-content">${cleanThought}</div>
                     </details>`;
                      botMsgDiv.insertAdjacentHTML('afterbegin', thoughtHtml);
                 }
                 
                 const textContainer = document.createElement('div');
-                textContainer.className = 'typing-cursor'; 
+                // Sanitize the HTML before inserting
+                textContainer.innerHTML = DOMPurify.sanitize(replyHtml);
+                
                 botMsgDiv.appendChild(textContainer);
 
                 const controlsContainer = document.createElement('div');
@@ -988,8 +1038,7 @@ if (!$isCompleted) {
                 messagesContainer.appendChild(botMsgDiv);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-                typeWriter(textContainer, replyHtml);
-                setTimeout(highlightCode, 1500); 
+                highlightCode(); 
 
             } catch (error) {
                 console.error(error);

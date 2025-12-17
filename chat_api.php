@@ -5,12 +5,17 @@ session_write_close();
 
 header('Content-Type: application/json');
 
-
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../Model/challenge.php';
 require_once __DIR__ . '/../Model/ressources-model.php';
 require_once __DIR__ . '/challenge-controller.php';
 require_once __DIR__ . '/ressources-controller.php';
+
+// --- CONFIGURATION START ---
+$openRouterKey = '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'; // <--- PASTE YOUR KEY HERE
+$siteUrl = 'http://localhost/Projet'; // Your site URL for OpenRouter rankings
+$siteName = 'Zitouna Quests'; // Your app name
+// --- CONFIGURATION END ---
 
 $input = json_decode(file_get_contents('php://input'), true);
 $userMessage = $input['message'] ?? '';
@@ -56,10 +61,8 @@ if (strlen($cleanText) < 20) {
 }
 
 if ($isGreeting) {
-    
     $systemPrompt = "You are an AI mentor. $toneInstruction The user just said hello. Reply with a short, welcoming greeting matching your tone.";
 } else {
-    
     $resourceCtrl = new RessourceController();
     $resources = $resourceCtrl->getResourcesByDefiId($challengeId);
     
@@ -79,15 +82,19 @@ if ($isGreeting) {
     }
 }
 
-$apiUrl = 'http://127.0.0.1:11434/v1/chat/completions';
+// OpenRouter API Endpoint
+$apiUrl = 'https://openrouter.ai/api/v1/chat/completions';
 
 $payload = [
-    'model' => 'deepseek-r1:1.5b', 
+    // 'deepseek/deepseek-r1' is the OpenRouter ID for the R1 model
+    'model' => 'deepseek/deepseek-r1', 
     'messages' => [
         ['role' => 'system', 'content' => $systemPrompt],
         ['role' => 'user', 'content' => $userMessage]
     ],
-    'temperature' => 0.6
+    'temperature' => 0.6,
+    // Optional: Limit tokens to save cost/time
+    // 'max_tokens' => 1000 
 ];
 
 $ch = curl_init($apiUrl);
@@ -96,17 +103,20 @@ curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/json',
-    'Authorization: Bearer ollama'
+    'Authorization: Bearer ' . $openRouterKey,
+    'HTTP-Referer: ' . $siteUrl, // Required by OpenRouter
+    'X-Title: ' . $siteName      // Recommended by OpenRouter
 ]);
 
-
+// Keep SSL verify off for localhost dev (turn ON for production!)
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-curl_setopt($ch, CURLOPT_TIMEOUT, 45); 
+curl_setopt($ch, CURLOPT_TIMEOUT, 60); // Increased timeout for remote API
+
 $response = curl_exec($ch);
 
 if (curl_errno($ch)) {
-    echo json_encode(['reply' => 'Error: Is Ollama running? (' . curl_error($ch) . ')']);
+    echo json_encode(['reply' => 'Connection Error: ' . curl_error($ch)]);
 } else {
     $decoded = json_decode($response, true);
     
@@ -115,10 +125,10 @@ if (curl_errno($ch)) {
         
         $thoughtProcess = '';
         
-        
+        // OpenRouter DeepSeek R1 usually returns <think> tags in the content just like Ollama
         if (preg_match('/<think>(.*?)<\/think>/s', $rawReply, $matches)) {
             $thoughtProcess = $matches[1]; 
-            $rawReply = preg_replace('/<think>.*?<\/think>/s', '', $rawReply); // Remove thought from reply
+            $rawReply = preg_replace('/<think>.*?<\/think>/s', '', $rawReply); 
         }
         
         echo json_encode([
@@ -127,7 +137,8 @@ if (curl_errno($ch)) {
         ]);
         
     } else {
-        $errMsg = $decoded['error']['message'] ?? 'Unknown error';
+        // Handle OpenRouter specific error messages
+        $errMsg = $decoded['error']['message'] ?? 'Unknown API error';
         echo json_encode(['reply' => 'AI Error: ' . $errMsg]);
     }
 }
