@@ -21,6 +21,7 @@ Modération automatique par IA pour détecter les contenus inappropriés
 Compteur de caractères en temps réel
 Système de Likes
 Like/Unlike avec animation fluide
+
 Protection anti-spam : impossible de liker deux fois (session PHP)
 Compteur de likes en temps réel
 Statistiques
@@ -62,21 +63,15 @@ Configurer la connexion dans config.php
 
 Lancer le serveur et accéder à http://localhost/view/front/forum.php
 
-Structure
-zitouna-quest-forum/
-├── config/          Configuration
-├── controller/      Logique métier (CRUD)
-├── model/          Classes PHP
-├── view/           Interface utilisateur
-└── assets/         CSS, JS, Images
-Sécurité
+
+Sécurité:
 Protection SQL Injection (requêtes préparées PDO)
 Protection XSS (htmlspecialchars)
 Validation côté client et serveur
 Sessions sécurisées
 Modération IA des contenus
-Auteur
-Moussa
-ESPRIT Engineering School & Université Laval
-2024-2025
+
+Equipe
+
+
 
