@@ -6,28 +6,35 @@ require_once __DIR__ . '/../../../../Controller/challenge-controller.php';
 $challengeController = new ChallengeController();
 $allChallenges = $challengeController->listChallenges();
 
-$userId = $_SESSION['user_id'] ?? 1; 
+$userId = $_SESSION['user_id'] ?? null; 
 $pdo = config::getConnexion();
 
-$userStmt = $pdo->prepare("SELECT xp, level FROM user WHERE id_user = ?");
-$userStmt->execute([$userId]);
-$userData = $userStmt->fetch(PDO::FETCH_ASSOC) ?: ['xp' => 0, 'level' => 1];
+if ($userId) {
+    $userStmt = $pdo->prepare("SELECT xp, level FROM user WHERE id_user = ?");
+    $userStmt->execute([$userId]);
+    $userData = $userStmt->fetch(PDO::FETCH_ASSOC) ?: ['xp' => 0, 'level' => 1];
 
-$progStmt = $pdo->prepare("SELECT challenge_id FROM user_challenge_progress WHERE user_id = ? AND status = 'completed'");
-$progStmt->execute([$userId]);
-$completedIds = $progStmt->fetchAll(PDO::FETCH_COLUMN);
+    $progStmt = $pdo->prepare("SELECT challenge_id FROM user_challenge_progress WHERE user_id = ? AND status = 'completed'");
+    $progStmt->execute([$userId]);
+    $completedIds = $progStmt->fetchAll(PDO::FETCH_COLUMN);
 
-$startStmt = $pdo->prepare("SELECT challenge_id FROM user_challenge_progress WHERE user_id = ? AND status = 'started'");
-$startStmt->execute([$userId]);
-$startedIds = $startStmt->fetchAll(PDO::FETCH_COLUMN);
+    $startStmt = $pdo->prepare("SELECT challenge_id FROM user_challenge_progress WHERE user_id = ? AND status = 'started'");
+    $startStmt->execute([$userId]);
+    $startedIds = $startStmt->fetchAll(PDO::FETCH_COLUMN);
 
-$badgeStmt = $pdo->prepare("
-    SELECT b.* FROM badges b 
-    JOIN user_badges ub ON b.id = ub.badge_id 
-    WHERE ub.user_id = ?
-");
-$badgeStmt->execute([$userId]);
-$myBadges = $badgeStmt->fetchAll(PDO::FETCH_ASSOC);
+    $badgeStmt = $pdo->prepare("
+        SELECT b.* FROM badges b 
+        JOIN user_badges ub ON b.id = ub.badge_id 
+        WHERE ub.user_id = ?
+    ");
+    $badgeStmt->execute([$userId]);
+    $myBadges = $badgeStmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    $userData = ['xp' => 0, 'level' => 1];
+    $completedIds = [];
+    $startedIds = [];
+    $myBadges = [];
+}
 
 $xpForNextLevel = $userData['level'] * 100;
 $currentLevelBaseXp = ($userData['level'] - 1) * 100;
@@ -378,7 +385,7 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
                     <h4 style="color:#fff; font-weight:700; margin-bottom:20px;">Your Badges</h4>
                     <div style="display:flex; gap:15px; flex-wrap:wrap;">
                         <?php if (empty($myBadges)): ?>
-                            <p style="color:#ccc; font-style:italic;">Complete challenges to earn badges!</p>
+                            <p class="disc">Complete challenges to earn badges!</p>
                         <?php else: ?>
                             <?php foreach ($myBadges as $badge): ?>
                                 <div class="badge-card" title="<?php echo htmlspecialchars($badge['description']); ?>">
@@ -416,7 +423,7 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
                         <h2 style="font-weight: 800; margin-bottom: 15px; color: #fff; text-shadow: 0 4px 10px rgba(0,0,0,0.2);">
                             Need a Custom Challenge?
                         </h2>
-                        <p style="opacity: 0.95; margin-bottom: 30px; font-size: 1.1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                        <p style="opacity: 0.95; margin-bottom: 30px; color: #fff; font-size: 1.1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
                             Our AI analyzes your skills and generates a unique mission tailored just for you.
                         </p>
                         

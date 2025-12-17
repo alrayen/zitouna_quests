@@ -4,9 +4,10 @@ require_once 'AiChallengeController.php';
 
 header('Content-Type: application/json');
 
-// Check login
 if (!isset($_SESSION['user_id'])) {
-    $_SESSION['user_id'] = 1; 
+    http_response_code(401); // Unauthorized
+    echo json_encode(['status' => 'error', 'message' => 'Please login first']);
+    exit;
 }
 
 $userId = $_SESSION['user_id'];
