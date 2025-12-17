@@ -4,18 +4,16 @@ require_once __DIR__ . '/../Model/challenge.php';
 
 class AiChallengeController {
     
-    // ⚠️ SECURITY WARNING: You posted your real key. I have removed it.
-    // Please generate a new one at OpenRouter.ai and paste it here.
-    private $apiKey = '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'; 
+    
+    private $apiKey = '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'; 
 
     public function generateChallengeForUser($userId) {
-        // FIX #1: Allow this specific script to run for 5 minutes (300 seconds)
-        // This prevents the "Maximum execution time of 30 seconds exceeded" error
+        
         set_time_limit(300); 
 
         $pdo = config::getConnexion();
         
-        // 1. Get User Stats
+        
         $sql = "SELECT c.difficulty, 
                         AVG(TIMESTAMPDIFF(MINUTE, ucp.started_at, ucp.completed_at)) as avg_time
                 FROM user_challenge_progress ucp
@@ -27,14 +25,14 @@ class AiChallengeController {
         $stmt->execute(['uid' => $userId]);
         $stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // 2. Context
+        
         if (empty($stats)) {
             $userContext = "The user is a beginner with no completed challenges yet.";
         } else {
             $userContext = "User Stats: " . json_encode($stats);
         }
 
-        // 3. Prompt
+        
         $prompt = "
             You are a coding mentor. Create a unique coding challenge based on this context: $userContext.
             
@@ -55,22 +53,18 @@ class AiChallengeController {
             }
         ";
 
-        // 4. Call API with Fallback
         try {
             $generatedData = $this->callOpenRouterWithFallback($prompt);
         } catch (Exception $e) {
-            // FIX #2: Don't just return false. Show the actual error to debug!
-            // Once fixed, you can change this back to return false;
+            
             die("<strong>CRITICAL ERROR:</strong> " . $e->getMessage());
         }
         
-        // 5. Clean Description
         $cleanDesc = $generatedData['description'];
         $cleanDesc = str_replace('</p>', '<br><br>', $cleanDesc);
         $cleanDesc = str_replace('<p>', '', $cleanDesc);
         $cleanDesc = trim($cleanDesc);
 
-        // 6. Save
         $sqlInsert = "INSERT INTO challenge (titre, description, categorie, points, time, difficulty, status, place) 
                         VALUES (:titre, :description, :categorie, :points, :time, :difficulty, 'Active', 'AI Lab')";
         
@@ -100,7 +94,6 @@ class AiChallengeController {
             try {
                 return $this->callOpenRouterCurl($prompt, $model);
             } catch (Exception $e) {
-                // Keep track of the error but continue to the next model
                 $lastError = $e->getMessage();
                 continue; 
             }
@@ -139,7 +132,6 @@ class AiChallengeController {
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         
-        // FIX #3: Ensure cURL timeout matches the PHP script extension
         curl_setopt($ch, CURLOPT_TIMEOUT, 180); 
 
         $response = curl_exec($ch);
@@ -153,7 +145,6 @@ class AiChallengeController {
 
         $decoded = json_decode($response, true);
 
-        // Check for API-level errors (like 401 Unauthorized or 402 Insufficient Credits)
         if (isset($decoded['error'])) {
              throw new Exception("API Error ($model): " . ($decoded['error']['message'] ?? 'Unknown'));
         }
@@ -164,7 +155,6 @@ class AiChallengeController {
 
         $content = $decoded['choices'][0]['message']['content'];
 
-        // Clean DeepSeek <think> tags
         if (preg_match('/<think>(.*?)<\/think>/s', $content)) {
             $content = preg_replace('/<think>.*?<\/think>/s', '', $content);
         }

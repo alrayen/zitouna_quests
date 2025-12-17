@@ -658,15 +658,12 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
             loading.style.display = 'block';
             
             try {
-                // Adjust the path if your controller is in a different location relative to this file
                 const response = await fetch('../../../../Controller/generate_challenge_api.php');
                 const data = await response.json();
                 
                 if (data.status === 'success') {
-                    // Success! Go to the new challenge
                     window.location.href = 'challenge-resources.php?id=' + data.challenge_id;
                 } else {
-                    // Handle error - specifically for login
                     if (data.message === 'Please login first') {
                         openLoginModal();
                     } else {

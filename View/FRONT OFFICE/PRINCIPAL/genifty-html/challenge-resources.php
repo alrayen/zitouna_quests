@@ -33,9 +33,8 @@ $resources = $ressourceController->getResourcesByDefiId($id_defi);
 $helpController = new HelpRoomController();
 $activeRooms = $helpController->getActiveRoomsForChallenge($id_defi);
 
-// Ensure user is logged in
 if (!isset($_SESSION['user_id'])) {
-    $userId = 1; // Dev fallback
+    $userId = 1; 
 } else {
     $userId = $_SESSION['user_id'];
 }
@@ -282,7 +281,7 @@ if (!$isCompleted) {
             background: rgba(41, 182, 246, 0.15);
             border: 1px solid rgba(41, 182, 246, 0.4);
             color: #81d4fa;
-            padding: 8px 20px 8px 8px; /* Less padding left for avatar */
+            padding: 8px 20px 8px 8px; 
             border-radius: 40px;
             text-decoration: none;
             font-weight: 600;
@@ -364,33 +363,31 @@ if (!$isCompleted) {
 
         .message { max-width: 80%; padding: 15px 20px; border-radius: 20px; font-size: 1rem; line-height: 1.6; }
         
-        /* [FIX] START: Formatting for AI Responses to look perfect */
         .message strong {
             font-weight: 700;
             color: #fff;
         }
         .message ul, .message ol {
             margin: 10px 0;
-            padding-left: 25px; /* Ensures bullets are visible inside the bubble */
+            padding-left: 25px; 
         }
         .message li {
-            list-style: disc; /* Forces bullets */
+            list-style: disc; 
             margin-bottom: 5px;
         }
         .message pre {
-            background: rgba(0, 0, 0, 0.3); /* Dark box for code snippets */
+            background: rgba(0, 0, 0, 0.3); 
             padding: 10px;
             border-radius: 8px;
             margin: 10px 0;
-            overflow-x: auto; /* Allow scrolling for long lines */
+            overflow-x: auto; 
             border: 1px solid rgba(100, 255, 100, 0.2);
-            white-space: pre-wrap; /* Wrap text */
+            white-space: pre-wrap; 
             word-wrap: break-word;
             font-family: 'Consolas', monospace;
             font-size: 0.9em;
             color: #e0f2f1;
         }
-        /* [FIX] END */
 
         .message.bot {
             align-self: flex-start;
@@ -476,7 +473,7 @@ if (!$isCompleted) {
             display: block;
             overflow-x: auto;
             padding: 1em;
-            background: transparent; /* Background handled by pre */
+            background: transparent; 
             box-shadow: none;
         }
         
@@ -993,24 +990,18 @@ if (!$isCompleted) {
                     }
                 }
 
-                // 1. Format URLs
                 let replyHtml = replyRaw.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#69f0ae; text-decoration:underline;">$1</a>');
                 
-                // [FIX] Smart Newline Conversion: 
-                // Only convert \n to <br> if the string DOES NOT contain actual HTML block tags (like <p>, <ul>, <br>)
-                // This prevents adding extra gaps to pre-formatted HTML responses.
                 if (!replyRaw.includes('<br>') && !replyRaw.includes('</p>') && !replyRaw.includes('<ul>')) {
                     replyHtml = replyHtml.replace(/\n/g, '<br>');
                 }
 
-                // 2. Prepare Text for Speech
                 let speechText = replyRaw.replace(/```[\s\S]*?```/g, " [Code Block] ");
                 speechText = speechText.replace(/<[^>]*>?/gm, '');
 
                 const botMsgDiv = document.createElement('div');
                 botMsgDiv.className = 'message bot';
 
-                // 3. Add Thought Process
                 if (thoughtProcess) {
                      const cleanThought = DOMPurify.sanitize(thoughtProcess.replace(/\n/g, '<br>'));
                      const thoughtHtml = `<details class="ai-thought-details">
@@ -1021,7 +1012,6 @@ if (!$isCompleted) {
                 }
                 
                 const textContainer = document.createElement('div');
-                // Sanitize the HTML before inserting
                 textContainer.innerHTML = DOMPurify.sanitize(replyHtml);
                 
                 botMsgDiv.appendChild(textContainer);

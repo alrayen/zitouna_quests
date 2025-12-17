@@ -1,25 +1,23 @@
 <?php
 class Challenge {
-    // Properties - Set to private for encapsulation
     private int $id_defi;
     private string $titre;
     private string $description;
-    private string $categorie;   // CORRECTION: Changed from int to string
+    private string $categorie;   
     private int $points;
     private int $time;
-    private string $difficulty;  // CORRECTION: Changed from int to string
+    private string $difficulty;  
     private string $status;
     private string $place;
 
-    // Constructor
     public function __construct(
         int $id_defi, 
         string $titre, 
         string $description, 
-        string $categorie,       // Updated type
+        string $categorie,       
         int $points, 
         int $time, 
-        string $difficulty,      // Updated type
+        string $difficulty,      
         string $status, 
         string $place
     ) {
@@ -34,7 +32,6 @@ class Challenge {
         $this->place = $place;
     }
 
-    // --- Getters ---
 
     public function getIdDefi(): int {
         return $this->id_defi;
@@ -48,7 +45,7 @@ class Challenge {
         return $this->description;
     }
 
-    public function getCategorie(): string { // Updated return type
+    public function getCategorie(): string { 
         return $this->categorie;
     }
 
@@ -60,7 +57,7 @@ class Challenge {
         return $this->time;
     }
 
-    public function getDifficulty(): string { // Updated return type
+    public function getDifficulty(): string { 
         return $this->difficulty;
     }
 
@@ -72,7 +69,6 @@ class Challenge {
         return $this->place;
     }
 
-    // --- Setters ---
 
     public function setIdDefi(int $id_defi): void {
         $this->id_defi = $id_defi;
