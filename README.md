@@ -27,11 +27,15 @@ Ce projet a été réalisé dans le cadre de notre cursus universitaire (2025).
 * **Mode Aventure** : Participez à des séries de quiz classés par catégories.
 * **Tableau de Bord** : Visualisez vos scores, votre rang et votre progression.
 * **Multijoueur** : Défiez d'autres utilisateurs pour voir qui a le meilleur score.
+* **Connexion facile** : en utilisant la reconnaissance faciale ,continuer avec google/github.
+* ** assistant chatbot IA** : un assistant ia qui aide l utilisateur a gerer le sign in et le sign up .
+
 
 ### 🛡️ Pour les Administrateurs
 * **Gestion des Quiz (CRUD)** : Ajouter, modifier ou supprimer des questions et des réponses.
 * **Gestion des Utilisateurs** : Modérer les inscrits.
 * **Statistiques Globales** : Vue d'ensemble sur l'activité de la plateforme.
+* **Connexion facile** : en utilisant la reconnaissance faciale ,continuer avec google/github.
 
 ## 🛠️ Architecture Technique
 
