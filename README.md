@@ -50,6 +50,13 @@ Ce projet a été réalisé dans le cadre de notre cursus universitaire (2025).
 <br>
 | Interface de Quiz |
  <img width="1087" height="878" alt="captureg" src="https://github.com/user-attachments/assets/380c8d72-381a-44d7-8520-925032ddfcac" /> 
+ <br>
+|Interface challenges|
+<img width="1631" height="922" alt="kljfghsd" src="https://github.com/user-attachments/assets/c2adb17d-ee0b-4f80-8083-8263138c3aa6" />
+<br>
+|Interface login|
+
+<img width="393" height="668" alt="login" src="https://github.com/user-attachments/assets/e9f50d18-43ed-4a24-8bbf-a728ae368329" />
 
 ## 👥 L'Équipe
 
