@@ -1,37 +1,23 @@
 <?php
+session_start();
+include_once __DIR__ . "/crudSujet.php";
 
-   include "crudSujet.php";
-
-header('Content-Type: application/json');
-$id=$_GET['id'];
-$choix=$_GET['choix'];
-
-if($choix=='increment')
-{
-    incrementLike($id);
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../View/FRONT OFFICE/PRINCIPAL/genifty-html/login.php');
+    exit;
 }
-else{
-    decrementLike($id);
-}
-header('Location: ../View/FRONT OFFICE/forum.php');
 
-/*if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sujet_id']) && isset($_POST['action'])) {
-    $sujetId = intval($_POST['sujet_id']);
-    $action = $_POST['action'];
-    
-    if ($action === 'like') {
-        $newLikes = incrementLike($sujetId);
-    } else if ($action === 'unlike') {
-        $newLikes = decrementLike($sujetId);
-    }
-    
-    if ($newLikes !== false) {
-        echo json_encode(['success' => true, 'likes' => $newLikes]);
+if (isset($_GET['id']) && isset($_GET['choix'])) {
+    $id = intval($_GET['id']);
+    $choix = $_GET['choix'];
+
+    if ($choix == 'increment') {
+        incrementLike($id);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour']);
+        decrementLike($id);
     }
-} else {
-    echo json_encode(['success' => false, 'message' => 'Requête invalide']);
-}*/
+}
 
+header('Location: ../View/FRONT OFFICE/PRINCIPAL/genifty-html/forum.php');
+exit;
 ?>

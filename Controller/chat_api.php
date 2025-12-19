@@ -11,7 +11,7 @@ require_once __DIR__ . '/../Model/ressources-model.php';
 require_once __DIR__ . '/../controller/challenge-controller.php';
 require_once __DIR__ . '/../controller/ressources-controller.php';
 
-$openRouterKey = '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'; // <--- PASTE YOUR KEY HERE
+$openRouterKey = ''; // <--- PASTE YOUR KEY HERE
 $siteUrl = 'http://localhost/Projet'; 
 $siteName = 'Zitouna Quests'; 
 

@@ -2,7 +2,7 @@
 
 header('Content-Type: application/json');
 
-$apiKey = 'AIzaSyAzQ9frDvFpJVa8XEEXTr0dzC0uCMQvbT4'; 
+$apiKey = ''; 
 
 
 $context = "Tu es l'assistant virtuel officiel de la plateforme 'Zitouna Quest'.

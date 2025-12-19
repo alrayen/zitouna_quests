@@ -2,7 +2,7 @@
 // test_google.php
 
 // ⚠️ COLLE TA CLÉ API ICI (Celle qui commence par AIza...)
-$apiKey = 'AIzaSyBUXtZxNCOM0aIOwaeHdYKtZrkSEuSlnaY'; 
+$apiKey = ''; 
 
 // On demande à Google : "Quels modèles ai-je le droit d'utiliser ?"
 $url = "https://generativelanguage.googleapis.com/v1beta/models?key=" . $apiKey;

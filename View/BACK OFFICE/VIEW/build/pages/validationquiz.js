@@ -15,44 +15,56 @@ document.addEventListener('DOMContentLoaded', function() {
             var errorLevel = document.getElementById('error_add_niveau');
             var errorPoints = document.getElementById('error_add_points');
 
-            errorTitle.classList.remove('active');
-            errorCat.classList.remove('active');
-            errorLevel.classList.remove('active');
-            errorPoints.classList.remove('active');
+            if (errorTitle) errorTitle.classList.remove('active');
+            if (errorCat) errorCat.classList.remove('active');
+            if (errorLevel) errorLevel.classList.remove('active');
+            if (errorPoints) errorPoints.classList.remove('active');
 
             var hasError = false;
 
-            if (title == "") {
-                errorTitle.innerText = "Title is required";
-                errorTitle.classList.add('active'); 
+            if (title.trim() == "") {
+                if (errorTitle) {
+                    errorTitle.innerText = "Title is required";
+                    errorTitle.classList.add('active'); 
+                }
                 hasError = true;
             } else if (title.length < 3) {
-                errorTitle.innerText = "Title too short";
-                errorTitle.classList.add('active');
+                if (errorTitle) {
+                    errorTitle.innerText = "Title too short";
+                    errorTitle.classList.add('active');
+                }
                 hasError = true;
             }
 
 
             if (category == "") {
-                errorCat.innerText = "Choose a category";
-                errorCat.classList.add('active');
+                if (errorCat) {
+                    errorCat.innerText = "Choose a category";
+                    errorCat.classList.add('active');
+                }
                 hasError = true;
             }
 
             if (level == "") {
-                errorLevel.innerText = "Choose a level";
-                errorLevel.classList.add('active');
+                if (errorLevel) {
+                    errorLevel.innerText = "Choose a level";
+                    errorLevel.classList.add('active');
+                }
                 hasError = true;
             }
 
 
             if (points == "") {
-                errorPoints.innerText = "Enter points";
-                errorPoints.classList.add('active');
+                if (errorPoints) {
+                    errorPoints.innerText = "Enter points";
+                    errorPoints.classList.add('active');
+                }
                 hasError = true;
             } else if (points <= 0) {
-                errorPoints.innerText = "Must be positive";
-                errorPoints.classList.add('active');
+                if (errorPoints) {
+                    errorPoints.innerText = "Must be positive";
+                    errorPoints.classList.add('active');
+                }
                 hasError = true;
             }
 
@@ -81,38 +93,48 @@ document.addEventListener('DOMContentLoaded', function() {
             var errorPoints = document.getElementById('error_edit_points');
 
  
-            errorTitle.classList.remove('active');
-            errorCat.classList.remove('active');
-            errorLevel.classList.remove('active');
-            errorPoints.classList.remove('active');
+            if (errorTitle) errorTitle.classList.remove('active');
+            if (errorCat) errorCat.classList.remove('active');
+            if (errorLevel) errorLevel.classList.remove('active');
+            if (errorPoints) errorPoints.classList.remove('active');
 
             var hasError = false;
 
-            if (title == "") {
-                errorTitle.innerText = "Title is required";
-                errorTitle.classList.add('active');
+            if (title.trim() == "") {
+                if (errorTitle) {
+                    errorTitle.innerText = "Title is required";
+                    errorTitle.classList.add('active');
+                }
                 hasError = true;
             }
 
             if (category == "") {
-                errorCat.innerText = "Choose a category";
-                errorCat.classList.add('active');
+                if (errorCat) {
+                    errorCat.innerText = "Choose a category";
+                    errorCat.classList.add('active');
+                }
                 hasError = true;
             }
 
             if (level == "") {
-                errorLevel.innerText = "Choose a level";
-                errorLevel.classList.add('active');
+                if (errorLevel) {
+                    errorLevel.innerText = "Choose a level";
+                    errorLevel.classList.add('active');
+                }
                 hasError = true;
             }
 
             if (points == "") {
-                errorPoints.innerText = "Enter points";
-                errorPoints.classList.add('active');
+                if (errorPoints) {
+                    errorPoints.innerText = "Enter points";
+                    errorPoints.classList.add('active');
+                }
                 hasError = true;
             }         else if (points <= 0) {
-                errorPoints.innerText = "Must be positive";
-                errorPoints.classList.add('active');
+                if (errorPoints) {
+                    errorPoints.innerText = "Must be positive";
+                    errorPoints.classList.add('active');
+                }
                 hasError = true;
             }
 

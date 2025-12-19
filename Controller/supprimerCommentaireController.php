@@ -7,11 +7,11 @@ $position=$_GET['position'];
 deleteCommentaires($id);
 if($position=='front')
 {
-   header('Location:../View/FRONT OFFICE/forum.php?success=comment_deleted');
+   header('Location: ../View/FRONT OFFICE/PRINCIPAL/genifty-html/forum.php?success=comment_deleted');
 }
 else
 {
- header('Location:../View/BACK OFFICE/build/pages/posts.php');
+ header('Location: ../View/BACK OFFICE/VIEW/build/pages/posts.php');
 }
 
 

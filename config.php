@@ -1,10 +1,10 @@
 <?php
-define('GEMINI_API_KEY','AIzaSyDBzFWeL_iDkMAFRAcAT6ZeqRgcqNygREc');
+define('GEMINI_API_KEY','');
 function getDatabaseConnexion() {
     try {
         $user = "root";
         $pass = "";
-        $pdo = new PDO('mysql:host=localhost;dbname=zitouna', $user, $pass);
+        $pdo = new PDO('mysql:host=localhost;dbname=rayen', $user, $pass);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $pdo;
 
@@ -23,7 +23,7 @@ class config
             $servername="localhost";
             $username="root";
             $password ="";
-            $dbname="projet";
+            $dbname="rayen";
             try {
                 self::$pdo = new PDO("mysql:host=$servername;dbname=$dbname",
                         $username,
@@ -41,7 +41,7 @@ class config
         return self::$pdo;
     }
     public static function getGeminiKey(): string {
-        return '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';
+        return '';
     }
 }
 config::getConnexion();

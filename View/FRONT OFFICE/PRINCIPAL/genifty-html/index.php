@@ -45,24 +45,23 @@
 
 
 
-                        <nav class="mainmenu-nav d-none d-xl-block">
+                                                                                                <nav class="mainmenu-nav d-none d-xl-block">
                             <ul class="main-menu">
                                 <li class="single-items off-arrow">
                                     <a class="navmain" href="index.php">Home</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="quiz.php">Quests</a>
-                                </li>
-                                <li class="single-items off-arrow">
                                     <a class="navmain" href="quiz.php">Quiz</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Forum</a>
+                                    <a class="navmain" href="challenge.php">Challenge</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Blog</a>
+                                    <a class="navmain" href="forum.php">Forum</a>
                                 </li>
-                                <li class="single-items off-arrow"><a class="single" href="contact.html">Contact</a></li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="sponsor.php">Sponsor</a>
+                                </li>
                             </ul>
                         </nav>
                     </div>
@@ -88,7 +87,7 @@
                             </form>
                         </div>
                         <ul class="icons">
-                            <li class="icon user"> <a href="author.html"><i class="far fa-user"></i></a></li>
+                            <li class="icon user"> <a href="author.php"><i class="far fa-user"></i></a></li>
                             <li class="icon notification"> <a href="#"><i class="far fa-bell" alt="notification"></i></a></li>
                         </ul>
                         <?php if (isset($_SESSION['user_id'])): ?>
@@ -129,22 +128,21 @@
             <!-- nav style Start -->
             <nav>
                 <ul class="main-menu">
-<li class="single-items off-arrow">
-                                    <a class="navmain" href="index.php">Home</a>
-                                </li>
-                                <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Quests</a>
-                                </li>
-                                <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Quiz</a>
-                                </li>
-                                <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Forum</a>
-                                </li>
-                                <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Blog</a>
-                                </li>
-                                <li class="single-items off-arrow"><a class="single" href="contact.html">Contact</a></li>
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="index.php">Home</a>
+                    </li>
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="quiz.php">Quiz</a>
+                    </li>
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="challenge.php">Challenge</a>
+                    </li>
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="forum.php">Forum</a>
+                    </li>
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="sponsor.php">Sponsor</a>
+                    </li>
                 </ul>
             </nav>
             <!-- nav style hear End -->
@@ -168,7 +166,7 @@
                             Transform Your Knowledge into Positive Action. Let's go with "Zitouna Quests: Learn, Grow, and Make a Real-World Impact."
                         </p>
                         <div class="button-group-vedio">
-                            <a href="shop.html" class="rts-btn btn-primary" data-sal-delay="600" data-sal-duration="1000" data-sal="slide-up">Explore Quizzes</a>
+                            <a href="quizzes.php" class="rts-btn btn-primary" data-sal-delay="600" data-sal-duration="1000" data-sal="slide-up">Explore Quizzes</a>
                             <div class="vedio-play-button-banner">
                                 <a id="play-video" class="video-play-button" href="#">
                                     <span></span>
@@ -890,7 +888,7 @@ $uniqueDifficulties = array_keys($uniqueDifficulties);
                                         <div class="product-left">
                                             <span class="activity-text" style="color: #ffffff;">Joined the Forum</span>
                                             <span class="username" style="color: #ffffff;">@NewLearner</span>
-                                            <a class="rts-btn btn-secondary radious-5" href="forum.html">Say Hello!</a>
+                                            <a class="rts-btn btn-secondary radious-5" href="forum.php">Say Hello!</a>
                                         </div>
                                         <div class="product-right">
                                             <h5 class="reward-text">Welcome!</h5>
@@ -912,7 +910,7 @@ $uniqueDifficulties = array_keys($uniqueDifficulties);
                                         <div class="product-left">
                                             <span class="activity-text" style="color: #ffffff;">Finished a Challenge</span>
                                             <span class="username" style="color: #ffffff;">@GreenThumb</span>
-                                            <a class="rts-btn btn-secondary radious-5" href="challenge.html">See Challenge</a>
+                                            <a class="rts-btn btn-secondary radious-5" href="challenge.php">See Challenge</a>
                                         </div>
                                         <div class="product-right">
                                             <h5 class="reward-text">+150 Points</h5>
@@ -1521,8 +1519,8 @@ $uniqueDifficulties = array_keys($uniqueDifficulties);
                         <ul class="wizid-lists">
                             <li class="item" data-sal-delay="250" data-sal-duration="800" data-sal="slide-up"><a href="about.html">About Us</a></li>
                             <li class="item" data-sal-delay="350" data-sal-duration="1000" data-sal="slide-up"><a href="how-it-works.html">How It Works</a></li>
-                            <li class="item" data-sal-delay="450" data-sal-duration="1200" data-sal="slide-up"><a href="quests.html">Quests</a></li>
-                            <li class="item" data-sal-delay="550" data-sal-duration="1400" data-sal="slide-up"><a href="challenges.html">Challenges</a></li>
+                            <li class="item" data-sal-delay="450" data-sal-duration="1200" data-sal="slide-up"><a href="quiz.php">Quests</a></li>
+                            <li class="item" data-sal-delay="550" data-sal-duration="1400" data-sal="slide-up"><a href="challenge.php">Challenges</a></li>
                             <li class="item" data-sal-delay="650" data-sal-duration="1600" data-sal="slide-up"><a href="impact.html">Our Impact</a></li>
                         </ul>
                     </div>
@@ -1532,10 +1530,10 @@ $uniqueDifficulties = array_keys($uniqueDifficulties);
                     <div class="footer-single-wized">
                         <h5 class="wized-title" data-sal-delay="150" data-sal-duration="600" data-sal="slide-up">Community</h5>
                         <ul class="wizid-lists">
-                            <li class="item" data-sal-delay="150" data-sal-duration="600" data-sal="slide-up"><a href="forum.html">Forum</a></li>
+                            <li class="item" data-sal-delay="150" data-sal-duration="600" data-sal="slide-up"><a href="forum.php">Forum</a></li>
                             <li class="item" data-sal-delay="350" data-sal-duration="1000" data-sal="slide-up"><a href="leaderboards.html">Leaderboards</a></li>
                             <li class="item" data-sal-delay="450" data-sal-duration="1200" data-sal="slide-up"><a href="achievements.html">Achievements</a></li>
-                            <li class="item" data-sal-delay="550" data-sal-duration="1400" data-sal="slide-up"><a href="partners.html">Our Partners</a></li>
+                            <li class="item" data-sal-delay="550" data-sal-duration="1400" data-sal="slide-up"><a href="sponsor.php">Our Partners</a></li>
                             <li class="item" data-sal-delay="650" data-sal-duration="1600" data-sal="slide-up"><a href="blog.html">Blog</a></li>
                         </ul>
                     </div>

@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once __DIR__ . '/../../../../config.php';
 require_once __DIR__ . '/../../../../Model/challenge.php';
 require_once __DIR__ . '/../../../../Controller/challenge-controller.php';
@@ -6,28 +7,35 @@ require_once __DIR__ . '/../../../../Controller/challenge-controller.php';
 $challengeController = new ChallengeController();
 $allChallenges = $challengeController->listChallenges();
 
-$userId = $_SESSION['user_id'] ?? 1; 
+$userId = $_SESSION['user_id'] ?? null; 
 $pdo = config::getConnexion();
 
-$userStmt = $pdo->prepare("SELECT xp, level FROM user WHERE id_user = ?");
-$userStmt->execute([$userId]);
-$userData = $userStmt->fetch(PDO::FETCH_ASSOC) ?: ['xp' => 0, 'level' => 1];
+if ($userId) {
+    $userStmt = $pdo->prepare("SELECT xp, level FROM user WHERE id_user = ?");
+    $userStmt->execute([$userId]);
+    $userData = $userStmt->fetch(PDO::FETCH_ASSOC) ?: ['xp' => 0, 'level' => 1];
 
-$progStmt = $pdo->prepare("SELECT challenge_id FROM user_challenge_progress WHERE user_id = ? AND status = 'completed'");
-$progStmt->execute([$userId]);
-$completedIds = $progStmt->fetchAll(PDO::FETCH_COLUMN);
+    $progStmt = $pdo->prepare("SELECT challenge_id FROM user_challenge_progress WHERE user_id = ? AND status = 'completed'");
+    $progStmt->execute([$userId]);
+    $completedIds = $progStmt->fetchAll(PDO::FETCH_COLUMN);
 
-$startStmt = $pdo->prepare("SELECT challenge_id FROM user_challenge_progress WHERE user_id = ? AND status = 'started'");
-$startStmt->execute([$userId]);
-$startedIds = $startStmt->fetchAll(PDO::FETCH_COLUMN);
+    $startStmt = $pdo->prepare("SELECT challenge_id FROM user_challenge_progress WHERE user_id = ? AND status = 'started'");
+    $startStmt->execute([$userId]);
+    $startedIds = $startStmt->fetchAll(PDO::FETCH_COLUMN);
 
-$badgeStmt = $pdo->prepare("
-    SELECT b.* FROM badges b 
-    JOIN user_badges ub ON b.id = ub.badge_id 
-    WHERE ub.user_id = ?
-");
-$badgeStmt->execute([$userId]);
-$myBadges = $badgeStmt->fetchAll(PDO::FETCH_ASSOC);
+    $badgeStmt = $pdo->prepare("
+        SELECT b.* FROM badges b 
+        JOIN user_badges ub ON b.id = ub.badge_id 
+        WHERE ub.user_id = ?
+    ");
+    $badgeStmt->execute([$userId]);
+    $myBadges = $badgeStmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    $userData = ['xp' => 0, 'level' => 1];
+    $completedIds = [];
+    $startedIds = [];
+    $myBadges = [];
+}
 
 $xpForNextLevel = $userData['level'] * 100;
 $currentLevelBaseXp = ($userData['level'] - 1) * 100;
@@ -320,27 +328,41 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
             <div class="row align-items-center ptb_sm--20 padding-controler-header">
                 <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 ">
                     <div class="header-left">
-                        <a href="index.html" class="logo">
+                        <a href="index.php" class="logo">
                             <img src="assets/images/logo/logo3.png" alt="Logo">
                         </a>
                     </div>
                 </div>
                 <div class="col-xl-5 d-xl-block d-none">
                     <div class="main-menu-wrapepr">
-                        <nav class="mainmenu-nav d-none d-xl-block">
+                                                                                                <nav class="mainmenu-nav d-none d-xl-block">
                             <ul class="main-menu">
-                                <li class="single-items off-arrow"><a class="navmain" href="index.html">Home</a></li>
-                                <li class="single-items off-arrow"><a class="navmain" href="challenges.php">Challenges</a></li>
-                                <li class="single-items off-arrow"><a class="navmain" href="quizzes.php">Quiz</a></li>
-                                <li class="single-items off-arrow"><a class="navmain" href="#">Forum</a></li>
-                                <li class="single-items off-arrow"><a class="navmain" href="contact.html">Contact</a></li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="index.php">Home</a>
+                                </li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="quiz.php">Quiz</a>
+                                </li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="challenge.php">Challenge</a>
+                                </li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="forum.php">Forum</a>
+                                </li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="sponsor.php">Sponsor</a>
+                                </li>
                             </ul>
                         </nav>
                     </div>
                 </div>
                  <div class="col-xl-5 col-lg-8 col-md-8 col-sm-12 justify-content-sm-center d-xsm-flex">
                     <div class="header-right">
-                         <a id="connect-wallet" href="login.html" class="rts-btn btn-primary">Login</a>
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <a id="connect-wallet" href="../../../../Controller/logout.php" class="rts-btn btn-primary">Disconnect</a>
+                        <?php else: ?>
+                            <a id="connect-wallet" href="login.php" class="rts-btn btn-primary">login / sign up</a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -378,7 +400,7 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
                     <h4 style="color:#fff; font-weight:700; margin-bottom:20px;">Your Badges</h4>
                     <div style="display:flex; gap:15px; flex-wrap:wrap;">
                         <?php if (empty($myBadges)): ?>
-                            <p style="color:#ccc; font-style:italic;">Complete challenges to earn badges!</p>
+                            <p class="disc">Complete challenges to earn badges!</p>
                         <?php else: ?>
                             <?php foreach ($myBadges as $badge): ?>
                                 <div class="badge-card" title="<?php echo htmlspecialchars($badge['description']); ?>">
@@ -416,7 +438,7 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
                         <h2 style="font-weight: 800; margin-bottom: 15px; color: #fff; text-shadow: 0 4px 10px rgba(0,0,0,0.2);">
                             Need a Custom Challenge?
                         </h2>
-                        <p style="opacity: 0.95; margin-bottom: 30px; font-size: 1.1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                        <p style="opacity: 0.95; margin-bottom: 30px; color: #fff; font-size: 1.1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
                             Our AI analyzes your skills and generates a unique mission tailored just for you.
                         </p>
                         
@@ -597,7 +619,7 @@ if (isset($_SESSION['show_level_up']) && $_SESSION['show_level_up'] === true) {
             <p style="color: #ccc; margin-bottom: 25px;">You need to be logged in to generate a personalized challenge.</p>
             <div class="confirm-actions">
                 <button onclick="closeLoginModal()" class="btn-no">Cancel</button>
-                <a href="login.html" class="btn-yes" style="text-decoration:none; display:inline-block;">Connect</a>
+                <a href="login.php" class="btn-yes" style="text-decoration:none; display:inline-block;">Connect</a>
             </div>
         </div>
     </div>

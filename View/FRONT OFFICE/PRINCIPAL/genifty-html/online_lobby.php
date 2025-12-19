@@ -86,6 +86,9 @@ try {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.8); z-index: 1000; justify-content: center; align-items: center;
         }
+        .modal-overlay.active {
+            display: flex;
+        }
         .modal-content {
             background: #2d3436; color: white; padding: 30px; border-radius: 15px;
             width: 90%; max-width: 500px; position: relative; border: 2px solid #00E6A7;
@@ -187,6 +190,17 @@ try {
         </div>
     </div>
 
+    <!-- Themed Alert Modal -->
+    <div id="custom-alert" class="modal-overlay">
+        <div class="modal-content" style="text-align: center; max-width: 400px; border-color: #FFBB28;">
+            <div id="custom-alert-icon" style="font-size: 50px; margin-bottom: 10px; color: #FFBB28;">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3 id="custom-alert-message" style="margin-bottom: 20px; font-size: 1.5rem;"></h3>
+            <button class="ai-btn" style="background: #FFBB28; color: #333;" onclick="$('#custom-alert').removeClass('active').fadeOut()">D'accord</button>
+        </div>
+    </div>
+
     <script src="assets/js/vendor/jquery.min.js"></script>
     <script src="assets/js/quiz_validator.js"></script> 
     <script>
@@ -198,7 +212,7 @@ try {
 
         function updateLobby() {
             $.ajax({
-                url: '/../../../../Controller/get_lobby_status.php',
+                url: '../../../../Controller/get_lobby_status.php',
                 type: 'POST', dataType: 'json', data: { session_id: SESSION_ID },
                 success: function(response) {
                     if (response.success) {
@@ -252,23 +266,31 @@ try {
             if (forcedQuizId) payload.forced_quiz_id = forcedQuizId;
 
             $.ajax({
-                url: '/../../../../Controller/start_game.php', 
+                url: '../../../../Controller/start_game.php', 
                 type: 'POST', dataType: 'json', data: payload,
                 success: function(response) {
                     if (!response.success) {
-                        alert(response.message);
+                        showCustomAlert(response.message, false);
                         $('#start-button').prop('disabled', false).text('Lancer le Quiz !');
                     }
                 },
                 error: function() {
-                    alert('Erreur technique.');
+                    showCustomAlert('Erreur technique.', false);
                     $('#start-button').prop('disabled', false).text('Lancer le Quiz !');
                 }
             });
         }
 
-        $('#open-ai-modal').click(function() { $('#ai-modal').fadeIn(); });
-        $('#close-ai-modal').click(function() { $('#ai-modal').fadeOut(); });
+        function showCustomAlert(message, success = true) {
+            $('#custom-alert-message').text(message);
+            const icon = success ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-triangle"></i>';
+            const color = success ? '#00E6A7' : '#ff6b6b';
+            $('#custom-alert-icon').html(icon).css('color', color);
+            $('#custom-alert').addClass('active').hide().fadeIn();
+        }
+
+        $('#open-ai-modal').click(function() { $('#ai-modal').addClass('active').hide().fadeIn(); });
+        $('#close-ai-modal').click(function() { $('#ai-modal').removeClass('active').fadeOut(); });
 
         $('#ai-form').submit(function(e) {
             e.preventDefault(); 
@@ -281,7 +303,7 @@ try {
             status.css('color', 'white');
 
             $.ajax({
-                url: '/../../../../Controller/generate_ai_quiz.php',
+                url: '../../../../Controller/generate_ai_quiz.php',
                 type: 'POST', dataType: 'json',
                 data: {
                     topic: $('#ai_topic').val(),
@@ -292,10 +314,10 @@ try {
                 success: function(response) {
                     if (response.success) {
                         forcedQuizId = response.quiz_id;
-                        $('#ai-modal').fadeOut();
+                        $('#ai-modal').removeClass('active').fadeOut();
                         $('#quiz-category').html(`<option value="generated" selected>✨ Generated: ${$('#ai_topic').val()}</option>`);
                         $('#quiz-difficulty').html(`<option value="any" selected>Custom</option>`);
-                        alert("Quiz Generated Successfully!");
+                        showCustomAlert("Quiz Generated Successfully!");
                         btn.prop('disabled', false).text('✨ Generate & Select');
                         status.text('');
                     } else {
@@ -316,7 +338,8 @@ try {
             $.ajax({
                 url: '../../../../Controller/add_bot.php', 
                 type: 'POST', data: { session_id: SESSION_ID },
-                success: function() { $('#add-bot-btn').prop('disabled',false).text('Ajouter un Bot IA'); }
+                success: function() { $('#add-bot-btn').prop('disabled',false).text('Ajouter un Bot IA'); },
+                error: function() { showCustomAlert("Erreur lors de l'ajout du bot", false); }
             });
         });
 

@@ -60,8 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['user_image'] = $user['photo'];
             
             $base_path = '/Projet2';
-            if ($user['role'] === 'admin') {
-                header("Location: " . $base_path . "/View/BACK%20OFFICE/VIEW/build/pages/dashboard.html");
+            if ($user['role'] == 1) {
+                header("Location: " . $base_path . "/View/BACK%20OFFICE/VIEW/build/pages/users_table.php");
             } else {
                 header("Location: " . $base_path . "/View/FRONT%20OFFICE/PRINCIPAL/genifty-html/index.php");
             }

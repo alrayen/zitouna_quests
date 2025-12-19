@@ -120,19 +120,59 @@ $users = $userController->getAllUsers();
                 <h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase opacity-60">Admin Tools</h6>
             </li>
             <li class="w-full mt-2">
-              <a class="py-2.7 bg-white shadow-md text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors" href="../pages/users_table.php">
+              <a class="py-2.7 bg-white shadow-md text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors" href="users_table.php">
                 <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tl from-blue-500 to-violet-500 shadow-sm stroke-0 text-center xl:p-2.5 text-white">
                   <i class="ni ni-single-02"></i>
                 </div>
                 <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Users</span>
               </a>
             </li>
-             <li class="w-full mt-2">
-              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="../pages/quiz_table.php">
-                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-orange-500">
-                  <i class="ni ni-spaceship"></i>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="quiz_table.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-cyan-500">
+                  <i class="ni ni-bullet-list-67"></i>
                 </div>
-                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Quiz Management</span>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Quiz</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="challenge.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-blue-500">
+                  <i class="ni ni-trophy"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Challenges</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="posts.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-orange-500">
+                  <i class="ni ni-calendar-grid-58"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Forum</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="listSponsor.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-violet-500">
+                  <i class="ni ni-badge"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Sponsor</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="listDonation.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-emerald-500">
+                  <i class="ni ni-favourite-28"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Donation</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="dashboardAI.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-purple-500">
+                  <i class="ni ni-bulb-61"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">DonationAI</span>
               </a>
             </li>
         </ul>

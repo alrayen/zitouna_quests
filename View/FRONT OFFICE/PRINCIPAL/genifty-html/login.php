@@ -64,7 +64,7 @@
 
 
 
-        /* Style pour la superposition de la caméra */
+        /* Style pour la superposition de la camÃ©ra */
 
         .face-capture-wrapper {
             position: relative;
@@ -279,7 +279,7 @@
                         <label for="remember">Remember me later</label>
                     </div>
                     <div class="forget-password-link" style="text-align: right; margin-bottom: 15px;">
-                     <a href="forgot_password.php" style="color: #ffffffff; font-size: 14px;">Mot de passe oublié ?</a>
+                     <a href="forgot_password.php" style="color: #ffffffff; font-size: 14px;">Mot de passe oubliÃ© ?</a>
                     </div>
                     <!-- Ajout du widget reCAPTCHA -->
                     <div class="mb-4">
@@ -289,7 +289,7 @@
 
                     <button type="submit" class="rts-btn btn-primary radious-5 mr--15 mb--15" style="color: #fff;">Log In</button>
                     <button type="button" id="face-login-btn" class="rts-btn btn-primary radious-5 mr--15 mb--15" style="background-color: #00c49f; color: #fff;">
-                        <i class="far fa-camera-alt"></i> Se connecter avec le visage
+                        <i class=""></i> Se connecter avec le visage
                     </button>
                     <a href="registration.php" class="rts-btn btn-secondary radious-5">Sign Up</a>
 
@@ -310,12 +310,13 @@
     Continuer avec GitHub
 </a>
 
-                    
-                    <div class="face-capture-wrapper mt-5" id="face-login-container" style="display: none;">
-                        <video id="video" width="320" height="240" autoplay muted style="display: none; object-fit: cover;"></video>
-                    
-
-                    </div>
+                    <div class="face-capture-wrapper mt-5" id="face-login-container" style="display: none; flex-direction: column; align-items: center;">
+                         <p id="face-status" style="display:none; font-weight:bold; margin-bottom:10px; text-align:center; color:#fff;"></p>
+    
+                        <video id="video" width="320" height="240" autoplay muted style="display: none; object-fit: cover; border: 2px solid #00c49f; border-radius: 10px;"></video>
+    
+                        <div class="face-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 2px solid #00c49f; border-radius: 10px; display: none;"></div>
+                        </div>
                 </form>
             </div>
         </div>
@@ -395,7 +396,7 @@
                     <div class="col-12">
                         <div class="copy-right">
                             <div class="copy-right-text">
-                                <p class="rts-cp">All rights reserved <span>©2025 Zitouna Quests</span></p>
+                                <p class="rts-cp">All rights reserved <span>Â©2025 Zitouna Quests</span></p>
                             </div>
                             <div class="copy-right-link">
                                 <a href="privacy.html">Privacy Policy</a>
@@ -525,17 +526,17 @@
             async function loadModels() {
                 if (modelsLoaded) return;
                 try {
-                    setStatus('Chargement des modèles de reconnaissance...');
+                    setStatus('Chargement des modÃ¨les de reconnaissance...');
                     await Promise.all([
                         faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL), 
                         faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
                         faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
                     ]);
                     modelsLoaded = true;
-                    console.log('Modèles chargés.');
+                    console.log('ModÃ¨les chargÃ©s.');
                 } catch (error) {
-                    console.error('Erreur chargement modèles:', error);
-                    setStatus("Impossible de charger les modèles. Veuillez rafraîchir la page.", '#FF6B6B');
+                    console.error('Erreur chargement modÃ¨les:', error);
+                    setStatus("Impossible de charger les modÃ¨les. Veuillez rafraÃ®chir la page.", '#FF6B6B');
                 }
             }
 
@@ -545,8 +546,8 @@
                         stream = await navigator.mediaDevices.getUserMedia({ video: {} });
                         video.srcObject = stream;
                     } catch (err) {
-                        console.error("Erreur d'accès à la webcam: ", err);
-                        setStatus("Erreur d'accès à la webcam. Veuillez autoriser l'accès.", '#FF6B6B');
+                        console.error("Erreur d'accÃ¨s Ã  la webcam: ", err);
+                        setStatus("Erreur d'accÃ¨s Ã  la webcam. Veuillez autoriser l'accÃ¨s.", '#FF6B6B');
                         video.style.display = 'none';
                         return;
                     }
@@ -560,7 +561,7 @@
                     if (canvas.width !== video.videoWidth) {
                         canvas.width = video.videoWidth;
                         canvas.height = video.videoHeight;
-                        setStatus('Veuillez regarder la caméra...');
+                        setStatus('Veuillez regarder la camÃ©ra...');
                     }
 
                     ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
@@ -571,11 +572,11 @@
                         clearInterval(detectionInterval);
                         processFace(detection);
                     } else {
-                        setStatus('Aucun visage détecté. Rapprochez-vous et assurez-vous d\'être bien éclairé.', '#FFBB28');
+                        setStatus('Aucun visage dÃ©tectÃ©. Rapprochez-vous et assurez-vous d\'Ãªtre bien Ã©clairÃ©.', '#FFBB28');
                     }
                 }, 500);
 
-                video.play().catch(err => console.error("Erreur de lecture vidéo:", err));
+                video.play().catch(err => console.error("Erreur de lecture vidÃ©o:", err));
             }
 
             faceLoginBtn.addEventListener('click', async () => {
@@ -598,7 +599,7 @@
             });
 
             async function processFace(detection) {
-                setStatus('Visage détecté. Vérification en cours...', '#FFBB28');
+                setStatus('Visage dÃ©tectÃ©. VÃ©rification en cours...', '#FFBB28');
                 
                 video.pause();
                 document.querySelector('#face-login-container .face-overlay').style.display = 'none';
@@ -624,17 +625,17 @@
                     const contentType = response.headers.get("content-type");
                     if (!response.ok || !contentType || !contentType.includes("application/json")) {
                         const errorText = await response.text();
-                        throw new Error(`Erreur serveur (${response.status}): ${errorText || "Réponse invalide."}`);
+                        throw new Error(`Erreur serveur (${response.status}): ${errorText || "RÃ©ponse invalide."}`);
                     }
 
                     const result = await response.json();
-                    console.log("Réponse du serveur:", result);
+                    console.log("RÃ©ponse du serveur:", result);
 
                     if (result.success) {
-                        setStatus('Connexion réussie ! Redirection...', '#00E6A7');
+                        setStatus('Connexion rÃ©ussie ! Redirection...', '#00E6A7');
                         window.location.href = result.redirect_url;
                     } else {
-                        setStatus(result.message || 'Visage non reconnu. Veuillez réessayer.', '#FF6B6B');
+                        setStatus(result.message || 'Visage non reconnu. Veuillez rÃ©essayer.', '#FF6B6B');
                         setTimeout(startDetection, 2000);
                     }
                 } catch (error) {

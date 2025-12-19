@@ -80,8 +80,8 @@ try {
 
     
     $base_path = '/Projet2';
-    $redirect_url = ($_SESSION['user_role'] === 'admin') 
-        ? $base_path . "/View/BACK%20OFFICE/VIEW/build/pages/dashboard.html"
+    $redirect_url = ($_SESSION['user_role'] == 1) 
+        ? $base_path . "/View/BACK%20OFFICE/VIEW/build/pages/users_table.php"
         : $base_path . "/View/FRONT%20OFFICE/PRINCIPAL/genifty-html/index.php";
     
     header('Location: ' . $redirect_url);

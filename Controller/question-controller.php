@@ -19,7 +19,7 @@ class QuestionController {
             $questions = [];
             foreach ($results as $row) {
                 $questions[] = new Question(
-                    $row['id_question'], $row['id_quiz'], $row['text'],
+                    (int)$row['id_question'], (int)$row['id_quiz'], $row['text'],
                     $row['option1'], $row['option2'], $row['option3'], $row['option4'],
                     $row['bonne']
                 );

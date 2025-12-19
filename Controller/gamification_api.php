@@ -8,8 +8,15 @@ require_once __DIR__ . '/help-room-controller.php';
 
 $userId = $_SESSION['user_id'] ?? 1; 
 
-$input = json_decode(file_get_contents('php://input'), true);
-$action = $input['action'] ?? '';
+// Handle both JSON and FormData inputs
+$action = $_POST['action'] ?? '';
+$input = [];
+if (empty($action)) {
+    $input = json_decode(file_get_contents('php://input'), true);
+    $action = $input['action'] ?? '';
+} else {
+    $input = $_POST;
+}
 
 try {
     $pdo = config::getConnexion();
@@ -39,12 +46,31 @@ try {
     elseif ($action === 'complete_challenge') {
         $challengeId = (int)$input['challenge_id'];
         
+        $proofPath = null;
+        if (isset($_FILES['proof']) && $_FILES['proof']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Projet2/uploads/proofs/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            $extension = pathinfo($_FILES['proof']['name'], PATHINFO_EXTENSION);
+            $fileName = 'proof_' . $userId . '_' . $challengeId . '_' . time() . '.' . $extension;
+            $targetPath = $uploadDir . $fileName;
+            
+            if (move_uploaded_file($_FILES['proof']['tmp_name'], $targetPath)) {
+                $proofPath = 'uploads/proofs/' . $fileName;
+            } else {
+                throw new Exception("Failed to save proof file to " . $uploadDir);
+            }
+        } else {
+            throw new Exception("Proof file is required to complete this challenge.");
+        }
+
         $ptStmt = $pdo->prepare("SELECT points FROM challenge WHERE id_defi = ?");
         $ptStmt->execute([$challengeId]);
         $chalData = $ptStmt->fetch(PDO::FETCH_ASSOC);
         $points = (int)($chalData['points'] ?? 0);
 
-        markChallengeComplete($userId, $challengeId, $pdo);
+        markChallengeComplete($userId, $challengeId, $pdo, $proofPath);
 
         $response = addXpAndLevelUp($userId, $points, $pdo);
         
@@ -56,6 +82,21 @@ try {
         $challengeId = (int)$input['challenge_id'];
         $roomCode = $input['room_code'];
         
+        $proofPath = null;
+        if (isset($_FILES['proof']) && $_FILES['proof']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Projet2/uploads/proofs/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            $extension = pathinfo($_FILES['proof']['name'], PATHINFO_EXTENSION);
+            $fileName = 'proof_coop_' . $userId . '_' . $challengeId . '_' . time() . '.' . $extension;
+            $targetPath = $uploadDir . $fileName;
+            
+            if (move_uploaded_file($_FILES['proof']['tmp_name'], $targetPath)) {
+                $proofPath = 'uploads/proofs/' . $fileName;
+            }
+        }
+
         $ptStmt = $pdo->prepare("SELECT points FROM challenge WHERE id_defi = ?");
         $ptStmt->execute([$challengeId]);
         $chalData = $ptStmt->fetch(PDO::FETCH_ASSOC);
@@ -63,7 +104,7 @@ try {
 
         $bonusPoints = floor($basePoints * 1.25);
 
-        markChallengeComplete($userId, $challengeId, $pdo);
+        markChallengeComplete($userId, $challengeId, $pdo, $proofPath);
 
         $response = addXpAndLevelUp($userId, $bonusPoints, $pdo);
 
@@ -99,16 +140,16 @@ try {
 
 
 
-function markChallengeComplete($userId, $challengeId, $pdo) {
+function markChallengeComplete($userId, $challengeId, $pdo, $proofPath = null) {
     $check = $pdo->prepare("SELECT id FROM user_challenge_progress WHERE user_id = ? AND challenge_id = ?");
     $check->execute([$userId, $challengeId]);
     
     if ($check->rowCount() > 0) {
-        $update = $pdo->prepare("UPDATE user_challenge_progress SET status = 'completed', completed_at = NOW() WHERE user_id = ? AND challenge_id = ?");
-        $update->execute([$userId, $challengeId]);
+        $update = $pdo->prepare("UPDATE user_challenge_progress SET status = 'completed', completed_at = NOW(), proof_file = ? WHERE user_id = ? AND challenge_id = ?");
+        $update->execute([$proofPath, $userId, $challengeId]);
     } else {
-        $insert = $pdo->prepare("INSERT INTO user_challenge_progress (user_id, challenge_id, status, started_at, completed_at) VALUES (?, ?, 'completed', NOW(), NOW())");
-        $insert->execute([$userId, $challengeId]);
+        $insert = $pdo->prepare("INSERT INTO user_challenge_progress (user_id, challenge_id, status, started_at, completed_at, proof_file) VALUES (?, ?, 'completed', NOW(), NOW(), ?)");
+        $insert->execute([$userId, $challengeId, $proofPath]);
     }
 }
 

@@ -131,6 +131,104 @@ $uniqueDifficulties = array_keys($uniqueDifficulties);
         <div class="blob blob2"></div>
     </div>
 
+    <div class="rts-header-area header-inner-one header--sticky">
+        <div class="container-header">
+            <div class="row align-items-center ptb_sm--20 padding-controler-header">
+                <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 ">
+                    <div class="header-left">
+                        <a href="index.php" class="logo">
+                            <img src="assets/images/logo/logo3.png" alt="NFT_image">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xl-5 d-xl-block d-none">
+                    <div class="main-menu-wrapepr">
+                                                <nav class="mainmenu-nav d-none d-xl-block">
+                            <ul class="main-menu">
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="index.php">Home</a>
+                                </li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="quiz.php">Quiz</a>
+                                </li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="challenge.php">Challenge</a>
+                                </li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="forum.php">Forum</a>
+                                </li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="sponsor.php">Sponsor</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-xl-5 col-lg-8 col-md-8 col-sm-12 justify-content-sm-center d-xsm-flex justify-content-sm-center d-xsm-flex">
+                    <div class="header-right">
+                        <div class="input-group d-none d-lg-block">
+                            <i class="fal fa-search"></i>
+                            <input type="text" placeholder="Search Collections" aria-label="Search Collections"
+                                style="background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.12); color:#fff; padding:10px 14px; border-radius:8px; box-shadow: 0 6px 18px rgba(0,0,0,0.45), inset 0 0 0 4px rgba(255,215,0,0.02); transition:box-shadow 0.18s ease, transform 0.12s ease;"
+                                onfocus="this.style.boxShadow='0 10px 30px rgba(0,0,0,0.6), 0 0 0 6px rgba(255,215,0,0.18)'; this.style.transform='translateY(-1px)';"
+                                onblur="this.style.boxShadow='0 6px 18px rgba(0,0,0,0.45), inset 0 0 0 4px rgba(255,215,0,0.02)'; this.style.transform='none';" />
+                        </div>
+                        <ul class="icons">
+                            <li class="icon user"> <a href="author.php"><i class="far fa-user"></i></a></li>
+                            <li class="icon notification"> <a href="#"><i class="far fa-bell" alt="notification"></i></a></li>
+                        </ul>
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <a id="connect-wallet" href="../../../../Controller/logout.php" class="rts-btn btn-primary">Disconnect</a>
+                        <?php else: ?>
+                            <a id="connect-wallet" href="login.php" class="rts-btn btn-primary">login / sign up</a>
+                        <?php endif; ?>
+                        <div class="mobile-menu-bar d-block d-xl-none">
+                            <div class="hamberger">
+                                <button class="hamberger-button">
+                                    <i class="fal fa-bars"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="popup-mobile-menu">
+        <div class="inner">
+            <div class="header-top">
+                <div class="logo logo-custom-css">
+                    <a href="index.php"><img src="assets/images/logo/logo3.png" alt="_logo"></a>
+                </div>
+                <div class="close-menu">
+                    <button class="close-button">
+                        <i class="fal fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <nav>
+                <ul class="main-menu">
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="index.php">Home</a>
+                    </li>
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="quiz.php">Quiz</a>
+                    </li>
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="challenge.php">Challenge</a>
+                    </li>
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="forum.php">Forum</a>
+                    </li>
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="sponsor.php">Sponsor</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
     <div class="rts-explore-area rts-section-gap" style="padding-top: 150px; position: relative; z-index: 2;">
         <div class="container">
 
@@ -162,7 +260,7 @@ $uniqueDifficulties = array_keys($uniqueDifficulties);
                     <?php else: ?>
                          <div class="col-12 text-center">
                              <p class="disc" style="color:#FFBB28; font-size:1.5rem;">Veuillez vous **connecter** pour créer ou rejoindre une partie en ligne.</p>
-                             <a href="login.html" class="rts-btn btn-primary">Login / Sign Up</a>
+                             <a href="login.php" class="rts-btn btn-primary">Login / Sign Up</a>
                          </div>
                     <?php endif; ?>
                 </div>
@@ -211,7 +309,7 @@ $uniqueDifficulties = array_keys($uniqueDifficulties);
 
                 // 2. Appel AJAX à create_session.php
                 $.ajax({
-                    url: '/../../../../Controller/create_session.php', // Assurez-vous que le chemin est correct
+                    url: '../../../../Controller/create_session.php', // Assurez-vous que le chemin est correct
                     type: 'POST',
                     dataType: 'json',
                     success: function(response) {

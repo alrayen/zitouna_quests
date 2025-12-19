@@ -204,21 +204,30 @@ foreach ($questionsFromDb as $q) {
             <div class="row align-items-center ptb_sm--20 padding-controler-header">
                 <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 ">
                     <div class="header-left">
-                        <a href="index.html" class="logo">
+                        <a href="index.php" class="logo">
                             <img src="./assets/images/logo/logo3.png" alt="Zitouna Quests Logo">
                         </a>
                     </div>
                 </div>
                 <div class="col-xl-5 d-xl-block d-none">
                     <div class="main-menu-wrapepr">
-                        <nav class="mainmenu-nav d-none d-xl-block">
+                                                                                                <nav class="mainmenu-nav d-none d-xl-block">
                             <ul class="main-menu">
-                                <li class="single-items off-arrow"><a class="navmain" href="index.html">Home</a></li>
-                                <li class="single-items off-arrow"><a class="navmain" href="#">Quests</a></li>
-                                <li class="single-items off-arrow"><a class="navmain" href="quizzes.php">Quiz</a></li>
-                                <li class="single-items off-arrow"><a class="navmain" href="#">Forum</a></li>
-                                <li class="single-items off-arrow"><a class="navmain" href="#">Blog</a></li>
-                                <li class="single-items off-arrow"><a class="single" href="contact.html">Contact</a></li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="index.php">Home</a>
+                                </li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="quiz.php">Quiz</a>
+                                </li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="challenge.php">Challenge</a>
+                                </li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="forum.php">Forum</a>
+                                </li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="sponsor.php">Sponsor</a>
+                                </li>
                             </ul>
                         </nav>
                     </div>
@@ -226,10 +235,10 @@ foreach ($questionsFromDb as $q) {
                 <div class="col-xl-5 col-lg-8 col-md-8 col-sm-12 justify-content-sm-center d-xsm-flex">
                     <div class="header-right">
                         <ul class="icons">
-                            <li class="icon user"> <a href="author.html"><i class="far fa-user"></i></a></li>
+                            <li class="icon user"> <a href="author.php"><i class="far fa-user"></i></a></li>
                             <li class="icon notification"> <a href="#"><i class="far fa-bell" alt="notification"></i></a></li>
                         </ul>
-                        <a id="connect-wallet" href="login.html" class="rts-btn btn-primary">login / sign up</a>
+                        <a id="connect-wallet" href="login.php" class="rts-btn btn-primary">login / sign up</a>
                     </div>
                 </div>
             </div>
@@ -272,7 +281,7 @@ foreach ($questionsFromDb as $q) {
             <p class="result-message" id="result-message">You scored X out of Y correct answers.</p>
             
             <div class="result-actions">
-                <button onclick="window.location.href='index.html'" class="action-btn btn-home">
+                <button onclick="window.location.href='index.php'" class="action-btn btn-home">
                     <i class="fas fa-home"></i> Home
                 </button>
                 <button onclick="location.reload()" class="action-btn btn-retry">

@@ -59,9 +59,9 @@ if ($result && isset($result['match_found']) && $result['match_found']) {
     $_SESSION['user_image'] = $user['photo'];
 
     $base_path = '/Projet2';
-    $admin_url = $base_path . '/View/BACK%20OFFICE/VIEW/build/pages/dashboard.html';
+    $admin_url = $base_path . '/View/BACK%20OFFICE/VIEW/build/pages/users_table.php';
     $user_url = $base_path . '/View/FRONT%20OFFICE/PRINCIPAL/genifty-html/index.php';
-    $redirect_url = ($user['role'] === 'admin') ? $admin_url : $user_url;
+    $redirect_url = ($user['role'] == 1) ? $admin_url : $user_url;
     
     echo json_encode(['success' => true, 'redirect_url' => $redirect_url]);
 } else {

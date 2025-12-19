@@ -8,30 +8,43 @@ include_once __DIR__ . '/../Model/sujets.php';
     $nom= $sujet->getNom();
     $date= $sujet->getDate();
     $image=$sujet->getImage();
+    $titre=$sujet->getTitre();
+    $id_user=$sujet->getId_user();
     
     try
     {
              $conn=getDatabaseConnexion();
-             $sql="INSERT INTO sujets ( nom ,date_sujets,titre,imagee) VALUES('$nom','$date','$titre','$image')";
-             
-             $conn->exec($sql);
-            
+             $sql="INSERT INTO sujets (nom, date_sujets, titre, imagee, id_user, likes) VALUES (:nom, :date, :titre, :image, :id_user, 0)";
+             $stmt = $conn->prepare($sql);
+             return $stmt->execute([
+                 'nom' => $nom,
+                 'date' => $date,
+                 'titre' => $titre,
+                 'image' => $image,
+                 'id_user' => $id_user
+             ]);
     }
     catch(PDOException $e )
     {
-        echo $e->getMessage();
-
+        error_log("Error in createSujet: " . $e->getMessage());
+        return false;
     }
   }
 
 function afficherSujet()
 {
-    
-          $conn=getDatabaseConnexion();
-          $sql="SELECT * FROM sujets ";
-          $sujets=$conn->query($sql);
-
-    return $sujets;
+    try {
+        $conn=getDatabaseConnexion();
+        $sql="SELECT s.*, u.nom as user_nom, u.Prenom as user_prenom, u.photo as user_photo 
+              FROM sujets s 
+              LEFT JOIN user u ON s.id_user = u.id_user 
+              ORDER BY s.date_sujets DESC";
+        $sujets=$conn->query($sql);
+        return $sujets;
+    } catch(PDOException $e) {
+        echo $e->getMessage();
+        return false;
+    }
 }
 function getPostsParJour($days = 7) {
     $conn = getDatabaseConnexion();
@@ -69,7 +82,10 @@ function getTotalPosts() {
     return $result['total'] ?? 0;
 }
 
-// Fonction pour obtenir les posts d'aujourd'hui
+/**
+ * Récupère le nombre de posts ajoutés aujourd'hui
+ * @return int Nombre de posts aujourd'hui
+ */
 function getPostsToday() {
     $conn = getDatabaseConnexion();
     $sql = "SELECT COUNT(*) as aujourdhui 
@@ -79,6 +95,28 @@ function getPostsToday() {
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     
     return $result['aujourdhui'] ?? 0;
+}
+
+// Fonction pour obtenir tous les utilisateurs (utilisée pour le forum)
+function getAllUsersForum() {
+    try {
+        $conn = getDatabaseConnexion();
+        $sql = "SELECT * FROM user ORDER BY id_user DESC";
+        $stmt = $conn->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        return [];
+    }
+}
+
+// Fonction pour obtenir le total des utilisateurs
+function getTotalUsers() {
+    $conn = getDatabaseConnexion();
+    $sql = "SELECT COUNT(*) as total FROM user";
+    $stmt = $conn->query($sql);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    return $result['total'] ?? 0;
 }
 function afficherSujetParId($id)
 {
@@ -97,48 +135,51 @@ function deletepost($id)
      try
     {
              $conn=getDatabaseConnexion();
-             $sql="DELETE FROM sujets where id='$id'";
-             
-             $conn->query($sql);
-             
+             $sql="DELETE FROM sujets where id=:id";
+             $stmt = $conn->prepare($sql);
+             $stmt->execute(['id' => $id]);
     }
     catch(PDOException $e )
     {
         echo $e->getMessage();
-
     } 
 }
-function modifierposts($id,$contenu)
+function modifierposts($id, $contenu, $titre = null)
 {
-   try
-    {
-             $conn=getDatabaseConnexion();
-             $sql="UPDATE sujets SET nom='$contenu' WHERE id='$id'";
-             
-             $conn->query($sql);
-           
-    }
-    catch(PDOException $e )
-    {
+    try {
+        $conn = getDatabaseConnexion();
+        if ($titre !== null) {
+            $sql = "UPDATE sujets SET nom=:contenu, titre=:titre WHERE id=:id";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                'contenu' => $contenu,
+                'titre' => $titre,
+                'id' => $id
+            ]);
+        } else {
+            $sql = "UPDATE sujets SET nom=:contenu WHERE id=:id";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                'contenu' => $contenu,
+                'id' => $id
+            ]);
+        }
+    } catch (PDOException $e) {
         echo $e->getMessage();
-
-    } 
-    
+    }
 }
 function incrementLike($id)
 {
   try
     {
              $conn=getDatabaseConnexion();
-             $sql="UPDATE sujets SET likes=likes+1 WHERE id='$id'";
-             
-             $conn->query($sql);
-           
+             $sql="UPDATE sujets SET likes=COALESCE(likes, 0)+1 WHERE id=:id";
+             $stmt = $conn->prepare($sql);
+             $stmt->execute(['id' => $id]);
     }
     catch(PDOException $e )
     {
-        echo $e->getMessage();
-
+        error_log("Error in incrementLike: " . $e->getMessage());
     } 
 }
 function decrementLike($id)
@@ -146,15 +187,13 @@ function decrementLike($id)
    try
     {
              $conn=getDatabaseConnexion();
-             $sql="UPDATE sujets SET likes=GREATEST(likes-1,0 )WHERE id='$id'";
-             
-             $conn->query($sql);
-           
+             $sql="UPDATE sujets SET likes=GREATEST(COALESCE(likes, 0)-1, 0) WHERE id=:id";
+             $stmt = $conn->prepare($sql);
+             $stmt->execute(['id' => $id]);
     }
     catch(PDOException $e )
     {
-        echo $e->getMessage();
-
+        error_log("Error in decrementLike: " . $e->getMessage());
     } 
 }
 

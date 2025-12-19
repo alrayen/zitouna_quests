@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 require_once __DIR__ . '/../../../../config.php';
 require_once __DIR__ . '/../../../../Model/quiz.php';
 require_once __DIR__ . '/../../../../Controller/quiz-controller.php';
@@ -170,31 +170,30 @@ $uniqueDifficulties = array_keys($uniqueDifficulties);
             <div class="row align-items-center ptb_sm--20 padding-controler-header">
                 <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 ">
                     <div class="header-left">
-                        <a href="index.html" class="logo">
+                        <a href="index.php" class="logo">
                             <img src="assets/images/logo/logo3.png" alt="NFT_image">
                         </a>
                     </div>
                 </div>
                 <div class="col-xl-5 d-xl-block d-none">
                     <div class="main-menu-wrapepr">
-                        <nav class="mainmenu-nav d-none d-xl-block">
+                                                                                                <nav class="mainmenu-nav d-none d-xl-block">
                             <ul class="main-menu">
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="index.html">Home</a>
+                                    <a class="navmain" href="index.php">Home</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Quests</a>
+                                    <a class="navmain" href="quiz.php">Quiz</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="quizzes.php">Quiz</a>
+                                    <a class="navmain" href="challenge.php">Challenge</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Forum</a>
+                                    <a class="navmain" href="forum.php">Forum</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Blog</a>
+                                    <a class="navmain" href="sponsor.php">Sponsor</a>
                                 </li>
-                                <li class="single-items off-arrow"><a class="single" href="contact.html">Contact</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -220,10 +219,14 @@ $uniqueDifficulties = array_keys($uniqueDifficulties);
                             </form>
                         </div>
                         <ul class="icons">
-                            <li class="icon user"> <a href="author.html"><i class="far fa-user"></i></a></li>
+                            <li class="icon user"> <a href="author.php"><i class="far fa-user"></i></a></li>
                             <li class="icon notification"> <a href="#"><i class="far fa-bell" alt="notification"></i></a></li>
                         </ul>
-                        <a id="connect-wallet" href="login.html" class="rts-btn btn-primary">login / sign up</a>
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <a id="connect-wallet" href="../../../../Controller/logout.php" class="rts-btn btn-primary">Disconnect</a>
+                        <?php else: ?>
+                            <a id="connect-wallet" href="login.php" class="rts-btn btn-primary">login / sign up</a>
+                        <?php endif; ?>
                         <div class="mobile-menu-bar d-block d-xl-none">
                             <div class="hamberger">
                                 <button class="hamberger-button">
@@ -240,7 +243,7 @@ $uniqueDifficulties = array_keys($uniqueDifficulties);
         <div class="inner">
             <div class="header-top">
                 <div class="logo logo-custom-css">
-                    <a href="index.html"><img src="assets/images/logo/logo3.png" alt="_logo"></a>
+                    <a href="index.php"><img src="assets/images/logo/logo3.png" alt="_logo"></a>
                 </div>
                 <div class="close-menu">
                     <button class="close-button">
@@ -251,21 +254,20 @@ $uniqueDifficulties = array_keys($uniqueDifficulties);
             <nav>
                 <ul class="main-menu">
                     <li class="single-items off-arrow">
-                        <a class="navmain" href="index.html">Home</a>
+                        <a class="navmain" href="index.php">Home</a>
                     </li>
                     <li class="single-items off-arrow">
-                        <a class="navmain" href="#">Quests</a>
+                        <a class="navmain" href="quiz.php">Quiz</a>
                     </li>
                     <li class="single-items off-arrow">
-                        <a class="navmain" href="quizzes.php">Quiz</a>
+                        <a class="navmain" href="challenge.php">Challenge</a>
                     </li>
                     <li class="single-items off-arrow">
-                        <a class="navmain" href="#">Forum</a>
+                        <a class="navmain" href="forum.php">Forum</a>
                     </li>
                     <li class="single-items off-arrow">
-                        <a class="navmain" href="#">Blog</a>
+                        <a class="navmain" href="sponsor.php">Sponsor</a>
                     </li>
-                    <li class="single-items off-arrow"><a class="single" href="contact.html">Contact</a></li>
                 </ul>
             </nav>
         </div>

@@ -403,7 +403,7 @@ let elementIdToDelete = null;
 let isDeleting = false;
 let currentType = null; // 'post' ou 'comment'
 
-function confirmDelete(elementId, type) {
+function openConfirmDeleteModal(elementId, type) {
   if (isDeleting) return;
   
   elementIdToDelete = elementId;
@@ -590,42 +590,65 @@ document.addEventListener('keydown', function(e) {
      <div class="items-center block w-auto max-h-screen overflow-auto h-sidenav grow basis-full" style="padding-top: 50px;">
   <ul class="flex flex-col pl-0 mb-0">
     <li class="w-full" style="margin-top: 10px;">
-      <a class="py-2.7 bg-cyan-500/13 dark:text-white dark:opacity-80 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors" href="../pages/dashboard.html">
-        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-          <i class="relative top-0 text-sm leading-normal text-cyan-500 ni ni-tv-2"></i>
+      <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="users_table.php">
+        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-orange-500">
+          <i class="relative top-0 text-sm leading-normal ni ni-single-02"></i>
         </div>
-        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Dashboard</span>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Users</span>
       </a>
     </li>
 
     <li class="w-full" style="margin-top: 0px;">
-      <a class=" dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors" href="../pages/posts.php">
-        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-          <i class="relative top-0 text-sm leading-normal text-orange-500 ni ni-calendar-grid-58"></i>
+      <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="quiz_table.php">
+        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-cyan-500">
+          <i class="relative top-0 text-sm leading-normal ni ni-bullet-list-67"></i>
         </div>
-        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Posts</span>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Quiz</span>
       </a>
     </li>
 
     <li class="w-full" style="margin-top: 0px;">
-      <a class=" dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors" href="../pages/commentaires.php">
-        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-          <i class="relative top-0 text-sm leading-normal text-orange-500 ni ni-calendar-grid-58"></i>
+      <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="challenge.php">
+        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-blue-500">
+          <i class="relative top-0 text-sm leading-normal ni ni-trophy"></i>
         </div>
-        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Statistiques</span>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Challenges</span>
       </a>
     </li>
 
     <li class="w-full" style="margin-top: 0px;">
-      <h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase dark:text-white opacity-60">Account pages</h6>
+      <a class="py-2.7 bg-white shadow-md text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors" href="posts.php">
+        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tl from-blue-500 to-violet-500 shadow-sm stroke-0 text-center xl:p-2.5 text-white">
+          <i class="relative top-0 text-sm leading-normal ni ni-calendar-grid-58"></i>
+        </div>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Forum</span>
+      </a>
     </li>
 
     <li class="w-full" style="margin-top: 0px;">
-      <a class=" dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors" href="../pages/profile.html">
-        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-          <i class="relative top-0 text-sm leading-normal text-slate-700 ni ni-single-02"></i>
+      <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="listSponsor.php">
+        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-violet-500">
+          <i class="relative top-0 text-sm leading-normal ni ni-badge"></i>
         </div>
-        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Profile</span>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Sponsor</span>
+      </a>
+    </li>
+
+    <li class="w-full" style="margin-top: 0px;">
+      <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="listDonation.php">
+        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-emerald-500">
+          <i class="relative top-0 text-sm leading-normal ni ni-favourite-28"></i>
+        </div>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Donation</span>
+      </a>
+    </li>
+
+    <li class="w-full" style="margin-top: 0px;">
+      <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="dashboardAI.php">
+        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-purple-500">
+          <i class="relative top-0 text-sm leading-normal ni ni-bulb-61"></i>
+        </div>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">DonationAI</span>
       </a>
     </li>
   </ul>
@@ -642,9 +665,9 @@ document.addEventListener('keydown', function(e) {
               <li class="text-sm leading-normal">
                 <a class="text-white opacity-50" href="javascript:;">Pages</a>
               </li>
-              <li class="text-sm pl-2 capitalize leading-normal text-white before:float-left before:pr-2 before:text-white before:content-['/']" aria-current="page">Tables</li>
+              <li class="text-sm pl-2 capitalize leading-normal text-white before:float-left before:pr-2 before:text-white before:content-['/']" aria-current="page">Forum</li>
             </ol>
-            <h6 class="mb-0 font-bold text-white capitalize">Tables</h6>
+            <h6 class="mb-0 font-bold text-white capitalize">Gestion des Posts</h6>
           </nav>
 
           <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
@@ -766,7 +789,7 @@ document.addEventListener('keydown', function(e) {
                           <button onclick="window.location.href='modifierPost.php?id=<?=$sujet['id']?>&contenu=<?=urlencode($sujet['nom'])?>&position=back'" class="bg-gradient-to-tl from-emerald-500 to-teal-400 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">Modifier</button>
                         </td>
                         <td class="p-2 text-center align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                          <button onclick="confirmDelete(<?=$sujet['id']?>, 'post')" class="bg-gradient-to-tl from-red-600 to-orange-600 px-4 py-2 text-xs rounded-1.8 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">Supprimer</button>
+                          <button onclick="openConfirmDeleteModal(<?=$sujet['id']?>, 'post')" class="bg-gradient-to-tl from-red-600 to-orange-600 px-4 py-2 text-xs rounded-1.8 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">Supprimer</button>
                         </td>
                       </tr>
                       <!-- Section des commentaires pour ce post -->
@@ -805,10 +828,10 @@ document.addEventListener('keydown', function(e) {
                                           </a>
                                           
                                           <!-- Bouton Supprimer -->
-                                          <a href="../../../../../Controller/supprimerCommentaireController.php?id=<?=$commentaire['id']?>&contenu=<?=urlencode($commentaire['contenu'])?>&position=back" 
-                                   class="bg-gradient-to-tl from-blue-500 to-blue-600 px-3 py-1 text-xs rounded-lg text-white hover:from-blue-600 hover:to-blue-700 transition-all duration-200 flex items-center">
-                                            <i class="fas fa-edit mr-1"></i> Supprimer
-                                             </a>
+                                          <button onclick="openConfirmDeleteModal(<?=$commentaire['id']?>, 'comment')" 
+                                                  class="bg-gradient-to-tl from-red-600 to-orange-600 px-3 py-1 text-xs rounded-lg text-white hover:from-red-700 hover:to-orange-700 transition-all duration-200 flex items-center">
+                                            <i class="fas fa-trash-alt mr-1"></i> Supprimer
+                                          </button>
                                         </div>
                                       </div>
                                     </div>
@@ -851,4 +874,54 @@ document.addEventListener('keydown', function(e) {
   <script src="../assets/js/plugins/perfect-scrollbar.min.js" async></script>
   <!-- main script file  -->
   <script src="../assets/js/argon-dashboard-tailwind.js?v=1.0.1" async></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      if (urlParams.has('success')) {
+        const action = urlParams.get('success');
+        let title = 'Succès !';
+        let message = 'L\'opération a été effectuée avec succès.';
+        
+        if (action === 'post_added') message = 'Le post a été publié avec succès.';
+        if (action === 'post_updated') message = 'Le post a été mis à jour avec succès.';
+        if (action === 'post_deleted') message = 'Le post a été supprimé avec succès.';
+        if (action === 'comment_added') message = 'Le commentaire a été publié avec succès.';
+        if (action === 'comment_updated') message = 'Le commentaire a été mis à jour avec succès.';
+        if (action === 'comment_deleted') message = 'Le commentaire a été supprimé avec succès.';
+        
+        Swal.fire({
+          icon: 'success',
+          title: title,
+          text: message,
+          timer: 3000,
+          showConfirmButton: false
+        });
+        
+        // Nettoyer l'URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+      
+      if (urlParams.has('error')) {
+        const error = urlParams.get('error');
+        let title = 'Erreur';
+        let message = 'Une erreur est survenue.';
+        
+        if (error === 'inappropriate_content') {
+          title = 'Contenu inapproprié';
+          message = 'Votre message contient du contenu inapproprié (mots grossiers, haineux, etc.) et ne peut pas être publié.';
+        }
+        
+        Swal.fire({
+          icon: 'error',
+          title: title,
+          text: message
+        });
+        
+        // Nettoyer l'URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    });
+  </script>
 </html>

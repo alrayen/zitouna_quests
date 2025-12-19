@@ -1,9 +1,11 @@
 <?php
-include_once(__DIR__ . '/../../../../../Controller/quiz-controller.php');
-include_once(__DIR__ . '/../../../../../Model/quiz.php'); 
+// Using dirname(__DIR__, 5) to safely reach the project root
+$root = dirname(__DIR__, 5);
+require_once $root . '/Controller/quiz-controller.php';
+require_once $root . '/Model/quiz.php'; 
 // INCLUDE QUESTION CONTROLLER/MODEL
-include_once(__DIR__ . '/../../../../../Controller/question-controller.php');
-include_once(__DIR__ . '/../../../../../Model/question.php');
+require_once $root . '/Controller/question-controller.php';
+require_once $root . '/Model/question.php';
 
 $QuizController = new QuizController();
 $QuestionController = new QuestionController(); // Initialize Question Controller
@@ -13,7 +15,7 @@ if (isset($_POST['add_quiz'])) {
     $titre = $_POST['add_titre'];
     $categorie = $_POST['add_categorie'];
     $niveau = $_POST['add_niveau'];
-    $points = $_POST['add_points'];
+    $points = (int)$_POST['add_points'];
     $newQuiz = new Quiz(null, $titre, $categorie, $niveau, $points);
     $QuizController->addQuiz($newQuiz);
     header("Location: quiz_table.php?status=added");
@@ -25,8 +27,8 @@ if (isset($_POST['update_quiz'])) {
     $titre = $_POST['edit_titre'];
     $categorie = $_POST['edit_categorie'];
     $niveau = $_POST['edit_niveau'];
-    $points = $_POST['edit_points'];
-    $updatedQuiz = new Quiz($id, $titre, $categorie, $niveau, $points);
+    $points = (int)$_POST['edit_points'];
+    $updatedQuiz = new Quiz((int)$id, $titre, $categorie, $niveau, $points);
     $QuizController->updateQuiz($updatedQuiz);
     header("Location: quiz_table.php?status=updated");
     exit();
@@ -129,7 +131,7 @@ $totalQuizzes = count($quizzes);
                 <h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase opacity-60">Admin Tools</h6>
             </li>
             <li class="w-full mt-2">
-              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="../pages/users_table.php">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="users_table.php">
                 <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-orange-500">
                   <i class="ni ni-single-02"></i>
                 </div>
@@ -137,11 +139,51 @@ $totalQuizzes = count($quizzes);
               </a>
             </li>
             <li class="w-full mt-2">
-              <a class="py-2.7 bg-white shadow-md text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors" href="../pages/quiz_table.php">
+              <a class="py-2.7 bg-white shadow-md text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors" href="quiz_table.php">
                 <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tl from-blue-500 to-violet-500 shadow-sm stroke-0 text-center xl:p-2.5 text-white">
-                  <i class="ni ni-spaceship"></i>
+                  <i class="ni ni-bullet-list-67"></i>
                 </div>
-                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Quiz Management</span>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Quiz</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="challenge.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-blue-500">
+                  <i class="ni ni-trophy"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Challenges</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="posts.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-orange-500">
+                  <i class="ni ni-calendar-grid-58"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Forum</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="listSponsor.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-violet-500">
+                  <i class="ni ni-badge"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Sponsor</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="listDonation.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-emerald-500">
+                  <i class="ni ni-favourite-28"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Donation</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="dashboardAI.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-purple-500">
+                  <i class="ni ni-bulb-61"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">DonationAI</span>
               </a>
             </li>
         </ul>
@@ -319,6 +361,7 @@ $totalQuizzes = count($quizzes);
                                 <option value="Social Impact">Social Impact</option>
                                 <option value="Personal Growth">Personal Growth</option>
                             </select>
+                            <p id="error_add_categorie" class="error-msg"></p>
                         </div>
                         <div class="w-1/2">
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Niveau</label>
@@ -328,11 +371,13 @@ $totalQuizzes = count($quizzes);
                                 <option value="Hard">Hard</option>
                                 <option value="Extreme">Extreme</option>
                             </select>
+                            <p id="error_add_niveau" class="error-msg"></p>
                         </div>
                     </div>
                     <div>
                          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Points</label>
                          <input type="number" id="add_points" name="add_points" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" />
+                         <p id="error_add_points" class="error-msg"></p>
                     </div>
                 </div>
                 <div class="px-6 pb-6 flex justify-end gap-3">
@@ -356,6 +401,7 @@ $totalQuizzes = count($quizzes);
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Titre</label>
                         <input type="text" id="edit_titre" name="edit_titre" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
+                        <p id="error_edit_titre" class="error-msg"></p>
                     </div>
                     <div class="flex gap-4">
                         <div class="w-1/2">
@@ -367,6 +413,7 @@ $totalQuizzes = count($quizzes);
                                 <option value="Social Impact">Social Impact</option>
                                 <option value="Personal Growth">Personal Growth</option>
                             </select>
+                            <p id="error_edit_categorie" class="error-msg"></p>
                         </div>
                          <div class="w-1/2">
                              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">level</label>
@@ -376,11 +423,13 @@ $totalQuizzes = count($quizzes);
                                 <option value="Hard">Hard</option>
                                 <option value="Extreme">Extreme</option>
                             </select>
+                            <p id="error_edit_niveau" class="error-msg"></p>
                         </div>
                     </div>
                       <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Points</label>
                         <input type="number" id="edit_points" name="edit_points" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
+                        <p id="error_edit_points" class="error-msg"></p>
                     </div>
                 </div>
                 <div class="px-6 pb-6 flex justify-end gap-3">
@@ -419,19 +468,32 @@ $totalQuizzes = count($quizzes);
                 <h6 class="text-white font-bold text-lg m-0">Add New Question</h6>
                 <button type="button" onclick="closeAddQuestionModal()" class="text-white hover:text-gray-200 border-none bg-transparent cursor-pointer"><i class="fas fa-times text-lg"></i></button>
             </div>
-            <form action="quiz_table.php" method="POST">
+            <form id="addQuestionForm" action="quiz_table.php" method="POST">
                 <input type="hidden" name="add_question" value="1">
                 <input type="hidden" name="q_quiz_id" id="add_q_quiz_id">
                 <div class="p-6 space-y-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Question Text</label>
-                        <textarea name="q_text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 outline-none bg-gray-50 h-24"></textarea>
+                        <textarea id="q_text" name="q_text" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 outline-none bg-gray-50 h-24"></textarea>
+                        <span id="error_q_text" class="text-red-500 text-xs mt-1 hidden"></span>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
-                        <div><input type="text" name="q_opt1" placeholder="Option 1" required class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none"></div>
-                        <div><input type="text" name="q_opt2" placeholder="Option 2" required class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none"></div>
-                        <div><input type="text" name="q_opt3" placeholder="Option 3" required class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none"></div>
-                        <div><input type="text" name="q_opt4" placeholder="Option 4" required class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none"></div>
+                        <div>
+                            <input type="text" id="q_opt1" name="q_opt1" placeholder="Option 1" class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none">
+                            <span id="error_q_opt1" class="text-red-500 text-xs mt-1 hidden"></span>
+                        </div>
+                        <div>
+                            <input type="text" id="q_opt2" name="q_opt2" placeholder="Option 2" class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none">
+                            <span id="error_q_opt2" class="text-red-500 text-xs mt-1 hidden"></span>
+                        </div>
+                        <div>
+                            <input type="text" id="q_opt3" name="q_opt3" placeholder="Option 3" class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none">
+                            <span id="error_q_opt3" class="text-red-500 text-xs mt-1 hidden"></span>
+                        </div>
+                        <div>
+                            <input type="text" id="q_opt4" name="q_opt4" placeholder="Option 4" class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none">
+                            <span id="error_q_opt4" class="text-red-500 text-xs mt-1 hidden"></span>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Correct Answer</label>
@@ -457,20 +519,33 @@ $totalQuizzes = count($quizzes);
                 <h6 class="text-white font-bold text-lg m-0">Edit Question</h6>
                 <button type="button" onclick="closeEditQuestionModal()" class="text-white hover:text-gray-200 border-none bg-transparent cursor-pointer"><i class="fas fa-times text-lg"></i></button>
             </div>
-            <form action="quiz_table.php" method="POST">
+            <form id="editQuestionForm" action="quiz_table.php" method="POST">
                 <input type="hidden" name="update_question" value="1">
                 <input type="hidden" name="eq_id" id="eq_id">
                 <input type="hidden" name="eq_quiz_id" id="eq_quiz_id">
                 <div class="p-6 space-y-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Question Text</label>
-                        <textarea id="eq_text" name="eq_text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 outline-none bg-gray-50 h-24"></textarea>
+                        <textarea id="eq_text" name="eq_text" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 outline-none bg-gray-50 h-24"></textarea>
+                        <span id="error_eq_text" class="text-red-500 text-xs mt-1 hidden"></span>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
-                        <div><input type="text" id="eq_opt1" name="eq_opt1" required class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none"></div>
-                        <div><input type="text" id="eq_opt2" name="eq_opt2" required class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none"></div>
-                        <div><input type="text" id="eq_opt3" name="eq_opt3" required class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none"></div>
-                        <div><input type="text" id="eq_opt4" name="eq_opt4" required class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none"></div>
+                        <div>
+                            <input type="text" id="eq_opt1" name="eq_opt1" class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none">
+                            <span id="error_eq_opt1" class="text-red-500 text-xs mt-1 hidden"></span>
+                        </div>
+                        <div>
+                            <input type="text" id="eq_opt2" name="eq_opt2" class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none">
+                            <span id="error_eq_opt2" class="text-red-500 text-xs mt-1 hidden"></span>
+                        </div>
+                        <div>
+                            <input type="text" id="eq_opt3" name="eq_opt3" class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none">
+                            <span id="error_eq_opt3" class="text-red-500 text-xs mt-1 hidden"></span>
+                        </div>
+                        <div>
+                            <input type="text" id="eq_opt4" name="eq_opt4" class="w-full px-3 py-2 rounded border border-gray-200 focus:border-indigo-500 outline-none">
+                            <span id="error_eq_opt4" class="text-red-500 text-xs mt-1 hidden"></span>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Correct Answer (Reselect if options changed)</label>
@@ -623,6 +698,55 @@ $totalQuizzes = count($quizzes);
         if (event.target == document.getElementById('addQuestionModal')) closeAddQuestionModal();
         if (event.target == document.getElementById('editQuestionModal')) closeEditQuestionModal();
         if (event.target == document.getElementById('deleteQuestionModal')) closeDeleteQuestionModal();
+    }
+
+    // JS VALIDATION FOR QUESTIONS
+    const addQForm = document.getElementById('addQuestionForm');
+    if (addQForm) {
+        addQForm.addEventListener('submit', function(e) {
+            let hasError = false;
+            const text = document.getElementById('q_text');
+            const o1 = document.getElementById('q_opt1');
+            const o2 = document.getElementById('q_opt2');
+            const o3 = document.getElementById('q_opt3');
+            const o4 = document.getElementById('q_opt4');
+            
+            const fields = [text, o1, o2, o3, o4];
+            fields.forEach(f => {
+                const err = document.getElementById('error_' + f.id);
+                err.classList.add('hidden');
+                if (f.value.trim() === '') {
+                    err.innerText = 'Field required';
+                    err.classList.remove('hidden');
+                    hasError = true;
+                }
+            });
+            if (hasError) e.preventDefault();
+        });
+    }
+
+    const editQForm = document.getElementById('editQuestionForm');
+    if (editQForm) {
+        editQForm.addEventListener('submit', function(e) {
+            let hasError = false;
+            const text = document.getElementById('eq_text');
+            const o1 = document.getElementById('eq_opt1');
+            const o2 = document.getElementById('eq_opt2');
+            const o3 = document.getElementById('eq_opt3');
+            const o4 = document.getElementById('eq_opt4');
+            
+            const fields = [text, o1, o2, o3, o4];
+            fields.forEach(f => {
+                const err = document.getElementById('error_' + f.id);
+                err.classList.add('hidden');
+                if (f.value.trim() === '') {
+                    err.innerText = 'Field required';
+                    err.classList.remove('hidden');
+                    hasError = true;
+                }
+            });
+            if (hasError) e.preventDefault();
+        });
     }
     </script>
 </body>

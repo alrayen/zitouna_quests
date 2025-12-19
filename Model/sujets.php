@@ -8,18 +8,29 @@ class Sujet
     private $titre;
     private $image;
     private $like;
+    private $id_user;
    
 
 
-    public function __construct($nom,$date,$titre,$image)
+    public function __construct($nom,$date,$titre,$image,$id_user = null)
     {
       
         $this->nom=$nom;
         $this->date=$date;
         $this->image=$image;
+        $this->titre=$titre;
+        $this->id_user=$id_user;
         $this->like=0;
        
        
+    }
+    public function getId_user()
+    {
+        return $this->id_user;
+    }
+    public function setId_user($id_user)
+    {
+        $this->id_user=$id_user;
     }
     public function getId()
     {

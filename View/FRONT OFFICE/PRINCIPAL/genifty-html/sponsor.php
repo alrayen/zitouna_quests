@@ -1,21 +1,39 @@
 <?php
 // --- CONFIGURATION & CONTROLLER SETUP ---
-// Adjust these paths to match your exact folder structure
 require_once __DIR__ . '/../../../../config.php';
-require_once __DIR__ . '/../../../../Model/sponsor.php'; // Make sure filename matches
+require_once __DIR__ . '/../../../../Model/Sponsor.php';
 require_once __DIR__ . '/../../../../Controller/SponsorC.php';
+require_once __DIR__ . '/../../../../Controller/DonationC.php';
 
-$sponsorController = new SponsorController();
-$allSponsors = $sponsorController->listSponsors();
+session_start();
+
+$sponsorC = new SponsorC();
+$allSponsors = $sponsorC->afficherSponsors()->fetchAll(PDO::FETCH_ASSOC);
+
+$donationController = new DonationC();
+$donationsResult = $donationController->listDonations();
+$allDonations = $donationsResult->fetchAll(PDO::FETCH_ASSOC);
 
 $uniqueSectors = [];
-
-// Process sponsors to get unique Sectors for the filter
-foreach ($allSponsors as $sponsor) {
-    $uniqueSectors[$sponsor->getSecteur()] = true; 
+foreach ($allSponsors as $s) {
+    if (!empty($s['secteur'])) {
+        $uniqueSectors[$s['secteur']] = true; 
+    }
 }
-
 $uniqueSectors = array_keys($uniqueSectors);
+
+function getUserAvatar($photo, $nom) {
+    if (!empty($photo) && $photo !== 'null' && $photo !== 'default.png') {
+        if (filter_var($photo, FILTER_VALIDATE_URL)) {
+            return $photo;
+        }
+        $path = "../../../../uploads/profiles/" . $photo;
+        if (file_exists($path)) {
+            return $path;
+        }
+    }
+    return 'https://ui-avatars.com/api/?name=' . urlencode($nom) . '&background=random&color=fff';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,7 +41,7 @@ $uniqueSectors = array_keys($uniqueSectors);
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Zitouna Quests - Our Partners</title>
+    <title>Zitouna Quests - Our Partners & Impact</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/fab-icon.png">
@@ -35,138 +53,165 @@ $uniqueSectors = array_keys($uniqueSectors);
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
-        /* --- Animations (Kept from your original file) --- */
+        /* --- Animations (Mirrored from challenge.php) --- */
         @keyframes float { 0% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-20px) translateX(20px); } 100% { transform: translateY(0) translateX(0); } }
         @keyframes moveGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-        /* --- Background Theme --- */
+        /* --- Body & Background (Mirrored from challenge.php) --- */
         body.rt_bg-secondary {
-            background: linear-gradient(135deg, #275a42ff, #3a9a64ff, #44bd78ff); /* Darker professional teal/slate */
+            background: linear-gradient(135deg, #14b8a6, #14b8a6, #3ddf43ff, #81c784);
             background-size: 400% 400%;
             animation: moveGradient 25s ease infinite;
             overflow-x: hidden;
+            min-height: 100vh;
             color: white;
         }
         
         .bg-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; overflow: hidden; }
-        .bg-animation .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; animation: float 25s ease-in-out infinite alternate; }
-        .bg-animation .blob1 { width: 500px; height: 500px; background: #4ca1af; top: -100px; left: -100px; animation-duration: 22s; }
-        .bg-animation .blob2 { width: 400px; height: 400px; background: #2c3e50; bottom: -80px; right: -80px; animation-duration: 28s; animation-delay: -5s; }
+        .bg-animation .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; animation: float 25s ease-in-out infinite alternate; }
+        .bg-animation .blob1 { width: 400px; height: 400px; background: rgba(144, 238, 144, 0.5); top: -50px; left: -100px; animation-duration: 22s; }
+        .bg-animation .blob2 { width: 300px; height: 300px; background: rgba(0, 150, 136, 0.4); bottom: -80px; right: -80px; animation-duration: 28s; animation-delay: -5s; }
 
-        /* --- Filter Buttons --- */
-        .quiz-filter-controls { margin-bottom: 50px; text-align: center; }
-        .quiz-filter-group { list-style: none; padding: 0; margin: 0; }
-        .quiz-filter-group li { display: inline-block; margin: 5px; }
-        
-        .filter-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #b0bec5;
-            padding: 10px 24px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            backdrop-filter: blur(4px);
-        }
-        .filter-btn:hover, .filter-btn.is-active {
-            background: #fff;
-            color: #263238;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+        /* --- Header Styling (Mirrored from challenge.php) --- */
+        .rts-header-area { 
+            position: fixed !important; top: 0; left: 0; width: 100%; z-index: 999; 
+            background: rgba(20, 60, 20, 0.65) !important; 
+            backdrop-filter: blur(12px); 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+            transition: transform 0.4s ease-in-out; padding-top: 10px; padding-bottom: 10px; 
         }
 
-        /* --- SPONSOR CARD STYLES --- */
+        /* --- Filter Buttons (Mirrored from challenge.php) --- */
+        .quiz-filter-controls { margin-bottom: 40px; text-align: center; }
+        .quiz-filter-group { margin: 0; padding: 0; list-style: none; display: inline-block; margin-bottom: 15px; }
+        .quiz-filter-group li { display: inline-block; margin: 0 5px; }
+        .filter-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.25); color: #fff; padding: 10px 20px; border-radius: 20px; cursor: pointer; transition: all 0.3s ease; font-weight: 600; backdrop-filter: blur(5px); }
+        .filter-btn:hover { background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 255, 255, 0.5); transform: translateY(-2px); }
+        .filter-btn.is-active { background: #fff; color: #1b5e20; box-shadow: 0 5px 15px rgba(76, 175, 80, 0.5); border-color: #fff; }
+
+        /* --- SPONSOR CARD STYLES (Mirrored from challenge.php quiz-card) --- */
         .sponsor-card {
-            background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 30px;
-            text-decoration: none;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            height: 100%;
+            background: rgba(20, 60, 20, 0.35); backdrop-filter: blur(15px);
+            border: 1px solid rgba(100, 255, 100, 0.2); border-radius: 24px; 
+            padding: 30px; cursor: pointer; transition: all 0.3s; position: relative;
+            height: 100%; display: flex; flex-direction: column;
             animation: fadeIn 0.6s ease-out forwards;
-            opacity: 0;
-            position: relative;
-            overflow: hidden;
+            text-decoration: none; color: #fff;
+            text-align: center;
+        }
+        .sponsor-card:hover { 
+            transform: translateY(-10px) scale(1.02); 
+            background: rgba(20, 60, 20, 0.5); 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(100, 255, 100, 0.5);
+            border-color: rgba(100, 255, 100, 0.6);
         }
 
-        /* Hover Effect: Glass Shine */
-        .sponsor-card::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: 0.5s; pointer-events: none;
-        }
-        .sponsor-card:hover::before { left: 100%; }
-        .sponsor-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        /* Avatar / Logo Placeholder */
         .sponsor-avatar {
             width: 80px; height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ffd700, #fdb931); /* Gold Gradient */
+            background: linear-gradient(135deg, #43a047, #66bb6a);
             display: flex; align-items: center; justify-content: center;
             font-size: 2rem; font-weight: 800; color: #fff;
-            margin-bottom: 20px;
+            margin: 0 auto 20px auto;
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border: 3px solid rgba(255,255,255,0.2);
         }
-        
-        /* Different colors for avatar based on random CSS logic usually, but hardcoded gold for now */
 
         .sponsor-sector {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 5px 15px;
-            border-radius: 15px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
+            background: linear-gradient(45deg, #43a047, #66bb6a); 
+            color: white; padding: 6px 15px; border-radius: 20px; 
+            text-transform: uppercase; letter-spacing: 0.5px; 
+            font-size: 0.75rem; font-weight: 700; 
+            box-shadow: 0 2px 10px rgba(67, 160, 71, 0.3);
             margin-bottom: 15px;
-            color: #81d4fa;
+            display: inline-block;
         }
 
-        .sponsor-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; color: #fff; }
-        .sponsor-contact { font-size: 0.9rem; color: #cfd8dc; margin-bottom: 20px; word-break: break-all; }
-        .sponsor-contact i { margin-right: 8px; color: #81d4fa; }
+        .sponsor-name { font-size: 1.6rem; font-weight: 700; margin-bottom: 10px; color: #fff; }
+        .sponsor-contact { font-size: 0.9rem; color: #c8e6c9; margin-bottom: 20px; }
+        .sponsor-contact i { color: #69f0ae; }
 
         .sponsor-footer {
-            margin-top: auto; width: 100%;
+            margin-top: auto; padding-top: 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 20px;
             display: flex; justify-content: space-between; align-items: center;
         }
 
-        .contribution-badge {
-            display: flex; flex-direction: column; align-items: flex-start;
-        }
-        .contribution-label { font-size: 0.7rem; text-transform: uppercase; opacity: 0.7; }
-        .contribution-value { font-size: 1.1rem; font-weight: 700; color: #69f0ae; } /* Green for money */
+        .contribution-badge { text-align: left; }
+        .contribution-label { font-size: 0.7rem; text-transform: uppercase; color: #a5d6a7; display: block; }
+        .contribution-value { font-size: 1.2rem; font-weight: 800; color: #ffd700; }
 
         .contact-btn {
-            background: white; color: #263238;
+            background: linear-gradient(45deg, #43a047, #81c784); color: white;
             width: 40px; height: 40px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            transition: 0.3s; text-decoration: none;
+            transition: 0.3s; border: none;
         }
-        .contact-btn:hover { background: #81d4fa; color: white; transform: rotate(15deg); }
+        .contact-btn:hover { background: #fff; color: #1b5e20; transform: rotate(15deg) scale(1.1); }
 
-        .page-title-area { text-align: center; margin-bottom: 60px; }
-        .page-title-area .title { font-size: 3.5rem; font-weight: 800; margin-bottom: 10px; }
-        .page-title-area .sub { color: #81d4fa; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+        /* --- CREATIVE DONATIONS SECTION --- */
+        .impact-hall-of-fame {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 80px 0;
+            margin-top: 100px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .donation-bubble {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(100, 255, 100, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+        .donation-bubble:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+            border-color: #69f0ae;
+        }
+        .donation-bubble::before {
+            content: '\f004'; font-family: 'Font Awesome 5 Free'; font-weight: 900;
+            position: absolute; top: 10px; right: 10px;
+            font-size: 3rem; opacity: 0.1; color: #69f0ae;
+        }
+
+        .donator-name { font-weight: 800; font-size: 1.2rem; color: #fff; margin-bottom: 5px; }
+        .donator-meta { font-size: 0.8rem; color: #a5d6a7; text-transform: uppercase; margin-bottom: 15px; }
+        .donator-amount { 
+            font-size: 1.5rem; font-weight: 900; 
+            background: linear-gradient(to right, #ffd700, #fff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .page-title-area { text-align: center; margin-bottom: 50px; }
+        .page-title-area .title { font-size: 3.5rem; font-weight: 800; color: #fff; text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
+        .page-title-area .sub { display: block; font-size: 1.1rem; color: #69f0ae; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .page-title-area .disc { font-size: 1.3rem; color: #e8f5e9; opacity: 0.95; }
+
+        /* Search Area (Mirrored) */
+        .search-area {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 30px;
+            padding: 5px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .search-area input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 8px 0;
+            width: 200px;
+        }
+        .search-area input:focus { outline: none; }
     </style>
 </head>
 
@@ -177,13 +222,14 @@ $uniqueSectors = array_keys($uniqueSectors);
         <div class="blob blob2"></div>
     </div>
 
-    <div class="rts-header-area header-inner-one header--sticky">
+    <!-- Header -->
+    <div id="mainHeader" class="rts-header-area header-inner-one">
         <div class="container-header">
             <div class="row align-items-center ptb_sm--20 padding-controler-header">
-                <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 ">
+                <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12">
                     <div class="header-left">
-                        <a href="index.html" class="logo">
-                            <img src="assets/images/logo/logo3.png" alt="Logo">
+                        <a href="index.php" class="logo">
+                            <img src="assets/images/logo/logo3.png" alt="Zitouna Logo">
                         </a>
                     </div>
                 </div>
@@ -191,35 +237,51 @@ $uniqueSectors = array_keys($uniqueSectors);
                     <div class="main-menu-wrapepr">
                         <nav class="mainmenu-nav d-none d-xl-block">
                             <ul class="main-menu">
-                                <li class="single-items"><a class="navmain" href="index.html">Home</a></li>
-                                <li class="single-items"><a class="navmain" href="challenges.php">Challenges</a></li>
-                                <li class="single-items"><a class="navmain" href="sponsors.php">Partners</a></li> <li class="single-items"><a class="single" href="contact.html">Contact</a></li>
+                                <li><a class="navmain" href="index.php">Home</a></li>
+                                <li><a class="navmain" href="quiz.php">Quiz</a></li>
+                                <li><a class="navmain" href="challenge.php">Challenge</a></li>
+                                <li><a class="navmain" href="forum.php">Forum</a></li>
+                                <li><a class="navmain" href="sponsor.php">Sponsor</a></li>
                             </ul>
                         </nav>
                     </div>
                 </div>
-                 <div class="col-xl-5 col-lg-8 col-md-8 col-sm-12 justify-content-sm-center d-xsm-flex">
+                <div class="col-xl-5 col-lg-8 col-md-8 col-sm-12">
                     <div class="header-right">
-                         <a id="connect-wallet" href="login.html" class="rts-btn btn-primary">Login</a>
+                        <div class="search-area d-none d-md-flex">
+                            <input type="text" id="sponsorSearch" placeholder="Find a partner...">
+                            <i class="far fa-search"></i>
+                        </div>
+                        <?php if(isset($_SESSION['user_id'])): ?>
+                            <div class="user-info-header" style="display: flex; align-items: center; gap: 12px; margin-left: 20px; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 30px;">
+                                <img src="<?= getUserAvatar($_SESSION['user_image'], $_SESSION['user_nom']) ?>" alt="User" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid #69f0ae;">
+                                <span style="font-weight: 700; font-size: 0.9rem;"><?= htmlspecialchars($_SESSION['user_nom']) ?></span>
+                                <a href="../../../../Controller/logout.php" class="rts-btn btn-primary" style="padding: 6px 12px; font-size: 0.7rem;">Logout</a>
+                            </div>
+                        <?php else: ?>
+                            <a href="login.php" class="rts-btn btn-primary">Login</a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="rts-explore-area rts-section-gap" style="padding-top: 150px; position: relative; z-index: 2;">
+    <!-- Main Content -->
+    <div class="rts-explore-area rts-section-gap" style="padding-top: 250px; position: relative; z-index: 2;">
         <div class="container">
 
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-area">
                         <span class="sub">Zitouna Ecosystem</span>
-                        <h3 class="title">Our Valued Partners</h3>
-                        <p class="disc">Driving innovation and supporting the next generation of tech leaders.</p>
+                        <h1 class="title">Our Strategic Partners</h1>
+                        <p class="disc">Driving innovation and rewarding excellence in our community.</p>
                     </div>
                 </div>
             </div>
 
+            <!-- Sector Filters (Mirrored Style) -->
             <div class="row">
                 <div class="col-12">
                     <div class="quiz-filter-controls">
@@ -227,7 +289,6 @@ $uniqueSectors = array_keys($uniqueSectors);
                             <li><button class="filter-btn is-active" data-filter="*">All Sectors</button></li>
                             <?php foreach ($uniqueSectors as $sector): ?>
                                 <?php 
-                                    // Create a safe class name from the sector string
                                     $sectorSelector = strtolower(str_replace(' ', '-', preg_replace("/[^A-Za-z0-9 ]/", '', $sector))); 
                                 ?>
                                 <li><button class="filter-btn" data-filter=".<?php echo $sectorSelector; ?>">
@@ -239,99 +300,153 @@ $uniqueSectors = array_keys($uniqueSectors);
                 </div>
             </div>
 
+            <!-- Sponsors Grid -->
             <div class="row g-5 mt--20" id="sponsor-grid">
-
                 <?php if (empty($allSponsors)): ?>
-                    <div class="col-12">
-                        <div class="text-center p-5" style="background: rgba(255,255,255,0.05); border-radius: 20px;">
-                            <h3>No sponsors found yet.</h3>
-                            <p>Become our first partner!</p>
+                    <div class="col-12 text-center">
+                        <div class="sponsor-card" style="padding: 100px;">
+                            <i class="fas fa-handshake-slash fa-4x mb-4 opacity-20" style="color: #69f0ae;"></i>
+                            <h3>No active partners yet.</h3>
+                            <p>Become the first to support our mission!</p>
                         </div>
                     </div>
                 <?php else: ?>
-                    <?php $delayCounter = 0; ?>
-                    <?php foreach ($allSponsors as $sponsor): ?>
-                        <?php
-                        $delayCounter++;
-                        $animationDelay = $delayCounter * 100;
+                    <?php $delay = 0; foreach ($allSponsors as $sponsor): 
+                        $sector = $sponsor['secteur'] ?? 'General';
+                        $name = $sponsor['nom'] ?? 'Anonymous';
+                        $contact = $sponsor['contact'] ?? 'N/A';
+                        $contribution = $sponsor['contribution'] ?? 0;
                         
-                        // Prepare classes for Isotope filtering
-                        $sectorFromDB = $sponsor->getSecteur();
-                        $sectorClass = strtolower(str_replace(' ', '-', preg_replace("/[^A-Za-z0-9 ]/", '', $sectorFromDB)));
-                        
-                        // Get first letter for avatar
-                        $initial = substr($sponsor->getNom(), 0, 1);
-                        ?>
-                    
+                        $sectorClass = strtolower(str_replace(' ', '-', preg_replace("/[^A-Za-z0-9 ]/", '', $sector)));
+                        $initial = strtoupper(substr($name, 0, 1));
+                    ?>
                         <div class="col-lg-4 col-md-6 col-sm-12 sponsor-card-wrapper <?php echo $sectorClass; ?>">
-                            
-                            <div class="sponsor-card" style="animation-delay: <?php echo $animationDelay; ?>ms;">
-                                
-                                <div class="sponsor-avatar">
-                                    <?php echo strtoupper($initial); ?>
-                                </div>
-
-                                <span class="sponsor-sector"><?php echo htmlspecialchars($sectorFromDB); ?></span>
-
-                                <h4 class="sponsor-name"><?php echo htmlspecialchars($sponsor->getNom()); ?></h4>
-
+                            <div class="sponsor-card" style="animation-delay: <?= $delay += 100 ?>ms;">
+                                <div class="sponsor-avatar"><?= $initial ?></div>
+                                <span class="sponsor-sector"><?= htmlspecialchars($sector) ?></span>
+                                <h4 class="sponsor-name"><?= htmlspecialchars($name) ?></h4>
                                 <div class="sponsor-contact">
-                                    <i class="far fa-envelope"></i> <?php echo htmlspecialchars($sponsor->getContact()); ?>
+                                    <i class="far fa-envelope me-2"></i> <?= htmlspecialchars($contact) ?>
                                 </div>
-
                                 <div class="sponsor-footer">
                                     <div class="contribution-badge">
-                                        <span class="contribution-label">Contribution</span>
-                                        <span class="contribution-value"><?php echo number_format($sponsor->getContribution(), 0, '.', ','); ?> DT</span>
+                                        <span class="contribution-label">Total Impact</span>
+                                        <span class="contribution-value"><?= number_format((float)$contribution, 0) ?> DT</span>
                                     </div>
-                                    <a href="mailto:<?php echo htmlspecialchars($sponsor->getContact()); ?>" class="contact-btn" title="Contact Sponsor">
+                                    <a href="mailto:<?= htmlspecialchars($contact) ?>" class="contact-btn">
                                         <i class="fas fa-paper-plane"></i>
                                     </a>
                                 </div>
-
                             </div>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
-
             </div>
         </div>
     </div>
 
+    <!-- IMPACT HALL OF FAME -->
+    <section class="impact-hall-of-fame" style="position: relative; z-index: 2;">
+        <div class="container">
+            <div class="row mb-5 text-center">
+                <div class="col-12">
+                    <span class="sub" style="color: #ffd700; font-weight: 800; letter-spacing: 3px; text-transform: uppercase;">Hall of Fame</span>
+                    <h2 class="title" style="font-size: 3rem; font-weight: 900; margin-top: 10px; color: #fff;">Community Heroes</h2>
+                    <p class="disc" style="max-width: 700px; margin: 20px auto; color: #e8f5e9;">Celebrating those who turn their achievements into real-world change.</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <?php if (empty($allDonations)): ?>
+                    <div class="col-12 text-center opacity-50">
+                        <p>No donations recorded yet. Complete challenges to earn points and donate!</p>
+                    </div>
+                <?php else: 
+                    // Take the most recent 8 donations for a creative grid
+                    $displayDonations = array_slice($allDonations, 0, 8);
+                    foreach ($displayDonations as $don): 
+                ?>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="donation-bubble">
+                            <div class="donator-name"><?= htmlspecialchars($don['nom_donateur']) ?></div>
+                            <div class="donator-meta"><?= htmlspecialchars($don['type_don']) ?></div>
+                            <div class="donator-amount"><?= number_format($don['montant'], 0) ?> DT</div>
+                            <div style="font-size: 0.7rem; margin-top: 15px; opacity: 0.6;">
+                                <i class="far fa-calendar-alt me-1"></i> <?= date('M d, Y', strtotime($don['date_don'])) ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
 
-    <div class="mouse-cursor cursor-outer"></div>
-    <div class="mouse-cursor cursor-inner"></div>
-    
+            <div class="row mt-5 text-center">
+                <div class="col-12">
+                    <div style="background: rgba(255,255,255,0.05); border: 1px dashed rgba(105, 240, 174, 0.3); border-radius: 20px; padding: 40px; max-width: 800px; margin: 0 auto;">
+                        <h4 style="color: #69f0ae; font-weight: 800;">Want to see your name here?</h4>
+                        <p style="margin-bottom: 25px;">Earn points by completing quests and challenges, then donate them to your favorite causes!</p>
+                        <a href="challenge.php" class="rts-btn btn-primary" style="padding: 15px 40px;">Earn Points Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (Mirrored Style) -->
+    <footer class="py-5 mt-5" style="border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2);">
+        <div class="container text-center">
+            <div class="mb-4">
+                <img src="assets/images/logo/logo3.png" alt="Logo" style="height: 40px;">
+            </div>
+            <p class="opacity-50">© 2025 Zitouna Quests Ecosystem. Empowering Impact Through Knowledge.</p>
+        </div>
+    </footer>
+
     <script src="assets/js/vendor/jquery.min.js"></script>
-    <script src="assets/js/vendor/jquery-ui.min.js"></script>
     <script src="assets/js/vendor/isotop.min.js"></script> 
-    <script src="assets/js/vendor/bootstrap.min.js"></script>
     <script src="assets/js/main.js"></script>
 
     <script>
         $(window).on('load', function () {
-            // Init Isotope
+            // Header Scroll Logic (Mirrored)
+            let lastScrollTop = 0;
+            const header = document.getElementById('mainHeader');
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > 100) {
+                    header.style.transform = 'translateY(-100%)';
+                } else {
+                    header.style.transform = 'translateY(0)';
+                }
+                lastScrollTop = scrollTop;
+            });
+
+            // Isotope Init
             var $grid = $('#sponsor-grid').isotope({
                 itemSelector: '.sponsor-card-wrapper',
-                layoutMode: 'fitRows', 
-                transitionDuration: '0.6s',
-                hiddenStyle: { opacity: 0, transform: 'translateY(20px)' },
-                visibleStyle: { opacity: 1, transform: 'translateY(0)' }
+                layoutMode: 'fitRows',
+                transitionDuration: '0.6s'
             });
 
             // Filter Logic
-            $('.quiz-filter-controls').on('click', '.filter-btn', function () {
-                var $this = $(this);
-                
-                // Toggle Active Class
-                $('.quiz-filter-controls .filter-btn').removeClass('is-active');
-                $this.addClass('is-active');
-                
-                // Get Filter Value
-                var filterValue = $this.attr('data-filter');
-                
-                // Apply Filter
-                $grid.isotope({ filter: filterValue });
+            $('.filter-btn').on('click', function () {
+                $('.filter-btn').removeClass('is-active');
+                $(this).addClass('is-active');
+                $grid.isotope({ filter: $(this).attr('data-filter') });
+            });
+
+            // Real-time search
+            $('#sponsorSearch').on('keyup', function() {
+                var val = $(this).val().toLowerCase();
+                $('.sponsor-card-wrapper').each(function() {
+                    var name = $(this).find('.sponsor-name').text().toLowerCase();
+                    if(name.indexOf(val) > -1) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+                $grid.isotope('layout');
             });
         });
     </script>

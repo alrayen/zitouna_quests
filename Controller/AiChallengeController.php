@@ -5,7 +5,7 @@ require_once __DIR__ . '/../Model/challenge.php';
 class AiChallengeController {
     
     
-    private $apiKey = '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'; 
+    private $apiKey = ''; 
 
     public function generateChallengeForUser($userId) {
         

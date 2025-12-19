@@ -89,8 +89,8 @@ try {
         $role = $_SESSION['user_role'] ?? 'client';
 
         $base_path = '/Projet2';
-        $redirect_url = ($role === 'admin') 
-            ? $base_path . "/View/BACK%20OFFICE/VIEW/build/pages/dashboard.html"
+        $redirect_url = ($role == 1) 
+            ? $base_path . "/View/BACK%20OFFICE/VIEW/build/pages/users_table.php"
             : $base_path . "/View/FRONT%20OFFICE/PRINCIPAL/genifty-html/index.php";
     
         echo json_encode(['success' => true, 'redirect_url' => $redirect_url]);

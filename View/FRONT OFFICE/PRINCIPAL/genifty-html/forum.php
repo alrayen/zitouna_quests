@@ -1,6 +1,9 @@
 <?php 
+session_start();
 include "../../../../Controller/crudSujet.php";
 include "../../../../Controller/crudCommentaire.php";
+
+$current_user_id = $_SESSION['user_id'] ?? null;
 
 $sujets_result = afficherSujet();
 $sujets = [];
@@ -37,6 +40,19 @@ function getImageUrl($image_name, $post_id) {
     
     $image_index = $post_id % count($default_images);
     return $default_images[$image_index];
+}
+
+function getUserAvatar($photo, $nom) {
+    if (!empty($photo) && $photo !== 'null' && $photo !== 'default.png') {
+        if (filter_var($photo, FILTER_VALIDATE_URL)) {
+            return $photo;
+        }
+        $path = "../../../../uploads/profiles/" . $photo;
+        if (file_exists($path)) {
+            return $path;
+        }
+    }
+    return 'https://ui-avatars.com/api/?name=' . urlencode($nom) . '&background=random&color=fff';
 }
 ?>
 
@@ -977,23 +993,29 @@ function getImageUrl($image_name, $post_id) {
             <div class="row align-items-center ptb_sm--20 padding-controler-header">
                 <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12">
                     <div class="header-left">
-                        <a href="index.html" class="logo">
+                        <a href="index.php" class="logo">
                             <img src="assets/images/logo/logo3.png" alt="NFT_image">
                         </a>
                     </div>
                 </div>
                 <div class="col-xl-5 d-xl-block d-none">
                     <div class="main-menu-wrapepr">
-                        <nav class="mainmenu-nav d-none d-xl-block">
+                                                                                                <nav class="mainmenu-nav d-none d-xl-block">
                             <ul class="main-menu">
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="index.html">Home</a>
+                                    <a class="navmain" href="index.php">Home</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="quiz.php">Quests</a>
+                                    <a class="navmain" href="quiz.php">Quiz</a>
+                                </li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="challenge.php">Challenge</a>
                                 </li>
                                 <li class="single-items off-arrow">
                                     <a class="navmain" href="forum.php">Forum</a>
+                                </li>
+                                <li class="single-items off-arrow">
+                                    <a class="navmain" href="sponsor.php">Sponsor</a>
                                 </li>
                             </ul>
                         </nav>
@@ -1002,10 +1024,16 @@ function getImageUrl($image_name, $post_id) {
                 <div class="col-xl-5 col-lg-8 col-md-8 col-sm-12">
                     <div class="header-right">
                         <ul class="icons">
-                            <li class="icon user"> <a href="author.html"><i class="far fa-user"></i></a></li>
+                            <li class="icon user"> <a href="author.php"><i class="far fa-user"></i></a></li>
                             <li class="icon notification"> <a href="#"><i class="far fa-bell"></i></a></li>
                         </ul>
-                        <a href="login.html" class="rts-btn btn-primary">login / sign up</a>
+                        <?php if(isset($_SESSION['user_id'])): ?>
+                            <div class="user-info-header" style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
+                                                               <a href="../../../../Controller/logout.php" class="rts-btn btn-primary" style="padding: 8px 15px; font-size: 12px;">Logout</a>
+                            </div>
+                        <?php else: ?>
+                            <a href="login.php" class="rts-btn btn-primary">login / sign up</a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -1076,35 +1104,40 @@ function getImageUrl($image_name, $post_id) {
                             
                             <div class="post-header">
                                 <!-- Vue normale du titre -->
-                                <h3 class="post-title" id="post-title-view-<?= $post_id ?>">
-                                    <?= htmlspecialchars($sujet['nom']) ?>
-                                </h3>
+                                <div style="flex: 1; min-width: 200px;">
+                                    <h3 class="post-title" id="post-title-view-<?= $post_id ?>" style="margin-bottom: 10px;">
+                                        <?= htmlspecialchars($sujet['titre'] ?: $sujet['nom']) ?>
+                                    </h3>
+                                    <div class="post-content" style="color: #ddd; line-height: 1.6;">
+                                        <?= nl2br(htmlspecialchars($sujet['nom'])) ?>
+                                    </div>
+                                </div>
                                 
-                                <!-- Formulaire d'édition du titre (caché par défaut) -->
-                                <div id="post-title-edit-<?= $post_id ?>" style="display: none; flex: 1;">
-                                    <form method="POST" action="../../../../Controller/modifierSujetController.php?position=front&id=<?= $post_id ?>" style="display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; width: 100%;" onsubmit="return validatePostForm(<?= $post_id ?>)">
-                                        <div style="flex: 1; min-width: 250px;">
-                                            <div class="error-message" id="post-error-<?= $post_id ?>">
-                                                <i class="far fa-exclamation-circle"></i>
-                                                <span id="post-error-text-<?= $post_id ?>"></span>
-                                            </div>
-                                            <input type="hidden" name="id" value="<?= $post_id ?>">
-                                            <input 
-                                                type="text" 
-                                                name="nom" 
-                                                id="post-input-<?= $post_id ?>"
-                                                value="<?= htmlspecialchars($sujet['nom']) ?>" 
-                                                
-                                                
-
-                                                style="width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 12px 15px; border-radius: 10px; font-size: 18px; font-weight: 600; transition: all 0.3s ease;"
-                                                oninput="validatePostInput(<?= $post_id ?>)"
-                                            >
-                                            <div class="char-counter" id="post-counter-<?= $post_id ?>">
-                                                <span id="post-char-count-<?= $post_id ?>"><?= strlen($sujet['nom']) ?></span>/200
-                                            </div>
+                                <!-- Formulaire d'édition (caché par défaut) -->
+                                <div id="post-edit-<?= $post_id ?>" style="display: none; flex: 1;">
+                                    <form method="POST" action="../../../../Controller/modifierSujetController.php?position=front&id=<?= $post_id ?>" style="display: flex; flex-direction: column; gap: 15px; width: 100%;" onsubmit="return validatePostForm(<?= $post_id ?>)">
+                                        <div class="error-message" id="post-error-<?= $post_id ?>">
+                                            <i class="far fa-exclamation-circle"></i>
+                                            <span id="post-error-text-<?= $post_id ?>"></span>
                                         </div>
-                                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                        <input type="hidden" name="id" value="<?= $post_id ?>">
+                                        
+                                        <input 
+                                            type="text" 
+                                            name="titre" 
+                                            id="post-titre-input-<?= $post_id ?>"
+                                            value="<?= htmlspecialchars($sujet['titre'] ?: $sujet['nom']) ?>" 
+                                            placeholder="Titre du post"
+                                            style="width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 12px 15px; border-radius: 10px; font-size: 18px; font-weight: 600;"
+                                        >
+                                        
+                                        <textarea 
+                                            name="nom" 
+                                            id="post-nom-input-<?= $post_id ?>"
+                                            style="width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 12px 15px; border-radius: 10px; min-height: 100px;"
+                                        ><?= htmlspecialchars($sujet['nom']) ?></textarea>
+
+                                        <div style="display: flex; gap: 10px; justify-content: flex-end;">
                                             <button type="submit" name="modifier_post" class="post-action-btn save">
                                                 <i class="far fa-save"></i> Sauvegarder
                                             </button>
@@ -1115,6 +1148,7 @@ function getImageUrl($image_name, $post_id) {
                                     </form>
                                 </div>
                                 
+                                <?php if(isset($_SESSION['user_id']) && $_SESSION['user_id'] == $sujet['id_user']): ?>
                                 <div class="post-actions" id="post-actions-<?= $post_id ?>">
                                     <button class="post-action-btn edit" onclick="toggleEditPost(<?= $post_id ?>)">
                                         <i class="far fa-edit"></i> Modifier
@@ -1123,34 +1157,31 @@ function getImageUrl($image_name, $post_id) {
                                         <i class="far fa-trash"></i> Supprimer
                                     </button>
                                 </div>
+                                <?php endif; ?>
                             </div>
                             
                             <!-- Statistiques du post -->
                             <div class="post-stats">
                                
                                 <?php if($sujet['likes']>0):?>
-                                <div onclick="window.location.href='../../../../Controller/likeController.php?id=<?=$sujet['id']?>&choix=decrement';" class="post-stat-item">
+                                <div onclick="<?php if(isset($_SESSION['user_id'])): ?>window.location.href='../../../../Controller/LikeController.php?id=<?=$sujet['id']?>&choix=decrement';<?php else: ?>window.location.href='login.php';<?php endif; ?>" class="post-stat-item" style="cursor: pointer;">
                                    <span style="color:red; font-size:24px;">❤️ </span>
                                     <span class="stat-number"><?=$sujet['likes']?></span> likes
                                 </div>
                                 <?php else:?>
-                                <div onclick="window.location.href='../../../../Controller/likeController.php?id=<?=$sujet['id']?>&choix=increment';" class="post-stat-item">
+                                <div onclick="<?php if(isset($_SESSION['user_id'])): ?>window.location.href='../../../../Controller/LikeController.php?id=<?=$sujet['id']?>&choix=increment';<?php else: ?>window.location.href='login.php';<?php endif; ?>" class="post-stat-item" style="cursor: pointer;">
                                     <span style="font-size:24px;">🤍</span>
 
                                     <span class="stat-number"><?=$sujet['likes']?></span> likes
                                 </div>
                                 <?php endif;?>
-                              <!--  <div class="post-stat-item">
-                                    <i class="far fa-share"></i>
-                                    <span class="stat-number">15</span> partages
-                                </div>-->
                             </div>
                             
                             <div class="post-meta">
                                 <div class="post-info">
-                                    <div class="user-avatar">E</div>
+                                    <img src="<?= getUserAvatar($sujet['user_photo'], $sujet['user_nom']) ?>" alt="User" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;">
                                     <div>
-                                        <div style="color: #fff; font-weight: 600;">@EcoWarrior</div>
+                                        <div style="color: #fff; font-weight: 600;">@<?= htmlspecialchars($sujet['user_nom'] . $sujet['user_prenom']) ?></div>
                                         <div class="post-date">
                                             <i class="far fa-clock"></i>
                                             <?= $sujet['date_sujets'] ?>
@@ -1170,7 +1201,7 @@ function getImageUrl($image_name, $post_id) {
                                         <i class="far fa-comments"></i>
                                         <?= $comment_count ?> Commentaire<?= $comment_count > 1 ? 's' : '' ?>
                                     </h4>
-                                    <button class="btn-add-comment" onclick="toggleAddCommentForm(<?= $post_id ?>)">
+                                    <button class="btn-add-comment" onclick="<?php if(isset($_SESSION['user_id'])): ?>toggleAddCommentForm(<?= $post_id ?>)<?php else: ?>window.location.href='login.php'<?php endif; ?>">
                                         <i class="far fa-plus"></i> Ajouter un commentaire
                                     </button>
                                 </div>
@@ -1214,15 +1245,16 @@ function getImageUrl($image_name, $post_id) {
                                     <div class="comment-item">
                                         <div class="comment-header-item">
                                             <div class="comment-author">
-                                                <div class="comment-avatar">N</div>
+                                                <img src="<?= getUserAvatar($commentaire['user_photo'], $commentaire['user_nom']) ?>" alt="User" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
                                                 <div>
-                                                    <div class="comment-username">Utilisateur</div>
+                                                    <div class="comment-username"><?= htmlspecialchars($commentaire['user_nom'] . ' ' . $commentaire['user_prenom']) ?></div>
                                                     <div class="comment-date-small">
                                                         <i class="far fa-clock"></i>
                                                         <?= $commentaire['date_commentaires'] ?>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <?php if(isset($_SESSION['user_id']) && $_SESSION['user_id'] == $commentaire['id_user']): ?>
                                             <div class="comment-actions-small">
                                                 <button class="comment-action-small edit" onclick="toggleEditComment(<?= $commentaire['id'] ?>)">
                                                     <i class="far fa-edit"></i> Modifier
@@ -1231,6 +1263,7 @@ function getImageUrl($image_name, $post_id) {
                                                     <i class="far fa-trash"></i> Supprimer
                                                 </button>
                                             </div>
+                                            <?php endif; ?>
                                         </div>
                                         
                                         <!-- Vue normale du commentaire -->
@@ -1297,12 +1330,18 @@ function getImageUrl($image_name, $post_id) {
                 <!-- Sidebar -->
                 <div class="col-lg-4">
                     <div class="active-users">
-                        <h4 class="title">Utilisateurs en ligne</h4>
+                        <h4 class="title">Membres récents</h4>
                         <div class="users-list mt-3">
-                            <img src="https://placehold.co/40x40/00C49F/ffffff?text=E" alt="User" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
-                            <img src="https://placehold.co/40x40/0088FE/ffffff?text=S" alt="User" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
-                            <img src="https://placehold.co/40x40/FFBB28/000000?text=H" alt="User" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
-                            <span class="text-muted">+12 autres</span>
+                            <?php 
+                            $recent_users = getAllUsersForum();
+                            $display_users = array_slice($recent_users, 0, 3);
+                            foreach($display_users as $user):
+                            ?>
+                            <img src="<?= getUserAvatar($user['photo'], $user['nom']) ?>" alt="User" title="<?= htmlspecialchars($user['nom']) ?>" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; object-fit: cover;">
+                            <?php endforeach; ?>
+                            <?php if(count($recent_users) > 3): ?>
+                            <span class="text-muted">+<?= count($recent_users) - 3 ?> autres</span>
+                            <?php endif; ?>
                         </div>
                     </div>
                     
@@ -1315,7 +1354,7 @@ function getImageUrl($image_name, $post_id) {
                             </div>
                             <div class="d-flex justify-content-between mb-2" style="color: #ddd;">
                                 <span>Membres:</span>
-                                <strong>1,245</strong>
+                                <strong><?= getTotalUsers() ?></strong>
                             </div>
                             <div class="d-flex justify-content-between" style="color: #ddd;">
                                 <span>En ligne:</span>
@@ -1440,9 +1479,10 @@ function checkUrlParams() {
     if (urlParams.has('error')) {
         const error = urlParams.get('error');
         
-        // Gérer les erreurs spécifiques
-        if (error === 'inappropriate_content') {
-            showNotification('error', 'Contenu inapproprié', 'Votre commentaire contient du contenu inapproprié et ne peut pas être publié. Veuillez modifier votre message.');
+        if (error === 'db_error') {
+            showNotification('error', 'Erreur de base de données', 'Impossible d\'ajouter le post. Veuillez vérifier que tous les champs sont corrects.');
+        } else if (error === 'inappropriate_content') {
+            showNotification('error', 'Contenu inapproprié', 'Votre message contient du contenu inapproprié (mots grossiers, haineux, etc.) et ne peut pas être publié.');
             
             // Si un post_id est présent, ouvrir la section commentaires
             const postId = urlParams.get('post');
@@ -1478,38 +1518,26 @@ function checkUrlParams() {
         
         // Validation du formulaire de post
         function validatePostForm(postId) {
-            const input = document.getElementById('post-input-' + postId);
+            const titreInput = document.getElementById('post-titre-input-' + postId);
+            const nomInput = document.getElementById('post-nom-input-' + postId);
             const errorDiv = document.getElementById('post-error-' + postId);
             const errorText = document.getElementById('post-error-text-' + postId);
             
             // Réinitialiser les erreurs
             errorDiv.classList.remove('show');
-            input.classList.remove('error');
+            titreInput.classList.remove('error');
+            nomInput.classList.remove('error');
             
-            const value = input.value.trim();
+            const titre = titreInput.value.trim();
+            const nom = nomInput.value.trim();
             
-            // Vérifier si vide
-            if (value.length === 0) {
-                showError(errorDiv, errorText, input, 'Le titre du post ne peut pas être vide');
+            if (titre.length === 0) {
+                showError(errorDiv, errorText, titreInput, 'Le titre ne peut pas être vide');
                 return false;
             }
             
-            // Vérifier longueur minimale
-            if (value.length < 5) {
-                showError(errorDiv, errorText, input, 'Le titre doit contenir au moins 5 caractères');
-                return false;
-            }
-            
-            // Vérifier longueur maximale
-            if (value.length > 200) {
-                showError(errorDiv, errorText, input, 'Le titre ne peut pas dépasser 200 caractères');
-                return false;
-            }
-            
-            // Vérifier caractères spéciaux excessifs
-            const specialCharsCount = (value.match(/[^a-zA-Z0-9\sàâäéèêëïîôùûüÿçÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ'-]/g) || []).length;
-            if (specialCharsCount > value.length * 0.3) {
-                showError(errorDiv, errorText, input, 'Le titre contient trop de caractères spéciaux');
+            if (nom.length === 0) {
+                showError(errorDiv, errorText, nomInput, 'Le contenu ne peut pas être vide');
                 return false;
             }
             
@@ -1676,26 +1704,24 @@ function checkUrlParams() {
         // Toggle Edit Post Form
         function toggleEditPost(postId) {
             const titleView = document.getElementById('post-title-view-' + postId);
-            const titleEdit = document.getElementById('post-title-edit-' + postId);
+            const editDiv = document.getElementById('post-edit-' + postId);
             const actions = document.getElementById('post-actions-' + postId);
             
-            if(titleView && titleEdit && actions) {
+            if(titleView && editDiv && actions) {
                 if(titleView.style.display === 'none') {
                     // Annuler l'édition
                     titleView.style.display = 'block';
-                    titleEdit.style.display = 'none';
+                    editDiv.style.display = 'none';
                     actions.style.display = 'flex';
                 } else {
                     // Activer l'édition
                     titleView.style.display = 'none';
-                    titleEdit.style.display = 'flex';
+                    editDiv.style.display = 'block';
                     actions.style.display = 'none';
                     
                     // Reset les erreurs
                     const errorDiv = document.getElementById('post-error-' + postId);
-                    const input = document.getElementById('post-input-' + postId);
                     if(errorDiv) errorDiv.classList.remove('show');
-                    if(input) input.classList.remove('error');
                 }
             }
         }
@@ -1770,7 +1796,8 @@ function checkUrlParams() {
                 
                 posts.forEach(post => {
                     const title = post.querySelector('.post-title').textContent.toLowerCase();
-                    if (title.includes(searchTerm)) {
+                    const content = post.querySelector('.post-content') ? post.querySelector('.post-content').textContent.toLowerCase() : '';
+                    if (title.includes(searchTerm) || content.includes(searchTerm)) {
                         post.style.display = 'block';
                     } else {
                         post.style.display = 'none';

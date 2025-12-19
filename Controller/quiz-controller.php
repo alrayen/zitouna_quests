@@ -25,7 +25,7 @@ class QuizController {
             error_log("Failed to save the new quiz record.");
             return false;
         }
-        $newQuizId = $this->db->lastInsertId();
+        $newQuizId = (int)$this->db->lastInsertId();
 if ($newQuizId <= 0) {
 echo "<h3>❌ FATAL ERROR: Quiz ID Retrieval Failed!</h3>";
 echo "The last inserted ID was: " . $newQuizId;
@@ -79,11 +79,11 @@ return true;
             $quizzes = [];
             foreach ($results as $row) {
                 $quizzes[] = new Quiz(
-                    $row['id_quiz'],
+                    (int)$row['id_quiz'],
                     $row['titre'],
                     $row['categorie'],
                     $row['niveau'],
-                    $row['points']
+                    (int)$row['points']
                 );
             }
             return $quizzes;
@@ -103,11 +103,11 @@ return true;
 
             if ($row) {
                 return new Quiz(
-                    $row['id_quiz'],
+                    (int)$row['id_quiz'],
                     $row['titre'],
                     $row['categorie'],
                     $row['niveau'],
-                    $row['points']
+                    (int)$row['points']
                 );
             }
             return null;

@@ -80,7 +80,7 @@
             <div class="row align-items-center ptb_sm--20 padding-controler-header">
                 <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 ">
                     <div class="header-left">
-                        <a href="index.html" class="logo">
+                        <a href="index.php" class="logo">
                             <img src="assets/images/logo/logo3.png" alt="NFT_image">
                         </a>
                     </div>
@@ -90,24 +90,23 @@
 
 
 
-                        <nav class="mainmenu-nav d-none d-xl-block">
+                                                                                                <nav class="mainmenu-nav d-none d-xl-block">
                             <ul class="main-menu">
                                 <li class="single-items off-arrow">
                                     <a class="navmain" href="index.php">Home</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Quests</a>
+                                    <a class="navmain" href="quiz.php">Quiz</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Quiz</a>
+                                    <a class="navmain" href="challenge.php">Challenge</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Forum</a>
+                                    <a class="navmain" href="forum.php">Forum</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Blog</a>
+                                    <a class="navmain" href="sponsor.php">Sponsor</a>
                                 </li>
-                                <li class="single-items off-arrow"><a class="single" href="contact.html">Contact</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -133,7 +132,7 @@
                             </form>
                         </div>
                         <ul class="icons">
-                            <li class="icon user"> <a href="author.html"><i class="far fa-user"></i></a></li>
+                            <li class="icon user"> <a href="author.php"><i class="far fa-user"></i></a></li>
                             <li class="icon notification"> <a href="#"><i class="far fa-bell" alt="notification"></i></a></li>
                         </ul>
                         <a id="connect-wallet" href="login.php" class="rts-btn btn-primary">login / sign up</a>
@@ -159,7 +158,7 @@
         <div class="inner">
             <div class="header-top">
                 <div class="logo logo-custom-css">
-                    <a href="index.html"><img src="assets/images/logo/logo3.png" alt="_logo"></a>
+                    <a href="index.php"><img src="assets/images/logo/logo3.png" alt="_logo"></a>
                 </div>
                 <div class="close-menu">
                     <button class="close-button">
@@ -170,22 +169,21 @@
             <!-- nav style Start -->
             <nav>
                 <ul class="main-menu">
-<li class="single-items off-arrow">
-                                    <a class="navmain" href="index.html">Home</a>
-                                </li>
-                                <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Quests</a>
-                                </li>
-                                <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Quiz</a>
-                                </li>
-                                <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Forum</a>
-                                </li>
-                                <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Blog</a>
-                                </li>
-                                <li class="single-items off-arrow"><a class="single" href="contact.html">Contact</a></li>
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="index.php">Home</a>
+                    </li>
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="quiz.php">Quiz</a>
+                    </li>
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="challenge.php">Challenge</a>
+                    </li>
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="forum.php">Forum</a>
+                    </li>
+                    <li class="single-items off-arrow">
+                        <a class="navmain" href="sponsor.php">Sponsor</a>
+                    </li>
                 </ul>
             </nav>
             <!-- nav style hear End -->
@@ -207,7 +205,7 @@
                     <div class="breadcrumb-inner ptb--130 pt_sm--80 pb_sm--80">
                         <h1 class="title" data-sal-delay="300" data-sal-duration="800" data-sal="slide-up">Registration</h1>
                         <div class="breadcrumb-list">
-                            <a href="index.html" data-sal-delay="300" data-sal-duration="800" data-sal="slide-up" style="color: #fff;">Home</a>
+                            <a href="index.php" data-sal-delay="300" data-sal-duration="800" data-sal="slide-up" style="color: #fff;">Home</a>
                             <span>/</span>
                             <a class="active" href="#" data-sal-delay="500" data-sal-duration="800" data-sal="slide-up">Registration</a>
                         </div>
@@ -349,7 +347,7 @@
             <div class="row">
                 <div class="col-lg-5 col-md-6 col-sm-12 mb_sm--30 ">
                     <div class="footer-left-wrapper">
-                        <a href="index.html"><img src="assets/images/logo/logo3.png" alt="Zitouna Quests Logo" data-sal-delay="150" data-sal-duration="800" data-sal="slide-up"></a>
+                        <a href="index.php"><img src="assets/images/logo/logo3.png" alt="Zitouna Quests Logo" data-sal-delay="150" data-sal-duration="800" data-sal="slide-up"></a>
                         
                         <p class="disc" data-sal-delay="150" data-sal-duration="1000" data-sal="slide-up">
                             Zitouna Quests is an innovative platform combining learning, gamification, and social engagement to empower users to make a positive impact.
@@ -370,8 +368,8 @@
                         <ul class="wizid-lists">
                             <li class="item" data-sal-delay="250" data-sal-duration="800" data-sal="slide-up"><a href="about.html">About Us</a></li>
                             <li class="item" data-sal-delay="350" data-sal-duration="1000" data-sal="slide-up"><a href="how-it-works.html">How It Works</a></li>
-                            <li class="item" data-sal-delay="450" data-sal-duration="1200" data-sal="slide-up"><a href="quests.html">Quests</a></li>
-                            <li class="item" data-sal-delay="550" data-sal-duration="1400" data-sal="slide-up"><a href="challenges.html">Challenges</a></li>
+                            <li class="item" data-sal-delay="450" data-sal-duration="1200" data-sal="slide-up"><a href="quiz.php">Quests</a></li>
+                            <li class="item" data-sal-delay="550" data-sal-duration="1400" data-sal="slide-up"><a href="challenge.php">Challenges</a></li>
                             <li class="item" data-sal-delay="650" data-sal-duration="1600" data-sal="slide-up"><a href="impact.html">Our Impact</a></li>
                         </ul>
                     </div>
@@ -381,10 +379,10 @@
                     <div class="footer-single-wized">
                         <h5 class="wized-title" data-sal-delay="150" data-sal-duration="600" data-sal="slide-up">Community</h5>
                         <ul class="wizid-lists">
-                            <li class="item" data-sal-delay="150" data-sal-duration="600" data-sal="slide-up"><a href="forum.html">Forum</a></li>
+                            <li class="item" data-sal-delay="150" data-sal-duration="600" data-sal="slide-up"><a href="forum.php">Forum</a></li>
                             <li class="item" data-sal-delay="350" data-sal-duration="1000" data-sal="slide-up"><a href="leaderboards.html">Leaderboards</a></li>
                             <li class="item" data-sal-delay="450" data-sal-duration="1200" data-sal="slide-up"><a href="achievements.html">Achievements</a></li>
-                            <li class="item" data-sal-delay="550" data-sal-duration="1400" data-sal="slide-up"><a href="partners.html">Our Partners</a></li>
+                            <li class="item" data-sal-delay="550" data-sal-duration="1400" data-sal="slide-up"><a href="sponsor.php">Our Partners</a></li>
                             <li class="item" data-sal-delay="650" data-sal-duration="1600" data-sal="slide-up"><a href="blog.html">Blog</a></li>
                         </ul>
                     </div>

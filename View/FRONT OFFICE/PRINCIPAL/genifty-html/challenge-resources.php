@@ -315,6 +315,111 @@ if (!$isCompleted) {
         @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 82, 82, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); } }
         @keyframes blink-live { 50% { opacity: 0.5; } }
 
+        /* --- Creative Scanner Styles --- */
+        .proof-scanner-box {
+            position: relative;
+            background: rgba(0, 40, 30, 0.4);
+            border: 2px dashed rgba(105, 240, 174, 0.3);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .proof-scanner-box:hover, .proof-scanner-box.drag-over {
+            background: rgba(0, 60, 45, 0.6);
+            border-color: #69f0ae;
+            box-shadow: 0 0 30px rgba(105, 240, 174, 0.2);
+            transform: scale(1.02);
+        }
+        .scanner-line {
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #69f0ae, transparent);
+            box-shadow: 0 0 15px #69f0ae;
+            z-index: 1;
+            opacity: 0;
+        }
+        .proof-scanner-box.scanning .scanner-line {
+            animation: scan-move 2s linear infinite;
+            opacity: 1;
+        }
+        @keyframes scan-move {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        .scanner-icon {
+            font-size: 3.5rem;
+            color: #69f0ae;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        .proof-scanner-box:hover .scanner-icon {
+            transform: translateY(-5px);
+        }
+        .scanner-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .scanner-text {
+            color: #b2dfdb;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        .browse-link {
+            color: #69f0ae;
+            text-decoration: underline;
+            font-weight: 700;
+        }
+        .scanner-hint {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+        }
+        .selected-file-info {
+            margin-top: 20px;
+            background: rgba(105, 240, 174, 0.15);
+            padding: 12px 25px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(105, 240, 174, 0.4);
+            animation: bounceIn 0.5s ease;
+        }
+        .selected-file-info span {
+            font-weight: 700;
+            color: #fff;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .remove-file {
+            background: rgba(255, 82, 82, 0.2);
+            border: none;
+            color: #ff8a80;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .remove-file:hover {
+            background: #ff5252;
+            color: #fff;
+        }
+
         .chat-section {
             background: rgba(10, 30, 10, 0.55);
             backdrop-filter: blur(15px);
@@ -614,8 +719,32 @@ if (!$isCompleted) {
                     <i class="fas fa-check-circle"></i> Mission Completed
                 </button>
             <?php else: ?>
-                <button id="btnComplete" class="btn-complete" onclick="completeMission()">
-                    <i class="fas fa-flag-checkered"></i> Mark as Complete (+<?php echo $challenge->getPoints(); ?> XP)
+                <!-- Proof Upload Section -->
+                <div class="proof-upload-container" style="margin-top: 40px; animation: fadeIn 0.8s ease-out;">
+                    <div class="proof-scanner-box" id="dropZone">
+                        <div class="scanner-line"></div>
+                        <div class="scanner-content">
+                            <div class="scanner-icon" id="scannerIcon">
+                                <i class="fas fa-fingerprint"></i>
+                            </div>
+                            <h5 class="scanner-title">Mission Evidence Scanner</h5>
+                            <p class="scanner-text">Drop your proof here or <span class="browse-link">browse files</span></p>
+                            <p class="scanner-hint">Accepted: PDF, PNG, JPG (Max 5MB)</p>
+                            
+                            <input type="file" id="proofFile" accept=".pdf,.png,.jpg,.jpeg" style="display: none;">
+                            
+                            <div id="selectedFileDisplay" class="selected-file-info" style="display: none;">
+                                <i class="fas fa-file-alt"></i>
+                                <span id="fileNameDisplay">filename.pdf</span>
+                                <button type="button" class="remove-file" onclick="resetScanner(event)"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="uploadStatus" style="margin-top: 15px; font-size: 0.9rem; font-weight: 600; text-align: center;"></div>
+                </div>
+
+                <button id="btnComplete" class="btn-complete" onclick="completeMission()" style="margin-top: 25px; width: 100%; justify-content: center;">
+                    <i class="fas fa-upload"></i> Authenticate & Finalize Mission
                 </button>
             <?php endif; ?>
         </div>
@@ -775,27 +904,101 @@ if (!$isCompleted) {
         const challengeId = <?php echo $id_defi; ?>;
         const challengePoints = <?php echo $challenge->getPoints(); ?>;
 
+        // Scanner Logic
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('proofFile');
+        const selectedFileInfo = document.getElementById('selectedFileDisplay');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const scannerIcon = document.getElementById('scannerIcon');
+
+        if (dropZone) {
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('drag-over');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFileSelection();
+                }
+            });
+
+            fileInput.addEventListener('change', handleFileSelection);
+        }
+
+        function handleFileSelection() {
+            if (fileInput.files.length) {
+                const file = fileInput.files[0];
+                fileNameDisplay.innerText = file.name;
+                selectedFileInfo.style.display = 'inline-flex';
+                
+                // Trigger scanning effect
+                dropZone.classList.add('scanning');
+                scannerIcon.innerHTML = '<i class="fas fa-check-double"></i>';
+                scannerIcon.style.color = '#fff';
+                
+                document.querySelector('.scanner-text').style.display = 'none';
+                document.querySelector('.scanner-hint').style.display = 'none';
+            }
+        }
+
+        function resetScanner(e) {
+            if(e) e.stopPropagation();
+            fileInput.value = '';
+            selectedFileInfo.style.display = 'none';
+            dropZone.classList.remove('scanning');
+            scannerIcon.innerHTML = '<i class="fas fa-fingerprint"></i>';
+            scannerIcon.style.color = '#69f0ae';
+            document.querySelector('.scanner-text').style.display = 'block';
+            document.querySelector('.scanner-hint').style.display = 'block';
+        }
+
         async function completeMission() {
             const btn = document.getElementById('btnComplete');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            const fileInput = document.getElementById('proofFile');
+            const statusDiv = document.getElementById('uploadStatus');
+
+            if (!fileInput || !fileInput.files[0]) {
+                statusDiv.innerHTML = '<span style="color: #ff8a80;"><i class="fas fa-exclamation-circle"></i> Verification failed: No evidence detected!</span>';
+                if(dropZone) {
+                    dropZone.style.borderColor = '#ff8a80';
+                    dropZone.style.boxShadow = '0 0 20px rgba(255, 82, 82, 0.3)';
+                }
+                return;
+            }
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            btn.disabled = true;
+            statusDiv.innerHTML = '<span style="color: #ffd54f;"><i class="fas fa-sync fa-spin"></i> Uploading proof and finalizing mission...</span>';
             
             try {
+                const formData = new FormData();
+                formData.append('action', 'complete_challenge');
+                formData.append('challenge_id', challengeId);
+                formData.append('points', challengePoints);
+                formData.append('proof', fileInput.files[0]);
+
                 const response = await fetch('../../../../Controller/gamification_api.php', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        action: 'complete_challenge',
-                        challenge_id: challengeId,
-                        points: challengePoints
-                    })
+                    body: formData
                 });
                 
                 const data = await response.json();
                 
                 if (data.status === 'success' || data.status === 'already_completed') {
-                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Completed!';
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Mission Accomplished!';
                     btn.classList.add('disabled');
                     btn.disabled = true;
+                    statusDiv.innerHTML = '<span style="color: #69f0ae;"><i class="fas fa-check"></i> Proof submitted successfully!</span>';
                     
                     confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
 
@@ -808,10 +1011,14 @@ if (!$isCompleted) {
                 } else {
                     alert("Error: " + data.message);
                     btn.innerHTML = '<i class="fas fa-flag-checkered"></i> Try Again';
+                    btn.disabled = false;
+                    statusDiv.innerHTML = '<span style="color: #ff8a80;">Error: ' + data.message + '</span>';
                 }
             } catch (e) {
                 console.error(e);
                 btn.innerHTML = 'Error';
+                btn.disabled = false;
+                statusDiv.innerHTML = '<span style="color: #ff8a80;">Connection error. Please try again.</span>';
             }
         }
 

@@ -1,8 +1,10 @@
 <?php
-include_once(__DIR__ . '/../../../../../Controller/challenge-controller.php');
-include_once(__DIR__ . '/../../../../../Model/challenge.php');
-include_once(__DIR__ . '/../../../../../Controller/ressources-controller.php');
-include_once(__DIR__ . '/../../../../../Model/ressources-model.php');
+// Using dirname(__DIR__, 5) to safely reach the project root
+$root = dirname(__DIR__, 5);
+require_once $root . '/Controller/challenge-controller.php';
+require_once $root . '/Model/challenge.php';
+require_once $root . '/Controller/ressources-controller.php';
+require_once $root . '/Model/ressources-model.php';
 
 $ChallengeController = new ChallengeController();
 $RessourceController = new RessourceController();
@@ -165,6 +167,7 @@ if(!empty($allResources)) {
         }
         .custom-modal-box.wide-modal { max-width: 900px !important; }
         .error-msg { color: #e53e3e; font-size: 0.75rem; font-weight: bold; margin-top: 0.25rem; display: none; }
+        .error-msg.active { display: block; }
 
         .drop-zone {
             border: 2px dashed #cbd5e1;
@@ -210,15 +213,59 @@ if(!empty($allResources)) {
         <ul class="flex flex-col pl-0 mb-0">
             <li class="w-full mt-4"><h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase opacity-60">Admin Tools</h6></li>
             <li class="w-full mt-2">
-              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="../pages/users_table.php">
-                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-orange-500"><i class="ni ni-single-02"></i></div>
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="users_table.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-orange-500">
+                  <i class="ni ni-single-02"></i>
+                </div>
                 <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Users</span>
               </a>
             </li>
             <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="quiz_table.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-cyan-500">
+                  <i class="ni ni-bullet-list-67"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Quiz</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
               <a class="py-2.7 bg-white shadow-md text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors" href="challenge.php">
-                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tl from-blue-500 to-violet-500 shadow-sm stroke-0 text-center xl:p-2.5 text-white"><i class="ni ni-trophy"></i></div>
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tl from-blue-500 to-violet-500 shadow-sm stroke-0 text-center xl:p-2.5 text-white">
+                  <i class="ni ni-trophy"></i>
+                </div>
                 <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Challenges</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="posts.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-orange-500">
+                  <i class="ni ni-calendar-grid-58"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Forum</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="listSponsor.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-violet-500">
+                  <i class="ni ni-badge"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Sponsor</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="listDonation.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-emerald-500">
+                  <i class="ni ni-favourite-28"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Donation</span>
+              </a>
+            </li>
+            <li class="w-full mt-2">
+              <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="dashboardAI.php">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-purple-500">
+                  <i class="ni ni-bulb-61"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">DonationAI</span>
               </a>
             </li>
         </ul>
@@ -384,10 +431,12 @@ if(!empty($allResources)) {
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Titre</label>
                         <input type="text" id="add_titre" name="add_titre" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" />
+                        <span id="error_add_titre" class="error-msg"></span>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Description</label>
                         <textarea id="add_description" name="add_description" rows="3" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50"></textarea>
+                        <span id="error_add_description" class="error-msg"></span>
                     </div>
                     <div class="flex gap-4">
                         <div class="w-1/2">
@@ -413,10 +462,12 @@ if(!empty($allResources)) {
                          <div class="w-1/2">
                              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Points</label>
                              <input type="number" id="add_points" name="add_points" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" />
+                             <span id="error_add_points" class="error-msg"></span>
                          </div>
                          <div class="w-1/2">
                              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Time (min)</label>
                              <input type="number" id="add_time" name="add_time" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" />
+                             <span id="error_add_time" class="error-msg"></span>
                          </div>
                     </div>
                     <div class="flex gap-4">
@@ -430,6 +481,7 @@ if(!empty($allResources)) {
                         <div class="w-1/2">
                              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Place</label>
                              <input type="text" id="add_place" name="add_place" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" />
+                             <span id="error_add_place" class="error-msg"></span>
                         </div>
                     </div>
                 </div>
@@ -454,10 +506,12 @@ if(!empty($allResources)) {
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Titre</label>
                         <input type="text" id="edit_titre" name="edit_titre" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
+                        <span id="error_edit_titre" class="error-msg"></span>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Description</label>
                         <textarea id="edit_description" name="edit_description" rows="3" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50"></textarea>
+                        <span id="error_edit_description" class="error-msg"></span>
                     </div>
                      <div class="flex gap-4">
                         <div class="w-1/2">
@@ -483,10 +537,12 @@ if(!empty($allResources)) {
                         <div class="w-1/2">
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Points</label>
                             <input type="number" id="edit_points" name="edit_points" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
+                            <span id="error_edit_points" class="error-msg"></span>
                         </div>
                         <div class="w-1/2">
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Time (min)</label>
                             <input type="number" id="edit_time" name="edit_time" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
+                            <span id="error_edit_time" class="error-msg"></span>
                         </div>
                     </div>
                      <div class="flex gap-4">
@@ -500,6 +556,7 @@ if(!empty($allResources)) {
                         <div class="w-1/2">
                              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Place</label>
                              <input type="text" id="edit_place" name="edit_place" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-gray-50" />
+                             <span id="error_edit_place" class="error-msg"></span>
                         </div>
                     </div>
                 </div>
@@ -583,11 +640,13 @@ if(!empty($allResources)) {
                 <div class="p-6 space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Name</label>
-                        <input type="text" id="res_nom" name="res_nom" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" required />
+                        <input type="text" id="res_nom" name="res_nom" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" />
+                        <span id="error_res_nom" class="error-msg"></span>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Description</label>
-                        <textarea id="res_description" name="res_description" rows="3" maxlength="500" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" required></textarea>
+                        <textarea id="res_description" name="res_description" rows="3" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50"></textarea>
+                        <span id="error_res_description" class="error-msg"></span>
                     </div>
                     
                     <div class="flex gap-4">
@@ -603,6 +662,7 @@ if(!empty($allResources)) {
                         <div class="w-1/2">
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Order</label>
                             <input type="number" id="res_ordre" name="res_ordre" value="1" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" />
+                            <span id="error_res_ordre" class="error-msg"></span>
                         </div>
                     </div>
 
@@ -615,11 +675,13 @@ if(!empty($allResources)) {
                             <input type="file" name="file_upload" class="file-input" accept=".pdf" onchange="updateDropZone(this)">
                         </div>
                         <div id="fileNameDisplay" style="margin-top:10px; font-weight:bold; color:#2dce89; display:none; font-size: 0.8rem; text-align: center;"></div>
+                        <span id="error_res_file" class="error-msg"></span>
                     </div>
 
                     <div id="urlInputGroup" class="mb-3" style="display:none;">
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Resource URL</label>
                         <input type="text" id="res_url_input" name="res_url_input" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-gray-50" placeholder="https://..." />
+                        <span id="error_res_url" class="error-msg"></span>
                     </div>
 
                     <div>
@@ -661,6 +723,7 @@ if(!empty($allResources)) {
 
     <script src="../assets/js/plugins/perfect-scrollbar.min.js" async></script>
     <script src="../assets/js/argon-dashboard-tailwind.js?v=1.0.1" async></script>
+    <script src="validationchallenge.js"></script>
     
     <script>
     const ALL_RESOURCES = <?php echo json_encode($resourcesJson); ?>;
@@ -676,15 +739,9 @@ if(!empty($allResources)) {
         if (type === 'PDF') {
             fileGroup.style.display = 'block';
             urlGroup.style.display = 'none';
-            if(document.getElementById('action_add_res').disabled === false) {
-                 fileInput.required = true;
-            }
-            urlInput.required = false;
         } else {
             fileGroup.style.display = 'none';
             urlGroup.style.display = 'block';
-            fileInput.required = false;
-            urlInput.required = true;
         }
     }
 
@@ -843,8 +900,6 @@ if(!empty($allResources)) {
             document.getElementById('res_necessite_preuve').value = resData.necessite_preuve;
             
             toggleInput();
-            
-            document.querySelector('.file-input').required = false;
         }
 
         document.getElementById('resourceFormModal').style.display = 'flex';

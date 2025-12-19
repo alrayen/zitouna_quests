@@ -464,31 +464,30 @@ $sujet = afficherSujetParId($post_id);
             <div class="row align-items-center ptb_sm--20 padding-controler-header">
                 <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 ">
                     <div class="header-left">
-                        <a href="index.html" class="logo">
+                        <a href="index.php" class="logo">
                             <img src="assets/images/logo/logo3.png" alt="NFT_image">
                         </a>
                     </div>
                 </div>
                 <div class="col-xl-5 d-xl-block d-none">
                     <div class="main-menu-wrapepr">
-                        <nav class="mainmenu-nav d-none d-xl-block">
+                                                                                                <nav class="mainmenu-nav d-none d-xl-block">
                             <ul class="main-menu">
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="index.html">Home</a>
+                                    <a class="navmain" href="index.php">Home</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="quiz.php">Quests</a>
+                                    <a class="navmain" href="quiz.php">Quiz</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="take-quiz.php">Quiz</a>
+                                    <a class="navmain" href="challenge.php">Challenge</a>
                                 </li>
                                 <li class="single-items off-arrow">
                                     <a class="navmain" href="forum.php">Forum</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Blog</a>
+                                    <a class="navmain" href="sponsor.php">Sponsor</a>
                                 </li>
-                                <li class="single-items off-arrow"><a class="single" href="contact.html">Contact</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -514,10 +513,10 @@ $sujet = afficherSujetParId($post_id);
                             </form>
                         </div>
                         <ul class="icons">
-                            <li class="icon user"> <a href="author.html"><i class="far fa-user"></i></a></li>
+                            <li class="icon user"> <a href="author.php"><i class="far fa-user"></i></a></li>
                             <li class="icon notification"> <a href="#"><i class="far fa-bell" alt="notification"></i></a></li>
                         </ul>
-                        <a id="connect-wallet" href="login.html" class="rts-btn btn-primary">login / sign up</a>
+                        <a id="connect-wallet" href="login.php" class="rts-btn btn-primary">login / sign up</a>
                         <div class="mobile-menu-bar d-block d-xl-none">
                             <div class="hamberger">
                                 <button class="hamberger-button">
@@ -537,7 +536,7 @@ $sujet = afficherSujetParId($post_id);
         <div class="inner">
             <div class="header-top">
                 <div class="logo logo-custom-css">
-                    <a href="index.html"><img src="assets/images/logo/logo3.png" alt="_logo"></a>
+                    <a href="index.php"><img src="assets/images/logo/logo3.png" alt="_logo"></a>
                 </div>
                 <div class="close-menu">
                     <button class="close-button">
@@ -549,21 +548,20 @@ $sujet = afficherSujetParId($post_id);
             <nav>
                 <ul class="main-menu">
                     <li class="single-items off-arrow">
-                        <a class="navmain" href="index.html">Home</a>
+                        <a class="navmain" href="index.php">Home</a>
                     </li>
                     <li class="single-items off-arrow">
-                        <a class="navmain" href="quiz.php">Quests</a>
+                        <a class="navmain" href="quiz.php">Quiz</a>
                     </li>
                     <li class="single-items off-arrow">
-                        <a class="navmain" href="take-quiz.php">Quiz</a>
+                        <a class="navmain" href="challenge.php">Challenge</a>
                     </li>
                     <li class="single-items off-arrow">
                         <a class="navmain" href="forum.php">Forum</a>
                     </li>
                     <li class="single-items off-arrow">
-                        <a class="navmain" href="#">Blog</a>
+                        <a class="navmain" href="sponsor.php">Sponsor</a>
                     </li>
-                    <li class="single-items off-arrow"><a class="single" href="contact.html">Contact</a></li>
                 </ul>
             </nav>
             <!-- nav style hear End -->
@@ -733,7 +731,7 @@ $sujet = afficherSujetParId($post_id);
             <div class="row">
                 <div class="col-lg-5 col-md-6 col-sm-12 mb_sm--30 ">
                     <div class="footer-left-wrapper">
-                        <a href="index.html"><img src="assets/images/logo/logo3.png" alt="Zitouna Quests Logo" data-sal-delay="150" data-sal-duration="800" data-sal="slide-up"></a>
+                        <a href="index.php"><img src="assets/images/logo/logo3.png" alt="Zitouna Quests Logo" data-sal-delay="150" data-sal-duration="800" data-sal="slide-up"></a>
                         
                         <p class="disc" data-sal-delay="150" data-sal-duration="1000" data-sal="slide-up">
                             Zitouna Quests est une plateforme innovante combinant apprentissage, gamification et engagement social pour permettre aux utilisateurs d'avoir un impact positif.
@@ -754,8 +752,8 @@ $sujet = afficherSujetParId($post_id);
                         <ul class="wizid-lists">
                             <li class="item" data-sal-delay="250" data-sal-duration="800" data-sal="slide-up"><a href="about.html">À propos</a></li>
                             <li class="item" data-sal-delay="350" data-sal-duration="1000" data-sal="slide-up"><a href="how-it-works.html">Comment ça marche</a></li>
-                            <li class="item" data-sal-delay="450" data-sal-duration="1200" data-sal="slide-up"><a href="quests.html">Quêtes</a></li>
-                            <li class="item" data-sal-delay="550" data-sal-duration="1400" data-sal="slide-up"><a href="challenges.html">Défis</a></li>
+                            <li class="item" data-sal-delay="450" data-sal-duration="1200" data-sal="slide-up"><a href="quiz.php">Quêtes</a></li>
+                            <li class="item" data-sal-delay="550" data-sal-duration="1400" data-sal="slide-up"><a href="challenge.php">Défis</a></li>
                             <li class="item" data-sal-delay="650" data-sal-duration="1600" data-sal="slide-up"><a href="impact.html">Notre Impact</a></li>
                         </ul>
                     </div>
@@ -768,7 +766,7 @@ $sujet = afficherSujetParId($post_id);
                             <li class="item" data-sal-delay="150" data-sal-duration="600" data-sal="slide-up"><a href="forum.php">Forum</a></li>
                             <li class="item" data-sal-delay="350" data-sal-duration="1000" data-sal="slide-up"><a href="leaderboards.html">Classements</a></li>
                             <li class="item" data-sal-delay="450" data-sal-duration="1200" data-sal="slide-up"><a href="achievements.html">Récompenses</a></li>
-                            <li class="item" data-sal-delay="550" data-sal-duration="1400" data-sal="slide-up"><a href="partners.html">Partenaires</a></li>
+                            <li class="item" data-sal-delay="550" data-sal-duration="1400" data-sal="slide-up"><a href="sponsor.php">Partenaires</a></li>
                             <li class="item" data-sal-delay="650" data-sal-duration="1600" data-sal="slide-up"><a href="blog.html">Blog</a></li>
                         </ul>
                     </div>

@@ -87,34 +87,63 @@ $result = $conn->query($sql);
       
      <div class="items-center block w-auto max-h-screen overflow-auto h-sidenav grow basis-full" style="padding-top: 50px;">
   <ul class="flex flex-col pl-0 mb-0">
-    <li class="w-full" style="margin-top: 10px;">
-      <a class="py-2.7 dark:text-white dark:opacity-80 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors" href="../pages/dashboard.php">
-        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-          <i class="relative top-0 text-sm leading-normal text-cyan-500 ni ni-tv-2"></i>
+    <li class="w-full mt-4">
+      <h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase opacity-60">Admin Tools</h6>
+    </li>
+    <li class="w-full mt-2">
+      <a class="py-2.7 bg-white shadow-md text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors" href="users_table.php">
+        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tl from-blue-500 to-violet-500 shadow-sm stroke-0 text-center xl:p-2.5 text-white">
+          <i class="ni ni-single-02"></i>
         </div>
-        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Dashboard</span>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Users</span>
       </a>
     </li>
-
-    <li class="w-full" style="margin-top: 0px;">
-      <a class="bg-cyan-500/13 dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors" href="../pages/tables.php">
-        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-          <i class="relative top-0 text-sm leading-normal text-orange-500 ni ni-calendar-grid-58"></i>
+    <li class="w-full mt-2">
+      <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="quiz_table.php">
+        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-cyan-500">
+          <i class="ni ni-bullet-list-67"></i>
         </div>
-        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Tables</span>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Quiz</span>
       </a>
     </li>
-
-    <li class="w-full" style="margin-top: 0px;">
-      <h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase dark:text-white opacity-60">Account pages</h6>
-    </li>
-
-    <li class="w-full" style="margin-top: 0px;">
-      <a class=" dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors" href="../pages/profile.php">
-        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-          <i class="relative top-0 text-sm leading-normal text-slate-700 ni ni-single-02"></i>
+    <li class="w-full mt-2">
+      <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="challenge.php">
+        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-blue-500">
+          <i class="ni ni-trophy"></i>
         </div>
-        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Profile</span>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Challenges</span>
+      </a>
+    </li>
+    <li class="w-full mt-2">
+      <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="posts.php">
+        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-orange-500">
+          <i class="ni ni-calendar-grid-58"></i>
+        </div>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Forum</span>
+      </a>
+    </li>
+    <li class="w-full mt-2">
+      <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="listSponsor.php">
+        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-violet-500">
+          <i class="ni ni-badge"></i>
+        </div>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Sponsor</span>
+      </a>
+    </li>
+    <li class="w-full mt-2">
+      <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="listDonation.php">
+        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-emerald-500">
+          <i class="ni ni-favourite-28"></i>
+        </div>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Donation</span>
+      </a>
+    </li>
+    <li class="w-full mt-2">
+      <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-gray-100 rounded-lg" href="dashboardAI.php">
+        <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm stroke-0 text-center xl:p-2.5 text-purple-500">
+          <i class="ni ni-bulb-61"></i>
+        </div>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">DonationAI</span>
       </a>
     </li>
   </ul>
@@ -339,38 +368,43 @@ $result = $conn->query($sql);
             <div class="border-black/12.5 rounded-t-2xl border-b-0 border-solid p-6 pb-0">
                 <h6 class="dark:text-white">Modifier l'utilisateur</h6>
             </div>
-            <form action="tables.php" method="POST">
+            <form id="editUserForm" action="tables.php" method="POST" novalidate>
               <input type="hidden" name="user_id" id="modal_user_id">
               <div class="flex-auto p-6">
                 <div class="flex flex-wrap -mx-3">
                   <div class="w-full max-w-full px-3 shrink-0 md:w-6/12 md:flex-0">
                     <div class="mb-4">
                       <label for="modal_nom" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">Nom</label>
-                      <input type="text" id="modal_nom" name="nom" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" required />
+                      <input type="text" id="modal_nom" name="nom" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
+                      <span id="error_modal_nom" class="text-red-500 text-xs mt-1 hidden"></span>
                     </div>
                   </div>
                   <div class="w-full max-w-full px-3 shrink-0 md:w-6/12 md:flex-0">
                     <div class="mb-4">
                       <label for="modal_prenom" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">Prénom</label>
-                      <input type="text" id="modal_prenom" name="prenom" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" required />
+                      <input type="text" id="modal_prenom" name="prenom" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
+                      <span id="error_modal_prenom" class="text-red-500 text-xs mt-1 hidden"></span>
                     </div>
                   </div>
                   <div class="w-full max-w-full px-3 shrink-0 md:w-full md:flex-0">
                     <div class="mb-4">
                       <label for="modal_email" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">Email</label>
-                      <input type="email" id="modal_email" name="email" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" required />
+                      <input type="email" id="modal_email" name="email" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
+                      <span id="error_modal_email" class="text-red-500 text-xs mt-1 hidden"></span>
                     </div>
                   </div>
                   <div class="w-full max-w-full px-3 shrink-0 md:w-6/12 md:flex-0">
                     <div class="mb-4">
                       <label for="modal_role" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">Rôle (0 = Utilisateur, 1 = Admin)</label>
-                      <input type="number" id="modal_role" name="role" min="0" max="1" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" required />
+                      <input type="number" id="modal_role" name="role" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
+                      <span id="error_modal_role" class="text-red-500 text-xs mt-1 hidden"></span>
                     </div>
                   </div>
                   <div class="w-full max-w-full px-3 shrink-0 md:w-6/12 md:flex-0">
                     <div class="mb-4">
                       <label for="modal_rank" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">Rank</label>
-                      <input type="number" id="modal_rank" name="rank" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" required />
+                      <input type="number" id="modal_rank" name="rank" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
+                      <span id="error_modal_rank" class="text-red-500 text-xs mt-1 hidden"></span>
                     </div>
                   </div>
                 </div>
@@ -845,6 +879,34 @@ $result = $conn->query($sql);
         editUserModal.classList.add('hidden');
         editUserModal.classList.remove('flex');
       });
+
+      const editUserForm = document.getElementById('editUserForm');
+      if (editUserForm) {
+        editUserForm.addEventListener('submit', function(e) {
+          let hasError = false;
+          const fields = ['modal_nom', 'modal_prenom', 'modal_email', 'modal_role', 'modal_rank'];
+          fields.forEach(fid => {
+            const f = document.getElementById(fid);
+            const err = document.getElementById('error_' + fid);
+            err.classList.add('hidden');
+            if (f.value.trim() === '') {
+              err.innerText = 'Field required';
+              err.classList.remove('hidden');
+              hasError = true;
+            }
+          });
+          
+          const email = document.getElementById('modal_email');
+          const errorEmail = document.getElementById('error_modal_email');
+          if (!hasError && !/^\S+@\S+\.\S+$/.test(email.value)) {
+            errorEmail.innerText = 'Invalid email format';
+            errorEmail.classList.remove('hidden');
+            hasError = true;
+          }
+
+          if (hasError) e.preventDefault();
+        });
+      }
     });
   </script>
 </html>

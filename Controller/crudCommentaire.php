@@ -8,17 +8,19 @@ include_once __DIR__ . '/../Model/commentaires.php';
     $contenu  = $commentaire->getContenu();
     $date     = $commentaire->getDate();
     $post     = $commentaire->getPost();
+    $id_user  = $commentaire->getId_user();
 
     try {
         $conn = getDatabaseConnexion();
         
-        $sql = "INSERT INTO commentaires (contenu, date_commentaires, poste)
-                VALUES (:contenu, :date_commentaires, :poste)";
+        $sql = "INSERT INTO commentaires (contenu, date_commentaires, poste, id_user, etat)
+                VALUES (:contenu, :date_commentaires, :poste, :id_user, 0)";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':contenu', $contenu, PDO::PARAM_STR);
         $stmt->bindParam(':date_commentaires', $date);
         $stmt->bindParam(':poste', $post, PDO::PARAM_INT);
+        $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
 
         $stmt->execute();
         
@@ -27,23 +29,39 @@ include_once __DIR__ . '/../Model/commentaires.php';
     }
 }
 
-  function afficherCommentaire()
+/**
+ * Récupère tous les commentaires
+ * @return array Liste de tous les commentaires
+ */
+function afficherCommentaire()
 {
-    
-          $conn=getDatabaseConnexion();
-          $sql="SELECT * FROM commentaires ";
-          $commentaires=$conn->query($sql);
-
-    return $commentaires;
+    try {
+        $conn = getDatabaseConnexion();
+        $sql = "SELECT * FROM commentaires ORDER BY date_commentaires DESC";
+        $stmt = $conn->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+        return [];
+    }
 }
+
 function afficherCommentaireParPost($id)
 {
-    
-          $conn=getDatabaseConnexion();
-          $sql="SELECT * FROM commentaires where poste='$id'";
-          $commentaires=$conn->query($sql);
-
-    return $commentaires;
+    try {
+        $conn=getDatabaseConnexion();
+        $sql="SELECT c.*, u.nom as user_nom, u.Prenom as user_prenom, u.photo as user_photo 
+              FROM commentaires c 
+              LEFT JOIN user u ON c.id_user = u.id_user 
+              WHERE c.poste=:id 
+              ORDER BY c.date_commentaires ASC";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        return $stmt;
+    } catch(PDOException $e) {
+        echo $e->getMessage();
+        return false;
+    }
 }
 
 function deleteCommentaires($id)
@@ -51,15 +69,13 @@ function deleteCommentaires($id)
      try
     {
              $conn=getDatabaseConnexion();
-             $sql="DELETE FROM commentaires where id='$id'";
-             
-             $conn->query($sql);
-             
+             $sql="DELETE FROM commentaires where id=:id";
+             $stmt = $conn->prepare($sql);
+             $stmt->execute(['id' => $id]);
     }
     catch(PDOException $e )
     {
         echo $e->getMessage();
-
     } 
 }
 function modifierCommentaires($id,$contenu)
@@ -67,15 +83,16 @@ function modifierCommentaires($id,$contenu)
    try
     {
              $conn=getDatabaseConnexion();
-             $sql="UPDATE commentaires SET contenu='$contenu' WHERE id='$id'";
-             
-             $conn->query($sql);
-           
+             $sql="UPDATE commentaires SET contenu=:contenu WHERE id=:id";
+             $stmt = $conn->prepare($sql);
+             $stmt->execute([
+                 'contenu' => $contenu,
+                 'id' => $id
+             ]);
     }
     catch(PDOException $e )
     {
         echo $e->getMessage();
-
     } 
 }
 

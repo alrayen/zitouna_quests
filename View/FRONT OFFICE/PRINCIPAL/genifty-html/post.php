@@ -1,3 +1,23 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+
+function getUserAvatar($photo, $nom) {
+    if (!empty($photo) && $photo !== 'null' && $photo !== 'default.png') {
+        if (filter_var($photo, FILTER_VALIDATE_URL)) {
+            return $photo;
+        }
+        $path = "../../../../uploads/profiles/" . $photo;
+        if (file_exists($path)) {
+            return $path;
+        }
+    }
+    return 'https://ui-avatars.com/api/?name=' . urlencode($nom) . '&background=random&color=fff';
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -240,31 +260,30 @@
             <div class="row align-items-center ptb_sm--20 padding-controler-header">
                 <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 ">
                     <div class="header-left">
-                        <a href="index.html" class="logo">
+                        <a href="index.php" class="logo">
                             <img src="assets/images/logo/logo3.png" alt="Zitouna Quests Logo">
                         </a>
                     </div>
                 </div>
                 <div class="col-xl-5 d-xl-block d-none">
                     <div class="main-menu-wrapepr">
-                        <nav class="mainmenu-nav d-none d-xl-block">
+                                                                                                <nav class="mainmenu-nav d-none d-xl-block">
                             <ul class="main-menu">
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="index.html">Home</a>
+                                    <a class="navmain" href="index.php">Home</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="quiz.php">Quests</a>
+                                    <a class="navmain" href="quiz.php">Quiz</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="take-quiz.php">Quiz</a>
+                                    <a class="navmain" href="challenge.php">Challenge</a>
                                 </li>
                                 <li class="single-items off-arrow">
                                     <a class="navmain" href="forum.php">Forum</a>
                                 </li>
                                 <li class="single-items off-arrow">
-                                    <a class="navmain" href="#">Blog</a>
+                                    <a class="navmain" href="sponsor.php">Sponsor</a>
                                 </li>
-                                <li class="single-items off-arrow"><a class="single" href="contact.html">Contact</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -290,10 +309,18 @@
                             </form>
                         </div>
                         <ul class="icons">
-                            <li class="icon user"> <a href="author.html"><i class="far fa-user"></i></a></li>
+                            <li class="icon user"> <a href="author.php"><i class="far fa-user"></i></a></li>
                             <li class="icon notification"> <a href="#"><i class="far fa-bell" alt="notification"></i></a></li>
                         </ul>
-                        <a id="connect-wallet" href="login.html" class="rts-btn btn-primary">login / sign up</a>
+                        <?php if(isset($_SESSION['user_id'])): ?>
+                            <div class="user-info-header" style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
+                                <img src="<?= getUserAvatar($_SESSION['user_image'], $_SESSION['user_nom']) ?>" alt="User" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                <span style="color: white; font-weight: 600;"><?= htmlspecialchars($_SESSION['user_nom']) ?></span>
+                                <a href="../../../../Controller/logout.php" class="rts-btn btn-primary" style="padding: 8px 15px; font-size: 12px;">Logout</a>
+                            </div>
+                        <?php else: ?>
+                            <a href="login.php" class="rts-btn btn-primary">login / sign up</a>
+                        <?php endif; ?>
                         <div class="mobile-menu-bar d-block d-xl-none">
                             <div class="hamberger">
                                 <button class="hamberger-button">
@@ -313,7 +340,7 @@
         <div class="inner">
             <div class="header-top">
                 <div class="logo logo-custom-css">
-                    <a href="index.html"><img src="assets/images/logo/logo3.png" alt="_logo"></a>
+                    <a href="index.php"><img src="assets/images/logo/logo3.png" alt="_logo"></a>
                 </div>
                 <div class="close-menu">
                     <button class="close-button">
@@ -325,21 +352,20 @@
             <nav>
                 <ul class="main-menu">
                     <li class="single-items off-arrow">
-                        <a class="navmain" href="index.html">Home</a>
+                        <a class="navmain" href="index.php">Home</a>
                     </li>
                     <li class="single-items off-arrow">
-                        <a class="navmain" href="quiz.php">Quests</a>
+                        <a class="navmain" href="quiz.php">Quiz</a>
                     </li>
                     <li class="single-items off-arrow">
-                        <a class="navmain" href="take-quiz.php">Quiz</a>
+                        <a class="navmain" href="challenge.php">Challenge</a>
                     </li>
                     <li class="single-items off-arrow">
                         <a class="navmain" href="forum.php">Forum</a>
                     </li>
                     <li class="single-items off-arrow">
-                        <a class="navmain" href="#">Blog</a>
+                        <a class="navmain" href="sponsor.php">Sponsor</a>
                     </li>
-                    <li class="single-items off-arrow"><a class="single" href="contact.html">Contact</a></li>
                 </ul>
             </nav>
             <!-- nav style hear End -->
@@ -358,9 +384,11 @@
                 <p class="disc">Partagez vos pensées, questions ou expériences avec la communauté</p>
             </div>
 
-            <form  action="../../../../Controller/ajouterSujetcontroller.php?position=front" method="POST" enctype="multipart/form-data">
+            <form action="../../../../Controller/ajouterSujetcontroller.php?position=front" method="POST" enctype="multipart/form-data">
                 <div class="content-editor">
-                    
+                    <div style="margin-bottom: 20px;">
+                        <input type="text" name="titre" placeholder="Titre du post..." style="width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; padding: 15px; color: white; font-size: 18px; font-weight: 600;" required>
+                    </div>
                     
                     <textarea 
                         id="postContent" 
@@ -368,6 +396,7 @@
                         placeholder="Qu'avez-vous en tête ? Partagez vos idées, posez des questions ou racontez vos expériences..."
                         maxlength="5000"
                         name="nom"
+                        required
                     ></textarea>
                     <div class="custom-file-input">
                     <input type="file" name="image" id="imageInput">
@@ -407,7 +436,7 @@
             <div class="row">
                 <div class="col-lg-5 col-md-6 col-sm-12 mb_sm--30 ">
                     <div class="footer-left-wrapper">
-                        <a href="index.html"><img src="assets/images/logo/logo3.png" alt="Zitouna Quests Logo"></a>
+                        <a href="index.php"><img src="assets/images/logo/logo3.png" alt="Zitouna Quests Logo"></a>
                         
                         <p class="disc">
                             Zitouna Quests est une plateforme innovante combinant apprentissage, gamification et engagement social pour permettre aux utilisateurs d'avoir un impact positif.
@@ -428,8 +457,8 @@
                         <ul class="wizid-lists">
                             <li class="item"><a href="about.html">À propos</a></li>
                             <li class="item"><a href="how-it-works.html">Comment ça marche</a></li>
-                            <li class="item"><a href="quests.html">Quêtes</a></li>
-                            <li class="item"><a href="challenges.html">Défis</a></li>
+                            <li class="item"><a href="quiz.php">Quêtes</a></li>
+                            <li class="item"><a href="challenge.php">Défis</a></li>
                             <li class="item"><a href="impact.html">Notre Impact</a></li>
                         </ul>
                     </div>
@@ -442,7 +471,7 @@
                             <li class="item"><a href="forum.php">Forum</a></li>
                             <li class="item"><a href="leaderboards.html">Classements</a></li>
                             <li class="item"><a href="achievements.html">Récompenses</a></li>
-                            <li class="item"><a href="partners.html">Partenaires</a></li>
+                            <li class="item"><a href="sponsor.php">Partenaires</a></li>
                             <li class="item"><a href="blog.html">Blog</a></li>
                         </ul>
                     </div>
@@ -597,15 +626,16 @@
             
             // Fonction d'aperçu
             previewBtn.addEventListener('click', function() {
+                const title = document.querySelector('input[name="titre"]').value;
                 const content = postContent.value;
                 
-                if (!content.trim()) {
+                if (!content.trim() && !title.trim()) {
                     alert('Veuillez écrire quelque chose avant de prévisualiser');
                     return;
                 }
                 
                 // Conversion basique du markdown en HTML
-                let htmlContent = content
+                let htmlContent = `<h3>${title}</h3><hr>` + content
                     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                     .replace(/_(.*?)_/g, '<em>$1</em>')
                     .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>')
@@ -621,32 +651,25 @@
             });
             
             // Soumission du formulaire
-            createPostForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
                 const content = postContent.value.trim();
                 
                 if (!content) {
+                    e.preventDefault();
                     alert('Veuillez écrire quelque chose avant de publier');
                     return;
                 }
                 
                 if (content.length < 10) {
+                    e.preventDefault();
                     alert('Votre post est trop court. Veuillez écrire au moins 10 caractères.');
                     return;
                 }
                 
-                // Simulation d'envoi (à remplacer par votre logique backend)
                 const submitBtn = this.querySelector('.btn-submit');
-                const originalText = submitBtn.innerHTML;
-                
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
                 submitBtn.disabled = true;
-                
-                setTimeout(() => {
-                    alert('Post publié avec succès !');
-                    window.location.href = 'forum.php';
-                }, 1500);
             });
             
             // Focus automatique sur le textarea
