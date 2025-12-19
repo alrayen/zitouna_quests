@@ -27,11 +27,15 @@ Ce projet a été réalisé dans le cadre de notre cursus universitaire (2025).
 * **Mode Aventure** : Participez à des séries de quiz classés par catégories.
 * **Tableau de Bord** : Visualisez vos scores, votre rang et votre progression.
 * **Multijoueur** : Défiez d'autres utilisateurs pour voir qui a le meilleur score.
+* **Connexion facile** : en utilisant la reconnaissance faciale ,continuer avec google/github.
+* ** assistant chatbot IA** : un assistant ia qui aide l utilisateur a gerer le sign in et le sign up .
+
 
 ### 🛡️ Pour les Administrateurs
 * **Gestion des Quiz (CRUD)** : Ajouter, modifier ou supprimer des questions et des réponses.
 * **Gestion des Utilisateurs** : Modérer les inscrits.
 * **Statistiques Globales** : Vue d'ensemble sur l'activité de la plateforme.
+* **Connexion facile** : en utilisant la reconnaissance faciale ,continuer avec google/github.
 
 ## 🛠️ Architecture Technique
 
@@ -42,10 +46,17 @@ Ce projet a été réalisé dans le cadre de notre cursus universitaire (2025).
 ## 📸 Aperçu de l'interface
 
 | Page d'Accueil |
-| <img width="1899" height="905" alt="captureg1" src="https://github.com/user-attachments/assets/a72ecf4e-8b62-48fd-b6c0-3ccbaef50ba3" /> |
+ <img width="1899" height="905" alt="captureg1" src="https://github.com/user-attachments/assets/a72ecf4e-8b62-48fd-b6c0-3ccbaef50ba3" /> 
 <br>
 | Interface de Quiz |
-| <img width="1087" height="878" alt="captureg" src="https://github.com/user-attachments/assets/380c8d72-381a-44d7-8520-925032ddfcac" /> |
+ <img width="1087" height="878" alt="captureg" src="https://github.com/user-attachments/assets/380c8d72-381a-44d7-8520-925032ddfcac" /> 
+ <br>
+|Interface challenges|
+<img width="1631" height="922" alt="kljfghsd" src="https://github.com/user-attachments/assets/c2adb17d-ee0b-4f80-8083-8263138c3aa6" />
+<br>
+|Interface login|
+
+<img width="393" height="668" alt="login" src="https://github.com/user-attachments/assets/e9f50d18-43ed-4a24-8bbf-a728ae368329" />
 
 ## 👥 L'Équipe
 
